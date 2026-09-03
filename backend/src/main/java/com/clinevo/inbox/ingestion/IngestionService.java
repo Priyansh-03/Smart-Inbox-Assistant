@@ -42,11 +42,6 @@ public class IngestionService {
     /** Persist one email. Returns the new message id, or null if it was a duplicate. */
     public String ingest(MimeMessage mime) {
         try {
-            String hdr = firstHeader(mime, "Message-ID", "msg-" + System.nanoTime());
-            if (repo.messageExists(hdr)) {
-                log.info("Ingest skipped: message {} already stored", hdr);
-                return null;
-            }
             String sender = mime.getFrom() != null && mime.getFrom().length > 0 ? mime.getFrom()[0].toString() : "unknown";
             String subject = mime.getSubject() == null ? "(no subject)" : mime.getSubject();
             Instant received = mime.getReceivedDate() != null ? mime.getReceivedDate().toInstant()
@@ -55,6 +50,14 @@ public class IngestionService {
             StringBuilder body = new StringBuilder();
             List<Part> attachments = new ArrayList<>();
             walk(mime, body, attachments);
+
+            // Stable dedupe key: real Message-ID, else a content hash so re-delivery is still a no-op.
+            String hdr = firstHeader(mime, "Message-ID", null);
+            if (hdr == null) hdr = "sha256:" + sha256(sender + "|" + subject + "|" + received + "|" + body);
+            if (repo.messageExists(hdr)) {
+                log.info("Ingest skipped: message {} already stored", hdr);
+                return null;
+            }
 
             String messageId = repo.insertMessage(hdr, sender, subject, received, body.toString().trim());
             log.info("Ingested message {} (id={}) from {} with {} attachment(s)", hdr, messageId, sender, attachments.size());
@@ -71,7 +74,7 @@ public class IngestionService {
     }
 
     private void storeAttachment(String messageId, Part p) throws MessagingException, IOException {
-        String filename = p.getFileName() == null ? "attachment-" + System.nanoTime() : p.getFileName();
+        String filename = safeName(p.getFileName());
         String mime = p.getContentType() == null ? "" : p.getContentType().split(";")[0].trim();
         boolean isPdf = filename.toLowerCase().endsWith(".pdf") || Constants.MIME_PDF.equalsIgnoreCase(mime);
         if (!isPdf) {
@@ -110,5 +113,25 @@ public class IngestionService {
     private String firstHeader(Message m, String name, String fallback) throws MessagingException {
         String[] v = m.getHeader(name);
         return v != null && v.length > 0 ? v[0] : fallback;
+    }
+
+    /** Basename only, safe characters only - blocks path traversal via crafted filenames. */
+    static String safeName(String raw) {
+        if (raw == null || raw.isBlank()) return "attachment-" + System.nanoTime();
+        String base = raw.replace('\\', '/');
+        base = base.substring(base.lastIndexOf('/') + 1).trim();
+        base = base.replaceAll("[^\\w.\\-]", "_");
+        return base.isBlank() || base.equals(".") || base.equals("..") ? "attachment-" + System.nanoTime() : base;
+    }
+
+    private static String sha256(String s) {
+        try {
+            byte[] d = java.security.MessageDigest.getInstance("SHA-256").digest(s.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder(d.length * 2);
+            for (byte b : d) sb.append(String.format("%02x", b));
+            return sb.toString();
+        } catch (java.security.NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }
