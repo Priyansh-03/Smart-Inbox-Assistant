@@ -22,3 +22,7 @@ sample-data/outputs/*.json
 .vscode/
 *.iml
 .DS_Store
+
+# build output
+frontend/dist/
+backend/target/
