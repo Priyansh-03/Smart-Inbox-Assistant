@@ -1,9 +1,9 @@
-"""Thin wrapper around the Anthropic client with strict-JSON helpers."""
+"""Thin wrapper around the OpenAI client with strict-JSON helpers."""
 import json
 import logging
 from pathlib import Path
 
-from anthropic import Anthropic
+from openai import OpenAI
 
 from .config import config
 
@@ -13,14 +13,14 @@ MODEL = config.MODEL
 PROMPT_VERSION = config.PROMPT_VERSION
 _PROMPTS = Path(__file__).resolve().parent.parent / "prompts"
 
-_client: Anthropic | None = None
+_client: OpenAI | None = None
 
 
-def client() -> Anthropic:
+def client() -> OpenAI:
     global _client
     if _client is None:
-        _client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
-        log.info("Anthropic client initialised for model %s", MODEL)
+        _client = OpenAI(api_key=config.OPENAI_API_KEY)
+        log.info("OpenAI client initialised for model %s", MODEL)
     return _client
 
 
@@ -28,25 +28,32 @@ def load_prompt(name: str) -> str:
     return (_PROMPTS / f"{name}.txt").read_text(encoding="utf-8")
 
 
-def _extract_text(msg) -> str:
-    return "".join(b.text for b in msg.content if b.type == "text").strip()
+def text_part(text: str) -> dict:
+    return {"type": "text", "text": text}
+
+
+def image_part(b64_png: str) -> dict:
+    return {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64_png}"}}
+
+
+def _content(user_content) -> list:
+    return [text_part(user_content)] if isinstance(user_content, str) else user_content
 
 
 def ask_json(system: str, user_content, *, max_tokens: int = 2000, retries: int = 1) -> dict:
-    """Call the model and parse the reply as JSON. Prefill '{' to force an object.
-    `user_content` may be a string or a list of Anthropic content blocks (for images)."""
-    if isinstance(user_content, str):
-        user_content = [{"type": "text", "text": user_content}]
+    """Call the model in JSON mode and parse the reply. `user_content` is a string or a
+    list of content parts (use text_part / image_part)."""
     messages = [
-        {"role": "user", "content": user_content},
-        {"role": "assistant", "content": "{"},
+        {"role": "system", "content": system},
+        {"role": "user", "content": _content(user_content)},
     ]
     last_err = None
     for attempt in range(retries + 1):
-        msg = client().messages.create(
-            model=MODEL, max_tokens=max_tokens, system=system, messages=messages
+        resp = client().chat.completions.create(
+            model=MODEL, max_tokens=max_tokens, messages=messages,
+            response_format={"type": "json_object"},
         )
-        raw = "{" + _extract_text(msg)
+        raw = (resp.choices[0].message.content or "").strip()
         try:
             result = json.loads(raw)
             log.info("ask_json ok (attempt %d, %d keys)", attempt + 1, len(result))
@@ -54,7 +61,6 @@ def ask_json(system: str, user_content, *, max_tokens: int = 2000, retries: int 
         except json.JSONDecodeError as e:
             last_err = e
             log.warning("ask_json invalid JSON on attempt %d: %s", attempt + 1, e)
-            # trim to the last closing brace and retry parse
             if "}" in raw:
                 try:
                     return json.loads(raw[: raw.rindex("}") + 1])
@@ -64,10 +70,8 @@ def ask_json(system: str, user_content, *, max_tokens: int = 2000, retries: int 
 
 
 def ask_text(system: str, user: str, *, max_tokens: int = 1200) -> str:
-    msg = client().messages.create(
-        model=MODEL,
-        max_tokens=max_tokens,
-        system=system,
-        messages=[{"role": "user", "content": user}],
+    resp = client().chat.completions.create(
+        model=MODEL, max_tokens=max_tokens,
+        messages=[{"role": "system", "content": system}, {"role": "user", "content": user}],
     )
-    return _extract_text(msg)
+    return (resp.choices[0].message.content or "").strip()

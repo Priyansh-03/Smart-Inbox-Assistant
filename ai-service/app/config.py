@@ -12,8 +12,8 @@ def _require(key: str) -> str:
 class Config:
     HOST = _require("AI_HOST")
     PORT = int(_require("AI_PORT"))
-    ANTHROPIC_API_KEY = _require("ANTHROPIC_API_KEY")
-    MODEL = _require("ANTHROPIC_MODEL")
+    OPENAI_API_KEY = _require("OPENAI_API_KEY")
+    MODEL = _require("OPENAI_MODEL")
     PROMPT_VERSION = _require("PROMPT_VERSION")
     PDF_PAGE_CAP = int(_require("PDF_PAGE_CAP"))
 

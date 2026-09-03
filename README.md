@@ -31,7 +31,7 @@ Prereqs: Docker + Docker Compose. Nothing is hardcoded - every setting comes fro
 
 ```bash
 make env                 # writes .env from .env.example
-$EDITOR .env             # fill in ANTHROPIC_API_KEY, MAIL_* (or set MAIL_ENABLED=false)
+$EDITOR .env             # fill in OPENAI_API_KEY, MAIL_* (or set MAIL_ENABLED=false)
 make up                  # starts mongo + ai-service + backend + frontend
 ```
 
@@ -66,10 +66,10 @@ make up && cd tests/integration && python -m pytest   # end-to-end (needs API ke
 ## Configuration
 
 Every key is documented in [`.env.example`](.env.example). Secrets that need
-rotation (DB password, mail password, `ANTHROPIC_API_KEY`) are read only from the
+rotation (DB password, mail password, `OPENAI_API_KEY`) are read only from the
 environment and never committed.
 
 ## Data handling
 
-Synthetic test data only. PDF and email text is sent to the Anthropic API for
+Synthetic test data only. PDF and email text is sent to the OpenAI API for
 classification and extraction - see the trade-off note in `docs/writeup.md`.

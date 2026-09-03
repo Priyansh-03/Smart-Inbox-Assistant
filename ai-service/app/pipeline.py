@@ -6,16 +6,11 @@ import time
 from . import pdf_utils as pu
 from .config import config
 from .constants import MAX_CTX_CHARS
-from .llm import ask_json, load_prompt, MODEL, PROMPT_VERSION
+from .llm import ask_json, image_part, load_prompt, text_part, MODEL, PROMPT_VERSION
 from .schemas import (BucketVerdict, Fact, PdfResult, ProcessRequest,
                       ProcessResponse, Source)
 
 log = logging.getLogger("ai-service.pipeline")
-
-
-def _img_block(b64_png: str):
-    return {"type": "image",
-            "source": {"type": "base64", "media_type": "image/png", "data": b64_png}}
 
 
 def process_pdf(name: str, pdf_bytes: bytes) -> PdfResult:
@@ -32,7 +27,7 @@ def process_pdf(name: str, pdf_bytes: bytes) -> PdfResult:
             if p["scanned"]:
                 png = pu.render_page_png(pdf_bytes, p["page"] - 1)
                 r = ask_json(load_prompt("ocr"),
-                             [_img_block(png), {"type": "text", "text": "Transcribe this page."}])
+                             [image_part(png), text_part("Transcribe this page.")])
                 parts.append(f"[page {p['page']}]\n{r.get('text', '')}")
                 confs.append(float(r.get("confidence", 0.0)))
             else:
@@ -57,7 +52,7 @@ def process_pdf(name: str, pdf_bytes: bytes) -> PdfResult:
     for im in pu.list_images(pdf_bytes):
         png = pu.render_page_png(pdf_bytes, im["page"] - 1)
         cap = ask_json(load_prompt("image_caption"),
-                       [_img_block(png), {"type": "text", "text": f"Describe the notable image on page {im['page']}."}])
+                       [image_part(png), text_part(f"Describe the notable image on page {im['page']}.")])
         images.append({"page": im["page"], "needs_human_review": True, **cap})
 
     summ = ask_json(load_prompt("pdf_summary"),
