@@ -1,0 +1,35 @@
+server:
+  address: ${SERVER_HOST}
+  port: ${SERVER_PORT}
+
+spring:
+  application:
+    name: smart-inbox-backend
+  data:
+    mongodb:
+      uri: ${MONGO_URI}
+      database: ${MONGO_DB}
+
+app:
+  storage-dir: ${STORAGE_DIR}
+  reviewer-id: ${REVIEWER_ID}
+  worker:
+    poll-ms: ${WORKER_POLL_MS}
+    max-attempts: ${WORKER_MAX_ATTEMPTS}
+  ai:
+    base-url: ${AI_SERVICE_URL}
+    timeout-seconds: ${AI_TIMEOUT_SECONDS}
+  mail:
+    enabled: ${MAIL_ENABLED}
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USER}
+    password: ${MAIL_PASSWORD}
+    folder: ${MAIL_FOLDER}
+    poll-ms: ${MAIL_POLL_MS}
+  cors:
+    allowed-origin: ${CORS_ALLOWED_ORIGIN}
+
+logging:
+  level:
+    com.clinevo.inbox: INFO

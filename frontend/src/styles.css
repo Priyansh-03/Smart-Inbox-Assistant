@@ -1,0 +1,13 @@
+body { font: 14px/1.5 system-ui, sans-serif; margin: 0; color: #1a1a1a; }
+a { color: #1558d6; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; vertical-align: top; }
+th { background: #f4f6fb; }
+.chip { display: inline-block; padding: 1px 6px; border-radius: 10px; background: #e6eefc; margin-right: 4px; font-size: 12px; }
+.bar { padding: 10px 16px; background: #12305e; color: #fff; }
+.wrap { padding: 16px; }
+.low { color: #b00020; font-weight: 600; }
+button { padding: 4px 10px; }
+.split { display: flex; gap: 16px; }
+.split > * { flex: 1; min-width: 0; }
+iframe { width: 100%; height: 70vh; border: 1px solid #ccc; }

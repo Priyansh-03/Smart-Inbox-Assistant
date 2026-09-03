@@ -1,0 +1,20 @@
+Message-ID: <sample-icsr-full-001@example.com>
+From: Dr. Alice Mecommet <a.mecommet@example-clinic.test>
+To: safety@example-pharma.test
+Subject: Adverse reaction report - patient on Carditol
+Date: Mon, 01 Sep 2025 09:14:00 +0000
+Content-Type: text/plain; charset="utf-8"
+
+Hello,
+
+I am reporting an adverse event for one of my patients (synthetic data).
+
+Patient: 54-year-old male, 82 kg, history of hypertension.
+Product: Carditol 40 mg tablets, one tablet daily by mouth, started 12 Aug 2025,
+stopped 27 Aug 2025.
+Reaction: developed a severe generalised skin rash and facial swelling on 25 Aug 2025,
+was admitted to hospital overnight for observation. Recovering after stopping the drug.
+
+Reporter: Dr. Alice Meommet, cardiologist, France.
+
+Please confirm receipt.

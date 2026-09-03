@@ -1,0 +1,114 @@
+package com.clinevo.inbox.ingestion;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
+import jakarta.mail.Part;
+import jakarta.mail.internet.MimeMessage;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import com.clinevo.inbox.audit.AuditService;
+import com.clinevo.inbox.config.AppProperties;
+import com.clinevo.inbox.config.Constants;
+import com.clinevo.inbox.domain.InboxRepository;
+
+/** Turns a raw MimeMessage into persisted message + attachment rows. Shared by IMAP poll and .eml upload. */
+@Service
+public class IngestionService {
+
+    private static final Logger log = LoggerFactory.getLogger(IngestionService.class);
+
+    private final InboxRepository repo;
+    private final AuditService audit;
+    private final Path storageRoot;
+
+    public IngestionService(InboxRepository repo, AuditService audit, AppProperties props) {
+        this.repo = repo;
+        this.audit = audit;
+        this.storageRoot = Path.of(props.storageDir());
+    }
+
+    /** Persist one email. Returns the new message id, or null if it was a duplicate. */
+    public String ingest(MimeMessage mime) {
+        try {
+            String hdr = firstHeader(mime, "Message-ID", "msg-" + System.nanoTime());
+            if (repo.messageExists(hdr)) {
+                log.info("Ingest skipped: message {} already stored", hdr);
+                return null;
+            }
+            String sender = mime.getFrom() != null && mime.getFrom().length > 0 ? mime.getFrom()[0].toString() : "unknown";
+            String subject = mime.getSubject() == null ? "(no subject)" : mime.getSubject();
+            Instant received = mime.getReceivedDate() != null ? mime.getReceivedDate().toInstant()
+                    : (mime.getSentDate() != null ? mime.getSentDate().toInstant() : Instant.now());
+
+            StringBuilder body = new StringBuilder();
+            List<Part> attachments = new ArrayList<>();
+            walk(mime, body, attachments);
+
+            String messageId = repo.insertMessage(hdr, sender, subject, received, body.toString().trim());
+            log.info("Ingested message {} (id={}) from {} with {} attachment(s)", hdr, messageId, sender, attachments.size());
+
+            for (Part p : attachments) {
+                storeAttachment(messageId, p);
+            }
+            audit.ai(messageId, "ingested", "message", "{\"attachments\":" + attachments.size() + "}");
+            return messageId;
+        } catch (MessagingException | IOException e) {
+            log.error("Ingest failed: {}", e.getMessage(), e);
+            throw new IllegalStateException("ingest failed", e);
+        }
+    }
+
+    private void storeAttachment(String messageId, Part p) throws MessagingException, IOException {
+        String filename = p.getFileName() == null ? "attachment-" + System.nanoTime() : p.getFileName();
+        String mime = p.getContentType() == null ? "" : p.getContentType().split(";")[0].trim();
+        boolean isPdf = filename.toLowerCase().endsWith(".pdf") || Constants.MIME_PDF.equalsIgnoreCase(mime);
+        if (!isPdf) {
+            repo.insertAttachment(messageId, filename, mime, null, false, "non-pdf attachment logged only");
+            log.info("Attachment {} on message {} logged, not processed (type {})", filename, messageId, mime);
+            return;
+        }
+        Path dir = storageRoot.resolve(String.valueOf(messageId));
+        Files.createDirectories(dir);
+        Path target = dir.resolve(filename);
+        try (InputStream in = p.getInputStream()) {
+            Files.copy(in, target);
+        }
+        repo.insertAttachment(messageId, filename, Constants.MIME_PDF, target.toString(), true, null);
+        log.info("Attachment {} on message {} stored at {}", filename, messageId, target);
+    }
+
+    private void walk(Part part, StringBuilder body, List<Part> attachments) throws MessagingException, IOException {
+        Object content = part.getContent();
+        if (content instanceof String s) {
+            if (!Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) body.append(s).append('\n');
+            return;
+        }
+        if (content instanceof Multipart mp) {
+            for (int i = 0; i < mp.getCount(); i++) {
+                Part bp = mp.getBodyPart(i);
+                if (Part.ATTACHMENT.equalsIgnoreCase(bp.getDisposition()) || bp.getFileName() != null) {
+                    attachments.add(bp);
+                } else {
+                    walk(bp, body, attachments);
+                }
+            }
+        }
+    }
+
+    private String firstHeader(Message m, String name, String fallback) throws MessagingException {
+        String[] v = m.getHeader(name);
+        return v != null && v.length > 0 ? v[0] : fallback;
+    }
+}

@@ -1,0 +1,10 @@
+Extract Medical Information request fields from the supplied labelled context.
+Not present => value "Not stated", confidence 0. Never guess. Cite source chunk + quote.
+
+Return JSON only:
+{"facts": [
+  {"section":"QUESTION","field_name":"question_1","value":"<the actual question asked>","confidence":0.0,"source":{"type":"","file":null,"page":null,"quote":""}},
+  {"section":"QUESTION","field_name":"question_2","value":"Not stated","confidence":0.0,"source":{...}},
+  {"section":"QUESTION","field_name":"product_or_topic","value":"","confidence":0.0,"source":{...}}
+]}
+Add question_3, question_4 ... only if genuinely distinct questions are asked.

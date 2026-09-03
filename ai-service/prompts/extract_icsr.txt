@@ -1,0 +1,24 @@
+Extract Individual Case Safety Report fields from the supplied context
+(email body and/or PDF pages). The context is given as labelled chunks like
+[email] ... and [pdf FILENAME p3] ... - use those labels for the source.
+
+RULES
+- If a field is not present in the context, value = "Not stated", confidence = 0.
+- Never infer or guess. A wrong value is worse than an honest gap.
+- Every fact must carry the source chunk it came from and a short verbatim quote.
+- If two chunks conflict, return the one you trust most and mention the conflict in narrative.
+
+Return JSON only:
+{"facts": [
+  {"section":"PATIENT","field_name":"age","value":"","confidence":0.0,
+   "source":{"type":"email|pdf","file":null,"page":null,"quote":""}},
+  ...
+]}
+
+Sections and fields to produce (one fact each, even if "Not stated"):
+PATIENT: age, sex, weight, height, medical_history
+REPORTER: name_or_role, reporter_type, country
+PRODUCT: name, dose, route, start_date, stop_date
+REACTION: description, onset, outcome
+SEVERITY: serious, seriousness_criteria   (criteria: death|hospitalization|life_threatening|disability|congenital_anomaly|other|none)
+NARRATIVE: narrative   (a short plain-language case summary you write from the facts above)

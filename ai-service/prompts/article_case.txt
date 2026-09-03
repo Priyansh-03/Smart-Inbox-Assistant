@@ -1,0 +1,9 @@
+You read a published article (possibly multi-column, text already de-columned).
+Pull ONLY the parts that describe an actual, identifiable patient case
+(a real person: age/sex/history, a drug they took, what happened).
+Ignore the abstract's general claims, methods, references, and discussion of other studies.
+Return JSON only:
+{"has_patient_case": <bool>,
+ "cases": [ {"case_label": "Case 1", "text": "<the case description, verbatim where possible>"} ],
+ "reason": "<one line: why this is / isn't a reportable patient case>"}
+If several distinct patients are described, return one entry per patient.

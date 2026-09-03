@@ -1,0 +1,23 @@
+Message-ID: <sample-corrupt-pdf-001@example.com>
+From: Broken Sender <broken@example-mail.test>
+To: safety@example-pharma.test
+Subject: Adverse event form attached (file is corrupt)
+Date: Sun, 07 Sep 2025 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="b1"
+
+--b1
+Content-Type: text/plain; charset="utf-8"
+
+Please find the completed adverse event form attached for a patient who had a
+reaction to Carditol. Reporter: nurse, Germany.
+
+--b1
+Content-Type: application/pdf; name="ae_form.pdf"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="ae_form.pdf"
+
+JVBERi0xLjQgdGhpcyBmaWxlIGlzIGRlbGliZXJhdGVseSB0cnVuY2F0ZWQgYW5kIG5vdCBhIHJl
+YWwgcGRm
+
+--b1--
