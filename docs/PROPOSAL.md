@@ -15,16 +15,14 @@ what changes.
 | Python FastAPI: flavor detection, digital text, tables, images, OCR/translate/article prompts, classify, ICSR/PQC/MI extraction, per-fact source | ✅ 10/10 unit tests |
 | Angular: queue screen + detail screen (source links, editable fields, accept/override) | ✅ builds |
 | AI model | OpenAI `gpt-4o`, JSON mode |
-| Persistence | **MongoDB** ← changes, see §1 |
+| Persistence | **PostgreSQL 16** (migrated from MongoDB in P1 — see §1, done) |
 
 ---
 
-## 1. DECISION NEEDED — database
+## 1. Database — RESOLVED (done in P1)
 
 The spec (§15) sanctions **Oracle (preferred)** or **PostgreSQL (acceptable, if explained)**.
-MongoDB is no longer in that set.
-
-**Recommendation: switch to PostgreSQL 16.**
+MongoDB was not in that set, so P1 migrated to **PostgreSQL 16**. Rationale kept below.
 - Keeps the schema-flexibility we wanted: `JSONB` columns for the heterogeneous
   AI payloads (per-PDF extraction, seriousness block, raw model output).
 - Queue stays a `status` column claimed with `SELECT … FOR UPDATE SKIP LOCKED`
@@ -35,7 +33,10 @@ MongoDB is no longer in that set.
   → `spring-boot-starter-jdbc` + `postgresql` + Flyway; `db/init/*.js` →
   `db/migration/V1__*.sql`. Docker image `mongo:7` → `postgres:16`.
 
-Effort: ~half a day. **Awaiting your go-ahead before ripping out Mongo.**
+Done: `InboxRepository` + `AuditService` on `JdbcClient`, `Documents` -> POJOs,
+Flyway `V1__schema.sql`, compose `postgres:16`. Verified — backend 6/6 + AI 10/10
+unit, Flyway clean migrate, ingest->queue->process->persist e2e, `FOR UPDATE SKIP
+LOCKED` proven.
 
 ---
 

@@ -4,17 +4,13 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-/** Mongo persistence models. Fields are mapped directly; kept public for brevity. */
+/** Row models. Plain POJOs mapped by InboxRepository; kept public for brevity. */
 public final class Documents {
 
     private Documents() {}
 
-    @Document("message")
     public static class Message {
-        @Id public String id;
+        public String id;
         public String messageIdHdr;
         public String sender;
         public String subject;
@@ -24,12 +20,11 @@ public final class Documents {
         public int attempts;
         public Long processingMs;
         public String errorDetail;
-        public Instant createdAt = Instant.now();
+        public Instant createdAt;
     }
 
-    @Document("attachment")
     public static class Attachment {
-        @Id public String id;
+        public String id;
         public String messageId;
         public String filename;
         public String mimeType;
@@ -38,9 +33,8 @@ public final class Documents {
         public String skipReason;
     }
 
-    @Document("pdf_extraction")
     public static class PdfExtraction {
-        @Id public String id;
+        public String id;
         public String messageId;
         public String attachmentId;
         public String filename;
@@ -57,9 +51,8 @@ public final class Documents {
         public String relevanceReason;
     }
 
-    @Document("classification")
     public static class Classification {
-        @Id public String id;
+        public String id;
         public String messageId;
         public String bucket;
         public boolean applies;
@@ -68,12 +61,11 @@ public final class Documents {
         public String reviewStatus;
         public String model;
         public String promptVersion;
-        public Instant createdAt = Instant.now();
+        public Instant createdAt;
     }
 
-    @Document("fact")
     public static class Fact {
-        @Id public String id;
+        public String id;
         public String messageId;
         public String bucket;
         public String section;
@@ -92,9 +84,8 @@ public final class Documents {
         }
     }
 
-    @Document("audit_event")
     public static class AuditEvent {
-        @Id public String id;
+        public String id;
         public String messageId;
         public String actor;
         public String action;
@@ -102,6 +93,6 @@ public final class Documents {
         public String oldValue;
         public String newValue;
         public String detailJson;
-        public Instant createdAt = Instant.now();
+        public Instant createdAt;
     }
 }

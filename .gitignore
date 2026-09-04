@@ -26,3 +26,7 @@ sample-data/outputs/*.json
 # build output
 frontend/dist/
 backend/target/
+
+# P1 local verification scratch
+.p1-storage/
+.p1-backend.log

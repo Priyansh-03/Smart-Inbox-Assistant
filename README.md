@@ -16,8 +16,8 @@ Test mailbox (IMAP)                 Angular review UI
    - review + audit API                       - PDF flavor detection
         |                                     - OCR / translate / article
         v                                     - 4-bucket classification
-     MongoDB                                  - fact extraction + sources
-   messages, attachments,
+     PostgreSQL 16                            - fact extraction + sources
+   message, attachment,
    pdf_extraction, classification,
    fact, audit_event (append-only)
 ```
@@ -32,7 +32,7 @@ Prereqs: Docker + Docker Compose. Nothing is hardcoded - every setting comes fro
 ```bash
 make env                 # writes .env from .env.example
 $EDITOR .env             # fill in OPENAI_API_KEY, MAIL_* (or set MAIL_ENABLED=false)
-make up                  # starts mongo + ai-service + backend + frontend
+make up                  # starts postgres + ai-service + backend + frontend
 ```
 
 - UI: `http://<FRONTEND_HOST>:<FRONTEND_PORT>`
