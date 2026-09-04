@@ -20,6 +20,8 @@ public final class Documents {
         public int attempts;
         public Long processingMs;
         public String errorDetail;
+        public boolean injectionFlagged;
+        public String injectionNotes;
         public Instant createdAt;
     }
 
@@ -49,6 +51,8 @@ public final class Documents {
         public String summary;
         public Boolean looksRelevant;
         public String relevanceReason;
+        public boolean injectionFlagged;
+        public String injectionNotes;
     }
 
     public static class Classification {

@@ -52,6 +52,8 @@ class PdfResult(BaseModel):
     summary: str = ""
     looks_relevant: Optional[bool] = None
     relevance_reason: str = ""
+    injection_flagged: bool = False
+    injection_notes: str = ""
 
 
 class ProcessResponse(BaseModel):
@@ -62,6 +64,8 @@ class ProcessResponse(BaseModel):
     pdfs: List[PdfResult] = []
     classifications: List[BucketVerdict] = []
     facts: List[Fact] = []
+    injection_flagged: bool = False
+    injection_notes: str = ""
 
 
 # ---- per-stage request/response models (each stage runnable on its own) ----
@@ -82,6 +86,8 @@ class ClassifyResponse(BaseModel):
     model: str
     prompt_version: str
     classifications: List[BucketVerdict] = []
+    injection_flagged: bool = False
+    injection_notes: str = ""
 
 
 class ExtractRequest(BaseModel):
@@ -93,3 +99,5 @@ class ExtractResponse(BaseModel):
     model: str
     prompt_version: str
     facts: List[Fact] = []
+    injection_flagged: bool = False
+    injection_notes: str = ""

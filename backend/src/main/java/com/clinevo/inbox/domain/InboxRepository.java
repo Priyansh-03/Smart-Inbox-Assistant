@@ -139,9 +139,10 @@ public class InboxRepository {
     public void save(PdfExtraction e) {
         jdbc.sql("""
                 INSERT INTO pdf_extraction (message_id, attachment_id, filename, flavor, language, page_count,
-                    full_text, original_text, ocr_confidence, tables, images, summary, looks_relevant, relevance_reason)
+                    full_text, original_text, ocr_confidence, tables, images, summary, looks_relevant, relevance_reason,
+                    injection_flagged, injection_notes)
                 VALUES (:m, :a, :f, :fl, :lang, :pc, :ft, :ot, :oc,
-                        CAST(:tables AS jsonb), CAST(:images AS jsonb), :sm, :lr, :rr)
+                        CAST(:tables AS jsonb), CAST(:images AS jsonb), :sm, :lr, :rr, :inj, :injn)
                 """)
                 .param("m", Long.valueOf(e.messageId))
                 .param("a", e.attachmentId == null ? null : Long.valueOf(e.attachmentId))
@@ -149,7 +150,14 @@ public class InboxRepository {
                 .param("ft", e.fullText).param("ot", e.originalText).param("oc", e.ocrConfidence)
                 .param("tables", Jsonb.write(e.tables)).param("images", Jsonb.write(e.images))
                 .param("sm", e.summary).param("lr", e.looksRelevant).param("rr", e.relevanceReason)
+                .param("inj", e.injectionFlagged).param("injn", e.injectionNotes)
                 .update();
+    }
+
+    public void markInjection(String messageId, boolean flagged, String notes) {
+        jdbc.sql("UPDATE message SET injection_flagged = :f, injection_notes = :n WHERE id = :id")
+                .param("f", flagged).param("n", notes).param("id", Long.valueOf(messageId)).update();
+        if (flagged) log.warn("Message id={} flagged for possible prompt injection: {}", messageId, notes);
     }
 
     public void save(Classification c) {
@@ -261,6 +269,8 @@ public class InboxRepository {
         long ms = rs.getLong("processing_ms");
         m.processingMs = rs.wasNull() ? null : ms;
         m.errorDetail = rs.getString("error_detail");
+        m.injectionFlagged = rs.getBoolean("injection_flagged");
+        m.injectionNotes = rs.getString("injection_notes");
         m.createdAt = inst(rs, "created_at");
         return m;
     };
@@ -296,6 +306,8 @@ public class InboxRepository {
         Boolean lr = rs.getObject("looks_relevant", Boolean.class);
         e.looksRelevant = lr;
         e.relevanceReason = rs.getString("relevance_reason");
+        e.injectionFlagged = rs.getBoolean("injection_flagged");
+        e.injectionNotes = rs.getString("injection_notes");
         return e;
     };
 

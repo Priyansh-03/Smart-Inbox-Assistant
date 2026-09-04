@@ -4,13 +4,23 @@ import logging
 import time
 
 from . import pdf_utils as pu
+from . import guardrails as gr
 from .config import config
 from .constants import MAX_CTX_CHARS
 from .llm import ask_json, image_part, load_prompt, text_part, MODEL, PROMPT_VERSION
-from .schemas import (BucketVerdict, Fact, PdfResult, ProcessRequest,
-                      ProcessResponse, Source)
+from .schemas import (BucketVerdict, ClassifyResponse, ExtractResponse, Fact,
+                      PdfResult, ProcessRequest, ProcessResponse, Source)
+from .validators import clean_facts, clean_verdicts
 
 log = logging.getLogger("ai-service.pipeline")
+
+PROMPT_BY_BUCKET = {"ICSR": "extract_icsr", "PQC": "extract_pqc", "MI": "extract_mi"}
+
+
+def _guarded(prompt_name: str, untrusted_text: str, **kw) -> dict:
+    """ask_json with the injection guard + fenced untrusted content."""
+    return ask_json(load_prompt(prompt_name), gr.wrap_untrusted(untrusted_text),
+                    untrusted_guard=True, **kw)
 
 
 def process_pdf(name: str, pdf_bytes: bytes) -> PdfResult:
@@ -36,13 +46,13 @@ def process_pdf(name: str, pdf_bytes: bytes) -> PdfResult:
         ocr_conf = round(sum(confs) / len(confs), 2) if confs else None
 
     if flavor == pu.FLAVOR_NON_ENGLISH or (lang not in ("en", "unknown") and flavor != pu.FLAVOR_SCANNED):
-        r = ask_json(load_prompt("translate"), text[:MAX_CTX_CHARS], max_tokens=4000)
+        r = _guarded("translate", text[:MAX_CTX_CHARS], max_tokens=4000)
         original = text
         text = r.get("english_text", text)
         lang = r.get("language", lang)
 
     if flavor == pu.FLAVOR_ARTICLE:
-        r = ask_json(load_prompt("article_case"), text[:MAX_CTX_CHARS], max_tokens=3000)
+        r = _guarded("article_case", text[:MAX_CTX_CHARS], max_tokens=3000)
         if r.get("has_patient_case"):
             text = "\n\n".join(c.get("text", "") for c in r.get("cases", []))
 
@@ -55,7 +65,8 @@ def process_pdf(name: str, pdf_bytes: bytes) -> PdfResult:
                        [image_part(png), text_part(f"Describe the notable image on page {im['page']}.")])
         images.append({"page": im["page"], "needs_human_review": True, **cap})
 
-    summ = ask_json(load_prompt("pdf_summary"),
+    scan = gr.scan(info["full_text"] + "\n" + text)
+    summ = _guarded("pdf_summary",
                     f"FILENAME: {name}\nFLAVOR: {flavor}\n\nTEXT:\n{text[:MAX_CTX_CHARS]}\n\n"
                     f"TABLES: {tables[:5]}\nIMAGES: {images}", max_tokens=1500)
 
@@ -65,38 +76,37 @@ def process_pdf(name: str, pdf_bytes: bytes) -> PdfResult:
         tables=tables, images=images,
         summary=summ.get("summary", ""), looks_relevant=summ.get("looks_relevant"),
         relevance_reason=summ.get("relevance_reason", ""),
+        injection_flagged=scan["flagged"],
+        injection_notes=", ".join(scan["tags"]),
     )
 
 
-PROMPT_BY_BUCKET = {"ICSR": "extract_icsr", "PQC": "extract_pqc", "MI": "extract_mi"}
-
-
 def classify_context(email_from: str, email_subject: str, email_body: str,
-                     pdf_summaries: list[str]) -> list[BucketVerdict]:
+                     pdf_summaries: list[str]) -> ClassifyResponse:
     ctx = f"[email] from={email_from} subject={email_subject}\n{email_body}\n\n"
     for i, s in enumerate(pdf_summaries, 1):
         ctx += f"[pdf {i}] summary: {s}\n"
-    r = ask_json(load_prompt("classify"), ctx[:MAX_CTX_CHARS])
-    verdicts = [BucketVerdict(**v) for v in r.get("verdicts", [])]
-    log.info("Classified: %s", [f"{v.bucket}={v.applies}" for v in verdicts])
-    return verdicts
+    scan = gr.scan(ctx)
+    r = _guarded("classify", ctx[:MAX_CTX_CHARS])
+    verdicts = [BucketVerdict(**v) for v in clean_verdicts(r.get("verdicts", []))]
+    log.info("Classified: %s (injection_flagged=%s)",
+             [f"{v.bucket}={v.applies}" for v in verdicts], scan["flagged"])
+    return ClassifyResponse(model=MODEL, prompt_version=PROMPT_VERSION, classifications=verdicts,
+                            injection_flagged=scan["flagged"], injection_notes=", ".join(scan["tags"]))
 
 
-def classify(req: ProcessRequest, pdfs: list[PdfResult]) -> list[BucketVerdict]:
-    return classify_context(req.email_from, req.email_subject, req.email_body,
-                            [p.summary for p in pdfs])
-
-
-def extract_from_chunks(categories: list[str], context_chunks: list[str]) -> list[Fact]:
+def extract_from_chunks(categories: list[str], context_chunks: list[str]) -> ExtractResponse:
     active = [c for c in categories if c in PROMPT_BY_BUCKET]
+    ctx = "\n\n".join(context_chunks)
+    scan = gr.scan(ctx)
     if not active:
         log.info("No extractable categories, skipping fact extraction")
-        return []
-    ctx = "\n\n".join(context_chunks)
+        return ExtractResponse(model=MODEL, prompt_version=PROMPT_VERSION, facts=[],
+                               injection_flagged=scan["flagged"], injection_notes=", ".join(scan["tags"]))
     facts: list[Fact] = []
     for bucket in active:
-        r = ask_json(load_prompt(PROMPT_BY_BUCKET[bucket]), ctx, max_tokens=3000)
-        for f in r.get("facts", []):
+        r = _guarded(PROMPT_BY_BUCKET[bucket], ctx, max_tokens=3000)
+        for f in clean_facts(r.get("facts", [])):
             src = f.get("source") or {}
             facts.append(Fact(
                 section=f.get("section", ""), field_name=f.get("field_name", ""),
@@ -105,16 +115,8 @@ def extract_from_chunks(categories: list[str], context_chunks: list[str]) -> lis
                 source=Source(type=src.get("type", "email"), file=src.get("file"),
                               page=src.get("page"), quote=src.get("quote")),
             ))
-    return facts
-
-
-def extract_facts(req: ProcessRequest, pdfs: list[PdfResult],
-                  verdicts: list[BucketVerdict]) -> list[Fact]:
-    active = [v.bucket for v in verdicts if v.applies and v.bucket != "NOT_RELEVANT"]
-    chunks = [f"[email]\n{req.email_body}"]
-    for p in pdfs:
-        chunks.append(f"[pdf {p.filename}]\n{p.full_text[:MAX_CTX_CHARS // max(len(pdfs), 1)]}")
-    return extract_from_chunks(active, chunks)
+    return ExtractResponse(model=MODEL, prompt_version=PROMPT_VERSION, facts=facts,
+                           injection_flagged=scan["flagged"], injection_notes=", ".join(scan["tags"]))
 
 
 def run(req: ProcessRequest) -> ProcessResponse:
@@ -127,16 +129,26 @@ def run(req: ProcessRequest) -> ProcessResponse:
         lat[f"pdf:{p.filename}"] = int((time.time() - ts) * 1000)
 
     ts = time.time()
-    verdicts = classify(req, pdfs)
+    cls = classify_context(req.email_from, req.email_subject, req.email_body,
+                           [p.summary for p in pdfs])
     lat["classify"] = int((time.time() - ts) * 1000)
 
     ts = time.time()
-    facts = extract_facts(req, pdfs, verdicts)
+    active = [v.bucket for v in cls.classifications if v.applies and v.bucket != "NOT_RELEVANT"]
+    chunks = [f"[email]\n{req.email_body}"]
+    for p in pdfs:
+        chunks.append(f"[pdf {p.filename}]\n{p.full_text[:MAX_CTX_CHARS // max(len(pdfs), 1)]}")
+    ext = extract_from_chunks(active, chunks)
     lat["extract"] = int((time.time() - ts) * 1000)
 
+    flagged = cls.injection_flagged or ext.injection_flagged or any(p.injection_flagged for p in pdfs)
+    notes = sorted({n for n in (
+        [cls.injection_notes, ext.injection_notes] + [p.injection_notes for p in pdfs]) if n})
+
     lat["total"] = int((time.time() - t0) * 1000)
-    log.info("Message %s processed in %dms (%d pdfs, %d facts)",
-             req.message_id, lat["total"], len(pdfs), len(facts))
+    log.info("Message %s processed in %dms (%d pdfs, %d facts, injection_flagged=%s)",
+             req.message_id, lat["total"], len(pdfs), len(ext.facts), flagged)
     return ProcessResponse(message_id=req.message_id, model=MODEL,
                            prompt_version=PROMPT_VERSION, latency_ms=lat,
-                           pdfs=pdfs, classifications=verdicts, facts=facts)
+                           pdfs=pdfs, classifications=cls.classifications, facts=ext.facts,
+                           injection_flagged=flagged, injection_notes="; ".join(notes))

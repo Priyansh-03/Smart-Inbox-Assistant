@@ -37,6 +37,7 @@ never take the same message. Retries up to `WORKER_MAX_ATTEMPTS`, then `FAILED`.
 - Reliability wrapper: client-side RPM limiter, `tenacity` exponential backoff+jitter on 429/timeout/5xx, per-call timeout, and an in-process TTL response cache keyed by `sha256(model + prompt_version + system + user)` (Redis in production).
 - Each stage is its own endpoint - `/ai/v1/pdf`, `/classify`, `/extract`, `/process` - so any stage can be exercised alone.
 - "Unknown" is enforced by prompt + schema: missing field => `value:"Not stated"`, `confidence:0`, `source:null`.
+- **Prompt-injection defence**: all email/PDF text is fenced (`<<<UNTRUSTED_CONTENT_START/END>>>`) with a system-level guard telling the model to treat it as data only, never instructions; marker-spoofing inside the content is neutralised. A regex scanner flags override/role-reassign/prompt-probe/fence attempts - flagged items are never blocked, just forced into human review (`injection_flagged` on the message and PDF extraction, plus an audit event). Every model response is re-validated: unknown classification buckets or fact sections and malformed sources are dropped, confidence clamped to [0,1] - so a hijacked response still can't corrupt the schema.
 
 ## 4. Known limitations
 

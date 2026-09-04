@@ -13,6 +13,7 @@ from tenacity import (retry, retry_if_exception_type, stop_after_attempt,
 
 from .cache import TTLCache, key as cache_key
 from .config import config
+from .guardrails import UNTRUSTED_SYSTEM_GUARD
 
 log = logging.getLogger("ai-service.llm")
 
@@ -88,10 +89,13 @@ def _create(messages: list, max_tokens: int, temperature: float, json_mode: bool
 
 
 def ask_json(system: str, user_content, *, max_tokens: int = 2000,
-             temperature: float = 0.0, retries: int = 1) -> dict:
+             temperature: float = 0.0, retries: int = 1, untrusted_guard: bool = False) -> dict:
     """Model call in JSON mode, cached by request hash. `user_content` is a string or
-    a list of content parts (text_part / image_part)."""
-    ck = cache_key("json", MODEL, PROMPT_VERSION, temperature, system, user_content)
+    a list of content parts (text_part / image_part). Set untrusted_guard=True when the
+    content carries email/PDF text so the injection guard is prepended to the system."""
+    if untrusted_guard:
+        system = UNTRUSTED_SYSTEM_GUARD + "\n\n" + system
+    ck = cache_key("json", MODEL, PROMPT_VERSION, temperature, untrusted_guard, system, user_content)
     cached = _cache.get(ck)
     if cached is not None:
         return cached

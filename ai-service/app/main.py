@@ -33,8 +33,7 @@ def pdf_stage(req: PdfRequest):
 @app.post("/ai/v1/classify", response_model=ClassifyResponse)
 def classify_stage(req: ClassifyRequest):
     try:
-        verdicts = classify_context(req.email_from, req.email_subject, req.email_body, req.pdf_summaries)
-        return ClassifyResponse(model=MODEL, prompt_version=PROMPT_VERSION, classifications=verdicts)
+        return classify_context(req.email_from, req.email_subject, req.email_body, req.pdf_summaries)
     except Exception as e:  # noqa: BLE001
         log.exception("classify stage failed")
         raise HTTPException(status_code=502, detail=str(e))
@@ -43,8 +42,7 @@ def classify_stage(req: ClassifyRequest):
 @app.post("/ai/v1/extract", response_model=ExtractResponse)
 def extract_stage(req: ExtractRequest):
     try:
-        facts = extract_from_chunks(req.categories, req.context_chunks)
-        return ExtractResponse(model=MODEL, prompt_version=PROMPT_VERSION, facts=facts)
+        return extract_from_chunks(req.categories, req.context_chunks)
     except Exception as e:  # noqa: BLE001
         log.exception("extract stage failed")
         raise HTTPException(status_code=502, detail=str(e))

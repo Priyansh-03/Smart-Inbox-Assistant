@@ -40,7 +40,9 @@ public final class AiDtos {
             List<Object> tables, List<Map<String, Object>> images,
             String summary,
             @JsonProperty("looks_relevant") Boolean looksRelevant,
-            @JsonProperty("relevance_reason") String relevanceReason) {}
+            @JsonProperty("relevance_reason") String relevanceReason,
+            @JsonProperty("injection_flagged") boolean injectionFlagged,
+            @JsonProperty("injection_notes") String injectionNotes) {}
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record ProcessResponse(
@@ -50,5 +52,7 @@ public final class AiDtos {
             @JsonProperty("latency_ms") Map<String, Integer> latencyMs,
             List<PdfResult> pdfs,
             List<BucketVerdict> classifications,
-            List<Fact> facts) {}
+            List<Fact> facts,
+            @JsonProperty("injection_flagged") boolean injectionFlagged,
+            @JsonProperty("injection_notes") String injectionNotes) {}
 }

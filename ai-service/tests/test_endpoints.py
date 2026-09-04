@@ -2,7 +2,8 @@
 from fastapi.testclient import TestClient
 
 from app import main
-from app.schemas import BucketVerdict, Fact, PdfResult
+from app.schemas import (BucketVerdict, ClassifyResponse, ExtractResponse, Fact,
+                         PdfResult)
 
 client = TestClient(main.app)
 
@@ -24,7 +25,8 @@ def test_pdf_stage(monkeypatch):
 
 def test_classify_stage(monkeypatch):
     monkeypatch.setattr(main, "classify_context",
-                        lambda *a, **k: [BucketVerdict(bucket="ICSR", applies=True, confidence=0.9, reason="r")])
+                        lambda *a, **k: ClassifyResponse(model="m", prompt_version="v",
+                            classifications=[BucketVerdict(bucket="ICSR", applies=True, confidence=0.9, reason="r")]))
     r = client.post("/ai/v1/classify", json={"email_body": "took drug, got rash"})
     assert r.status_code == 200
     assert r.json()["classifications"][0]["bucket"] == "ICSR"
@@ -32,7 +34,8 @@ def test_classify_stage(monkeypatch):
 
 def test_extract_stage(monkeypatch):
     monkeypatch.setattr(main, "extract_from_chunks",
-                        lambda cats, chunks: [Fact(section="PATIENT", field_name="age", value="54", confidence=0.9)])
+                        lambda cats, chunks: ExtractResponse(model="m", prompt_version="v",
+                            facts=[Fact(section="PATIENT", field_name="age", value="54", confidence=0.9)]))
     r = client.post("/ai/v1/extract", json={"categories": ["ICSR"], "context_chunks": ["[email]\n..."]})
     assert r.status_code == 200
     assert r.json()["facts"][0]["value"] == "54"

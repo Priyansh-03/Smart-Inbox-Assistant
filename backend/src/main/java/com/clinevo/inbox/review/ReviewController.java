@@ -54,6 +54,7 @@ public class ReviewController {
             row.put("processingMs", m.processingMs);
             row.put("buckets", buckets);
             row.put("minConf", minConf);
+            row.put("injectionFlagged", m.injectionFlagged);
             return row;
         }).toList();
     }

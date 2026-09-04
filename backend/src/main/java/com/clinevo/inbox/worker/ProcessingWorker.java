@@ -57,6 +57,11 @@ public class ProcessingWorker {
 
             AiDtos.ProcessResponse res = ai.process(req);
             persist(m, pdfs, res);
+            repo.markInjection(m.id, res.injectionFlagged(), res.injectionNotes());
+            if (res.injectionFlagged()) {
+                audit.ai(m.id, "injection_flagged", "message",
+                        "{\"notes\":\"" + truncate(res.injectionNotes()) + "\"}");
+            }
 
             long ms = System.currentTimeMillis() - started;
             repo.markMessage(m.id, Constants.STATUS_READY, ms, null);
@@ -95,6 +100,8 @@ public class ProcessingWorker {
             e.summary = p.summary();
             e.looksRelevant = p.looksRelevant();
             e.relevanceReason = p.relevanceReason();
+            e.injectionFlagged = p.injectionFlagged();
+            e.injectionNotes = p.injectionNotes();
             repo.save(e);
             audit.ai(m.id, "pdf_extracted", p.filename(),
                     "{\"flavor\":\"" + p.flavor() + "\",\"language\":\"" + p.language() + "\"}");
