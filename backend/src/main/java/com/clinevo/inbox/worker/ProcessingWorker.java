@@ -5,6 +5,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +31,7 @@ import com.clinevo.inbox.domain.InboxRepository;
 public class ProcessingWorker {
 
     private static final Logger log = LoggerFactory.getLogger(ProcessingWorker.class);
+    private static final ObjectMapper JSON = new ObjectMapper();
 
     private final InboxRepository repo;
     private final AiClient ai;
@@ -60,20 +64,20 @@ public class ProcessingWorker {
             repo.markInjection(m.id, res.injectionFlagged(), res.injectionNotes());
             if (res.injectionFlagged()) {
                 audit.ai(m.id, "injection_flagged", "message",
-                        "{\"notes\":\"" + truncate(res.injectionNotes()) + "\"}");
+                        toJson(Map.of("notes", truncate(res.injectionNotes()))));
             }
 
             long ms = System.currentTimeMillis() - started;
             repo.markMessage(m.id, Constants.STATUS_READY, ms, null);
             audit.ai(m.id, "processed", "message",
-                    "{\"latencyMs\":" + res.latencyMs() + ",\"model\":\"" + res.model() + "\"}");
+                    toJson(Map.of("latencyMs", res.latencyMs(), "model", res.model())));
             log.info("Message id={} ready for review in {}ms", m.id, ms);
         } catch (Exception e) {
             long ms = System.currentTimeMillis() - started;
             int attempts = repo.attempts(m.id);
             if (attempts >= maxAttempts) {
                 repo.markMessage(m.id, Constants.STATUS_FAILED, ms, truncate(e.getMessage()));
-                audit.ai(m.id, "failed", "message", "{\"error\":\"" + truncate(e.getMessage()) + "\"}");
+                audit.ai(m.id, "failed", "message", toJson(Map.of("error", truncate(e.getMessage()))));
                 log.error("Message id={} failed permanently after {} attempts: {}", m.id, attempts, e.getMessage(), e);
             } else {
                 repo.markMessage(m.id, Constants.STATUS_NEW, ms, truncate(e.getMessage()));
@@ -104,7 +108,7 @@ public class ProcessingWorker {
             e.injectionNotes = p.injectionNotes();
             repo.save(e);
             audit.ai(m.id, "pdf_extracted", p.filename(),
-                    "{\"flavor\":\"" + p.flavor() + "\",\"language\":\"" + p.language() + "\"}");
+                    toJson(Map.of("flavor", p.flavor(), "language", p.language())));
         }
 
         for (AiDtos.BucketVerdict v : safe(res.classifications())) {
@@ -119,7 +123,7 @@ public class ProcessingWorker {
             c.promptVersion = res.promptVersion();
             repo.save(c);
         }
-        audit.ai(m.id, "classified", "message", "{\"buckets\":" + safe(res.classifications()).size() + "}");
+        audit.ai(m.id, "classified", "message", toJson(Map.of("buckets", safe(res.classifications()).size())));
 
         for (AiDtos.Fact f : safe(res.facts())) {
             Fact fact = new Fact();
@@ -140,7 +144,7 @@ public class ProcessingWorker {
             }
             repo.save(fact);
         }
-        audit.ai(m.id, "facts_extracted", "message", "{\"count\":" + safe(res.facts()).size() + "}");
+        audit.ai(m.id, "facts_extracted", "message", toJson(Map.of("count", safe(res.facts()).size())));
     }
 
     private List<AiDtos.PdfIn> readPdfs(List<Attachment> pdfs) {
@@ -158,6 +162,16 @@ public class ProcessingWorker {
     }
 
     private static <T> List<T> safe(List<T> l) { return l == null ? List.of() : l; }
+
+    /** Real JSON, not string concatenation - audit details must survive quotes/backslashes in AI text. */
+    private static String toJson(Object value) {
+        try {
+            return JSON.writeValueAsString(value);
+        } catch (Exception e) {
+            log.error("Failed to serialise audit detail: {}", e.getMessage());
+            return "{}";
+        }
+    }
 
     private static String truncate(String s) {
         if (s == null) return "unknown";
