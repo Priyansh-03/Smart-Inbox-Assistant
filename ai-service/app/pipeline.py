@@ -57,6 +57,7 @@ def process_pdf(name: str, pdf_bytes: bytes) -> PdfResult:
             text = "\n\n".join(c.get("text", "") for c in r.get("cases", []))
 
     tables = pu.extract_tables(pdf_bytes)
+    form_fields = pu.extract_form_fields(pdf_bytes) if flavor == pu.FLAVOR_DIGITAL else []
 
     images = []
     for im in pu.list_images(pdf_bytes):
@@ -68,12 +69,12 @@ def process_pdf(name: str, pdf_bytes: bytes) -> PdfResult:
     scan = gr.scan(info["full_text"] + "\n" + text)
     summ = _guarded("pdf_summary",
                     f"FILENAME: {name}\nFLAVOR: {flavor}\n\nTEXT:\n{text[:MAX_CTX_CHARS]}\n\n"
-                    f"TABLES: {tables[:5]}\nIMAGES: {images}", max_tokens=1500)
+                    f"FORM_FIELDS: {form_fields[:30]}\nTABLES: {tables[:5]}\nIMAGES: {images}", max_tokens=1500)
 
     return PdfResult(
         filename=name, flavor=flavor, language=lang, page_count=n,
         full_text=text, original_text=original, ocr_confidence=ocr_conf,
-        tables=tables, images=images,
+        tables=tables, images=images, form_fields=form_fields,
         summary=summ.get("summary", ""), looks_relevant=summ.get("looks_relevant"),
         relevance_reason=summ.get("relevance_reason", ""),
         injection_flagged=scan["flagged"],

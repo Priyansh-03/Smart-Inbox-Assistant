@@ -20,10 +20,10 @@ Legend: ✅ done · 🟡 partial · ❌ missing
 ### 3B - Understand the PDFs
 | Requirement | State | Notes |
 |---|---|---|
-| Normal digital: text + keep form field/label alignment | 🟡 | `get_text("blocks")` keeps rough order; **AcroForm widgets not read** - add `page.widgets()` label:value pairing |
+| Normal digital: text + keep form field/label alignment | ✅ (P4) | `extract_form_fields()`: real `page.widgets()` AcroForm pairs if present, else column-aware "Label: value" line pairing; fed into the PDF summary context |
 | Scanned / handwritten: OCR + confidence | ✅ | vision OCR, per-page self-reported confidence; **cap OCR page count** |
-| Published article: multi-column + isolate patient case | 🟡 | block de-column is crude; `article_case` prompt drops references/discussion |
-| Non-English: detect + translate + link to original | 🟡 | `langdetect` + translate prompt; `original_text` stored but **no char-offset map** back to source |
+| Published article: multi-column + isolate patient case | ✅ (P4) | `_linearize_page()` reads the left column fully before the right column (tested); `article_case` prompt drops references/discussion |
+| Non-English: detect + translate + link to original | 🟡 | `langdetect` (DE + ES tested) + translate prompt; `original_text` stored but **no char-offset map** back to source |
 | Tables -> structured rows/cols | ✅ | `pdfplumber.extract_tables()` |
 | Meaningful images -> description + human flag | ✅ | `image_caption` + `needs_human_review=true` |
 | 10-15 sentence AI summary per PDF + relevance | ✅ | `pdf_summary` prompt |
@@ -109,6 +109,10 @@ Prototype ✅ · source ✅ · README ✅ · write-up 🟡 draft · sample JSON 
 - **P1 Guardrails**: cap PDFs per message; `OCR_MAX_PAGES` separate from `PDF_PAGE_CAP` (a 120-page scan = 120 vision calls today); per-sub-step try/except so one failed caption doesn't sink the whole PDF.
 - **P2 Observability**: log `resp.usage` tokens, latency, cache hit/miss per call; `/metrics` (Prometheus).
 - **P2 PII redaction** pre-send (prod only; corpus is synthetic).
+- **P2** `PdfResult.form_fields` (P4) is not yet persisted to Postgres or shown in the
+  Angular detail view - currently only reaches the PDF summary prompt context. Needs
+  a `pdf_extraction.form_fields jsonb` column + repo/worker/UI wiring (same pattern as
+  P3.5's injection columns).
 
 ### Pillar 4 - Persistence
 - **P1 Mongo 16 MB doc limit**: cap stored `full_text` / `original_text` (~200 KB, mark truncated) or move to GridFS.

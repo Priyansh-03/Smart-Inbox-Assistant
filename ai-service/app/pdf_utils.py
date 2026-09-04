@@ -2,6 +2,7 @@
 import base64
 import io
 import logging
+import re
 from typing import List
 
 import fitz  # PyMuPDF
@@ -15,9 +16,27 @@ from .constants import (FLAVOR_ARTICLE, FLAVOR_DIGITAL, FLAVOR_MIXED,
 DetectorFactory.seed = 0
 log = logging.getLogger("ai-service.pdf")
 
+_LABEL_LINE = re.compile(r"^\s*([A-Za-z][A-Za-z0-9 /_\-]{1,40}?)\s*:\s*(\S.*\S|\S)\s*$")
+
 
 def _page_text(page) -> str:
     return page.get_text("text") or ""
+
+
+def _linearize_page(page) -> str:
+    """Reading-order text. Two-column pages: left column entirely before right column,
+    so a multi-column article is not interleaved line-by-line."""
+    blocks = [b for b in page.get_text("blocks") if b[6] == 0 and b[4].strip()]
+    if not blocks:
+        return _page_text(page)
+    if _looks_multicolumn(page):
+        mid = page.rect.width / 2
+        left = sorted((b for b in blocks if (b[0] + b[2]) / 2 < mid), key=lambda b: (round(b[1]), b[0]))
+        right = sorted((b for b in blocks if (b[0] + b[2]) / 2 >= mid), key=lambda b: (round(b[1]), b[0]))
+        ordered = left + right
+    else:
+        ordered = sorted(blocks, key=lambda b: (round(b[1]), b[0]))
+    return "\n".join(b[4].strip() for b in ordered)
 
 
 def _image_coverage(page) -> float:
@@ -64,7 +83,7 @@ def analyse(pdf_bytes: bytes, page_cap: int = 120) -> dict:
     for i, page in enumerate(doc):
         if i >= page_cap:
             break
-        txt = _page_text(page)
+        txt = _linearize_page(page)
         chars = len(txt.strip())
         img_cov = _image_coverage(page)
         is_scanned = chars < SCANNED_MAX_CHARS and img_cov > SCANNED_MIN_IMG_COVER
@@ -95,6 +114,28 @@ def analyse(pdf_bytes: bytes, page_cap: int = 120) -> dict:
     doc.close()
     return {"flavor": flavor, "language": lang, "page_count": n, "capped": capped,
             "full_text": full_text, "pages": pages}
+
+
+def extract_form_fields(pdf_bytes: bytes) -> List[dict]:
+    """Digital-PDF form fields as {page, label, value}. Real AcroForm widgets if the
+    PDF has them; otherwise 'Label: value' lines, read in the same column-aware order
+    as the rest of the text so labels stay paired with their values."""
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    fields: List[dict] = []
+    for i, page in enumerate(doc):
+        for w in (page.widgets() or []):
+            if w.field_name:
+                fields.append({"page": i + 1, "label": w.field_name,
+                              "value": (w.field_value or "").strip(), "source": "acroform"})
+    if not fields:
+        for i, page in enumerate(doc):
+            for line in _linearize_page(page).splitlines():
+                m = _LABEL_LINE.match(line)
+                if m:
+                    fields.append({"page": i + 1, "label": m.group(1).strip(),
+                                  "value": m.group(2).strip(), "source": "text"})
+    doc.close()
+    return fields
 
 
 def render_page_png(pdf_bytes: bytes, page_index: int, dpi: int = OCR_RENDER_DPI) -> str:

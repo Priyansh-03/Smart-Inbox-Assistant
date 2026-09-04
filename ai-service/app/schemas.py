@@ -49,6 +49,7 @@ class PdfResult(BaseModel):
     ocr_confidence: Optional[float] = None
     tables: List[Any] = []
     images: List[dict] = []
+    form_fields: List[dict] = []
     summary: str = ""
     looks_relevant: Optional[bool] = None
     relevance_reason: str = ""

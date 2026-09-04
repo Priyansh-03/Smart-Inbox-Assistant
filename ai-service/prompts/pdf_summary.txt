@@ -9,7 +9,7 @@ COVER, in this order (one or more sentences each; skip nothing):
 1. What the document is (form, letter, article, lab report, ...).
 2. Who and what it concerns: patient, reporter, product.
 3. The core event: reaction / complaint / question, with dates and outcome if given.
-4. Notable tables or figures and what they show.
+4. Notable form fields, tables, or figures and what they show.
 5. Any images flagged for human review.
 6. Whether it looks relevant to pharmacovigilance, and why.
 7. Important information that is MISSING or unclear.
