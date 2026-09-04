@@ -13,10 +13,17 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+  servlet:
+    multipart:
+      max-file-size: ${MAX_ATTACHMENT_MB}MB
+      max-request-size: ${MAX_IMPORT_REQUEST_MB}MB
 
 app:
   storage-dir: ${STORAGE_DIR}
   reviewer-id: ${REVIEWER_ID}
+  ingest:
+    max-attachment-mb: ${MAX_ATTACHMENT_MB}
+    max-body-chars: ${MAX_BODY_CHARS}
   worker:
     poll-ms: ${WORKER_POLL_MS}
     max-attempts: ${WORKER_MAX_ATTEMPTS}

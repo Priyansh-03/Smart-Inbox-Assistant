@@ -30,3 +30,5 @@ backend/target/
 # P1 local verification scratch
 .p1-storage/
 .p1-backend.log
+.p2-storage/
+.p2-backend.log

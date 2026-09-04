@@ -6,10 +6,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record AppProperties(
         String storageDir,
         String reviewerId,
+        Ingest ingest,
         Worker worker,
         Ai ai,
         Mail mail
 ) {
+    public record Ingest(int maxAttachmentMb, int maxBodyChars) {}
+
     public record Worker(long pollMs, int maxAttempts) {}
 
     public record Ai(String baseUrl, int timeoutSeconds) {}

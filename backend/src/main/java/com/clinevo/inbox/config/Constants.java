@@ -20,6 +20,8 @@ public final class Constants {
     public static final String BUCKET_NOT_RELEVANT = "NOT_RELEVANT";
 
     public static final String MIME_PDF = "application/pdf";
+    public static final String MIME_TEXT_PLAIN = "text/plain";
+    public static final String MIME_TEXT_HTML = "text/html";
 
     public static final int PDF_PAGE_CAP = 120;
 }

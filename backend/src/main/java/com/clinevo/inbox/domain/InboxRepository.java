@@ -44,34 +44,54 @@ public class InboxRepository {
                 .param("h", messageIdHdr).query(Long.class).single() > 0;
     }
 
-    public String insertMessage(String hdr, String sender, String subject, Instant receivedAt, String body) {
+    public String insertMessage(String hdr, String emailUid, String sender, String subject,
+                                Instant receivedAt, String body) {
         KeyHolder kh = new GeneratedKeyHolder();
         jdbc.sql("""
-                INSERT INTO message (message_id_hdr, sender, subject, received_at, body_text, status)
-                VALUES (:h, :s, :subj, :r, :b, 'NEW')
+                INSERT INTO message (message_id_hdr, email_uid, sender, subject, received_at, body_text, status)
+                VALUES (:h, :uid, :s, :subj, :r, :b, 'NEW')
                 """)
-                .param("h", hdr).param("s", sender).param("subj", subject)
+                .param("h", hdr).param("uid", emailUid).param("s", sender).param("subj", subject)
                 .param("r", receivedAt == null ? null : Timestamp.from(receivedAt))
                 .param("b", body)
                 .update(kh, "id");
         String id = String.valueOf(kh.getKey().longValue());
-        log.info("Saved message id={} hdr={}", id, hdr);
+        log.info("Saved message id={} hdr={} uid={}", id, hdr, emailUid);
         return id;
     }
 
-    public String insertAttachment(String messageId, String filename, String mime, String path,
-                                   boolean processed, String skipReason) {
+    public String insertAttachment(String messageId, String filename, String mime, Long sizeBytes,
+                                   String path, boolean processed, String skipReason) {
         KeyHolder kh = new GeneratedKeyHolder();
         jdbc.sql("""
-                INSERT INTO attachment (message_id, filename, mime_type, storage_path, processed, skip_reason)
-                VALUES (:m, :f, :mt, :p, :pr, :sr)
+                INSERT INTO attachment (message_id, filename, mime_type, size_bytes, storage_path, processed, skip_reason)
+                VALUES (:m, :f, :mt, :sz, :p, :pr, :sr)
                 """)
                 .param("m", Long.valueOf(messageId)).param("f", filename).param("mt", mime)
-                .param("p", path).param("pr", processed).param("sr", skipReason)
+                .param("sz", sizeBytes).param("p", path).param("pr", processed).param("sr", skipReason)
                 .update(kh, "id");
         String id = String.valueOf(kh.getKey().longValue());
-        log.info("Saved attachment id={} file={} processed={}", id, filename, processed);
+        log.info("Saved attachment id={} file={} size={} processed={}", id, filename, sizeBytes, processed);
         return id;
+    }
+
+    /* ---------- IMAP cursor ---------- */
+
+    public long[] mailboxCursor(String folder) {
+        return jdbc.sql("SELECT uid_validity, last_uid FROM mailbox_cursor WHERE folder = :f")
+                .param("f", folder)
+                .query((rs, i) -> new long[]{rs.getLong("uid_validity"), rs.getLong("last_uid")})
+                .optional().orElse(new long[]{0L, 0L});
+    }
+
+    public void saveMailboxCursor(String folder, long uidValidity, long lastUid) {
+        jdbc.sql("""
+                INSERT INTO mailbox_cursor (folder, uid_validity, last_uid, updated_at)
+                VALUES (:f, :v, :u, now())
+                ON CONFLICT (folder) DO UPDATE SET uid_validity = :v, last_uid = :u, updated_at = now()
+                """)
+                .param("f", folder).param("v", uidValidity).param("u", lastUid).update();
+        log.info("Mailbox cursor {} -> uidValidity={} lastUid={}", folder, uidValidity, lastUid);
     }
 
     /* ---------- queue ---------- */
