@@ -62,3 +62,34 @@ class ProcessResponse(BaseModel):
     pdfs: List[PdfResult] = []
     classifications: List[BucketVerdict] = []
     facts: List[Fact] = []
+
+
+# ---- per-stage request/response models (each stage runnable on its own) ----
+
+class PdfRequest(BaseModel):
+    filename: str
+    base64: str
+
+
+class ClassifyRequest(BaseModel):
+    email_from: str = ""
+    email_subject: str = ""
+    email_body: str = ""
+    pdf_summaries: List[str] = []
+
+
+class ClassifyResponse(BaseModel):
+    model: str
+    prompt_version: str
+    classifications: List[BucketVerdict] = []
+
+
+class ExtractRequest(BaseModel):
+    categories: List[str]                 # any of ICSR / PQC / MI
+    context_chunks: List[str]             # labelled "[email] ...", "[pdf FILE p3] ..."
+
+
+class ExtractResponse(BaseModel):
+    model: str
+    prompt_version: str
+    facts: List[Fact] = []

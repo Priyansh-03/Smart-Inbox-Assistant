@@ -16,6 +16,10 @@ class Config:
     MODEL = _require("OPENAI_MODEL")
     PROMPT_VERSION = _require("PROMPT_VERSION")
     PDF_PAGE_CAP = int(_require("PDF_PAGE_CAP"))
+    OPENAI_TIMEOUT_SECONDS = int(_require("OPENAI_TIMEOUT_SECONDS"))
+    OPENAI_MAX_RPM = int(_require("OPENAI_MAX_RPM"))
+    OPENAI_MAX_RETRIES = int(_require("OPENAI_MAX_RETRIES"))
+    CACHE_TTL_SECONDS = int(_require("CACHE_TTL_SECONDS"))
 
 
 config = Config()

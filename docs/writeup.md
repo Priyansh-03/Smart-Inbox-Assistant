@@ -22,16 +22,21 @@ never take the same message. Retries up to `WORKER_MAX_ATTEMPTS`, then `FAILED`.
 | Frontend | Angular | matches Clinevo production |
 | Backend | Spring Boot | matches Clinevo production |
 | AI service | Python + FastAPI | vision + LLM libraries; isolated from the JVM |
-| DB | **MongoDB (deviation from suggested Oracle)** | LLM output is JSON; ICSR/PQC/MI facts and the four PDF-flavor payloads are heterogeneous, so a document store removes schema migrations in a 7-day build. Persistence is isolated behind `InboxRepository`; audit integrity is enforced in one service instead of a PL/SQL package. A port back to Oracle is contained to that class. |
+| DB | **PostgreSQL 16** (spec sanctions Oracle-preferred / PostgreSQL-acceptable) | `JSONB` for the heterogeneous AI payloads (per-PDF extraction, `fact.source`) so no schema churn; relational tables for the audit / evidence trail the spec makes first-class. Isolated behind `InboxRepository` (one class) for a contained port to Oracle. |
 | AI model | OpenAI (`OPENAI_MODEL`, default `gpt-4o`) | single vision-capable model covers OCR, captioning, translation, classification, extraction; native JSON mode (`response_format=json_object`) for structured output. Trade-off: PDF/email text leaves the trust boundary - mitigated by synthetic-only data; for production, route through an enterprise/no-retention tier or a self-hosted model. |
 
 ## 3. Prompting approach
 
 - One prompt file per step under `ai-service/prompts/`, version stamped (`PROMPT_VERSION`) onto every stored AI row.
-- Strict JSON: calls use OpenAI JSON mode; output is schema-validated with Pydantic; one retry on invalid JSON, then the step fails cleanly and the raw output is logged to `audit_event`.
-- "Unknown" is enforced by schema - every field is `{value, confidence, source}` and the system prompt forbids inference; missing => `"Not stated"`, confidence `0`.
-- Classification is multi-label with a one-line reason per bucket; a reaction caused by a defect returns both ICSR and PQC.
-- Every extracted fact carries `source = {type: email|pdf, file, page, quote}`.
+- **Structured prompt template** per file: `ROLE` (a specific persona - "conservative pharmacovigilance triage specialist", "meticulous ICSR data-entry reviewer", "forensic transcriptionist", "certified medical translator", "literature screening reviewer") -> `TASK` -> `METHOD` -> `RULES` -> `OUTPUT` (the exact JSON shape).
+- **Reasoning techniques, used only where they earn their place:**
+  - Classification runs a silent **devil's-advocate** pass - for each category, argue for, then argue against, then decide on the margin - plus a few-shot block of the hard cases (reaction-from-defect, marketing that names a drug).
+  - Article case identification uses **enumerate-then-prune** (tree-of-thought): list every human-subject mention, then prune to identifiable individuals with a drug and an outcome.
+  - Extraction is **field-by-field with a self-check pass**: locate the exact span or return "Not stated"; then re-read and downgrade anything not directly quoted.
+- Strict JSON: OpenAI JSON mode + `temperature=0` for classify/extract; Pydantic-validated; one in-loop retry on malformed JSON, then the step fails cleanly.
+- Reliability wrapper: client-side RPM limiter, `tenacity` exponential backoff+jitter on 429/timeout/5xx, per-call timeout, and an in-process TTL response cache keyed by `sha256(model + prompt_version + system + user)` (Redis in production).
+- Each stage is its own endpoint - `/ai/v1/pdf`, `/classify`, `/extract`, `/process` - so any stage can be exercised alone.
+- "Unknown" is enforced by prompt + schema: missing field => `value:"Not stated"`, `confidence:0`, `source:null`.
 
 ## 4. Known limitations
 
@@ -42,7 +47,7 @@ never take the same message. Retries up to `WORKER_MAX_ATTEMPTS`, then `FAILED`.
 
 ## 5. What would change for production
 
-- MongoDB -> Oracle per Clinevo standard; `InboxRepository` is the only class to reimplement.
+- PostgreSQL -> Oracle per Clinevo standard; `InboxRepository` is the only class to reimplement.
 - In-process queue -> a real broker (Kafka/Rabbit) for horizontal scaling of the worker.
 - REST between Java and Python -> gRPC.
 - Per-field confidence calibration against a labelled gold set.

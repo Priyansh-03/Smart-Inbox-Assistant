@@ -81,19 +81,20 @@ Prototype ✅ · source ✅ · README ✅ · write-up 🟡 draft · sample JSON 
 - P2 Parallel workers: bounded thread pool; claim is already safe via `findAndModify`. Cap concurrency at the AI rate budget.
 
 ### Pillar 3 - AI service (most fragile)
-- **P0 Rate limits**: wrap every OpenAI call in
-  - a client-side limiter (RPM + TPM token bucket sized to your tier), and
-  - retry with exponential backoff + jitter on `RateLimitError`, `APITimeoutError`, `APIConnectionError`, `InternalServerError`; honour `Retry-After`; ~5 tries, 60 s cap. Use `tenacity`.
-- **P0 Timeouts**: explicit `timeout=` on the OpenAI client (per call), and make the sum of per-call budgets < backend `AI_TIMEOUT_SECONDS`. For scale, make `/process` async (return a job id) and have the worker poll.
-- **P0 `temperature=0`** for classification and extraction (determinism, fewer retries). Higher only for narrative.
-- **P1 Caching** (biggest cost/latency lever):
-  | Cache | Key | Store | Why |
-  |---|---|---|---|
-  | LLM call | sha256(model + prompt_version + system + user) | Mongo `ai_cache` / Redis, TTL 30 d | idempotent retries, batch re-runs, dev loop |
-  | OCR page | sha256(pdf_bytes) + page + dpi | same | most expensive call |
-  | Translation | sha256(source_text) | same | |
-  | PDF analysis | sha256(pdf_bytes) | same | flavor/tables/render are deterministic |
-  Also order prompts **static-instructions-first, variable-last** so OpenAI's automatic prompt caching (>1024 tok) hits.
+- **[done P3] Rate limits**: `_RpmLimiter` sliding-window (`OPENAI_MAX_RPM`) + `tenacity`
+  exponential backoff+jitter on `RateLimitError` / `APITimeoutError` /
+  `APIConnectionError` / `InternalServerError` (`OPENAI_MAX_RETRIES`, 60 s cap).
+  TPM limiter and `Retry-After` header parsing still TODO.
+- **[done P3] Timeouts**: `OPENAI_TIMEOUT_SECONDS` on the client. Async `/process`
+  (job id + poll) still TODO for scale.
+- **[done P3] `temperature=0`** for classify/extract; 0.2 for summary/narrative.
+- **[done P3] Caching**: in-process `TTLCache` keyed by
+  `sha256(kind + model + prompt_version + temperature + system + user)`,
+  `CACHE_TTL_SECONDS`. **Redis** for multi-replica sharing still TODO. Per-PDF
+  analysis / OCR-page / translation caches piggyback on the same `ask_json` cache
+  today; dedicated keys TODO.
+  Prompts are ordered **static-instructions-first, variable-last** for OpenAI's
+  automatic prompt caching.
 - **P1 Structured output**: move from `json_object` to JSON-schema / tool calling so shape can't drift; keep Pydantic validation.
 - **P1 Model tiering**: `OPENAI_MODEL_TEXT` (cheap) for classify/summary, `OPENAI_MODEL_VISION` for OCR/caption/extraction.
 - **P1 Guardrails**: cap PDFs per message; `OCR_MAX_PAGES` separate from `PDF_PAGE_CAP` (a 120-page scan = 120 vision calls today); per-sub-step try/except so one failed caption doesn't sink the whole PDF.

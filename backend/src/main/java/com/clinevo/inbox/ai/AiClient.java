@@ -15,7 +15,7 @@ public class AiClient {
 
     public AiDtos.ProcessResponse process(AiDtos.ProcessRequest req) {
         return client.post()
-                .uri("/process")
+                .uri("/ai/v1/process")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(req)
                 .retrieve()

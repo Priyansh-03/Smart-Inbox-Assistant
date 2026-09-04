@@ -68,38 +68,34 @@ def process_pdf(name: str, pdf_bytes: bytes) -> PdfResult:
     )
 
 
-def classify(req: ProcessRequest, pdfs: list[PdfResult]) -> list[BucketVerdict]:
-    ctx = f"[email] from={req.email_from} subject={req.email_subject}\n{req.email_body}\n\n"
-    for p in pdfs:
-        ctx += f"[pdf {p.filename}] summary: {p.summary}\n"
+PROMPT_BY_BUCKET = {"ICSR": "extract_icsr", "PQC": "extract_pqc", "MI": "extract_mi"}
+
+
+def classify_context(email_from: str, email_subject: str, email_body: str,
+                     pdf_summaries: list[str]) -> list[BucketVerdict]:
+    ctx = f"[email] from={email_from} subject={email_subject}\n{email_body}\n\n"
+    for i, s in enumerate(pdf_summaries, 1):
+        ctx += f"[pdf {i}] summary: {s}\n"
     r = ask_json(load_prompt("classify"), ctx[:MAX_CTX_CHARS])
     verdicts = [BucketVerdict(**v) for v in r.get("verdicts", [])]
-    log.info("Classified message %s: %s", req.message_id,
-             [f"{v.bucket}={v.applies}" for v in verdicts])
+    log.info("Classified: %s", [f"{v.bucket}={v.applies}" for v in verdicts])
     return verdicts
 
 
-def _context_chunks(req: ProcessRequest, pdfs: list[PdfResult]) -> str:
-    chunks = [f"[email]\n{req.email_body}"]
-    for p in pdfs:
-        body = p.full_text[:MAX_CTX_CHARS // max(len(pdfs), 1)]
-        chunks.append(f"[pdf {p.filename}]\n{body}")
-    return "\n\n".join(chunks)
+def classify(req: ProcessRequest, pdfs: list[PdfResult]) -> list[BucketVerdict]:
+    return classify_context(req.email_from, req.email_subject, req.email_body,
+                            [p.summary for p in pdfs])
 
 
-def extract_facts(req: ProcessRequest, pdfs: list[PdfResult],
-                  verdicts: list[BucketVerdict]) -> list[Fact]:
-    active = {v.bucket for v in verdicts if v.applies and v.bucket != "NOT_RELEVANT"}
+def extract_from_chunks(categories: list[str], context_chunks: list[str]) -> list[Fact]:
+    active = [c for c in categories if c in PROMPT_BY_BUCKET]
     if not active:
-        log.info("No extractable buckets for message %s, skipping fact extraction", req.message_id)
+        log.info("No extractable categories, skipping fact extraction")
         return []
-    ctx = _context_chunks(req, pdfs)
-    prompt_by_bucket = {"ICSR": "extract_icsr", "PQC": "extract_pqc", "MI": "extract_mi"}
+    ctx = "\n\n".join(context_chunks)
     facts: list[Fact] = []
-    for bucket, prompt in prompt_by_bucket.items():
-        if bucket not in active:
-            continue
-        r = ask_json(load_prompt(prompt), ctx, max_tokens=3000)
+    for bucket in active:
+        r = ask_json(load_prompt(PROMPT_BY_BUCKET[bucket]), ctx, max_tokens=3000)
         for f in r.get("facts", []):
             src = f.get("source") or {}
             facts.append(Fact(
@@ -110,6 +106,15 @@ def extract_facts(req: ProcessRequest, pdfs: list[PdfResult],
                               page=src.get("page"), quote=src.get("quote")),
             ))
     return facts
+
+
+def extract_facts(req: ProcessRequest, pdfs: list[PdfResult],
+                  verdicts: list[BucketVerdict]) -> list[Fact]:
+    active = [v.bucket for v in verdicts if v.applies and v.bucket != "NOT_RELEVANT"]
+    chunks = [f"[email]\n{req.email_body}"]
+    for p in pdfs:
+        chunks.append(f"[pdf {p.filename}]\n{p.full_text[:MAX_CTX_CHARS // max(len(pdfs), 1)]}")
+    return extract_from_chunks(active, chunks)
 
 
 def run(req: ProcessRequest) -> ProcessResponse:
