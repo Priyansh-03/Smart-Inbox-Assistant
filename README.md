@@ -30,14 +30,17 @@ test-case / edge-case matrix: [`docs/TODO.md`](docs/TODO.md).
 Prereqs: Docker + Docker Compose. **No setting is hardcoded** - every host, port and
 URL is read from an env file (CLI flags override it). Two files:
 
-| File | Used by | Contents |
-|------|---------|----------|
-| `.env.local` | `./run.sh -local ...` | localhost values, committed, no secrets |
-| `.env` | `./run.sh ...` (default) | production values, git-ignored, you create it from `.env.example` |
+Both files hold real secrets (`OPENAI_API_KEY`, mailbox password) once filled in, so
+**neither is tracked** - only the `.example` templates are.
+
+| File | Used by | You create it from |
+|------|---------|---------------------|
+| `.env.local` | `./run.sh -local ...` | `.env.local.example` (localhost values) |
+| `.env` | `./run.sh ...` (default) | `.env.example` (production values) |
 
 ```bash
 # local
-cp .env.local .env.local        # already present; add OPENAI_API_KEY
+cp .env.local.example .env.local && $EDITOR .env.local   # add OPENAI_API_KEY
 ./run.sh -local up              # postgres + ai-service + backend + frontend
 ./run.sh -local seed            # push the sample emails through
 ./run.sh -local report          # per-document timing

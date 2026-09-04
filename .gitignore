@@ -12,8 +12,10 @@ frontend/node_modules/
 frontend/dist/
 frontend/.angular/
 
-# Local env & storage
+# Local env & storage - both can hold real secrets, neither is tracked.
+# Templates (.env.example, .env.local.example) stay tracked and secret-free.
 .env
+.env.local
 storage/
 sample-data/outputs/*.json
 
