@@ -15,7 +15,7 @@ public record AppProperties(
 
     public record Worker(long pollMs, int maxAttempts) {}
 
-    public record Ai(String baseUrl, int timeoutSeconds) {}
+    public record Ai(String baseUrl, int timeoutSeconds, int connectTimeoutSeconds) {}
 
     public record Mail(
             boolean enabled,

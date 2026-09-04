@@ -8,5 +8,5 @@ RUN mvn -q clean package -DskipTests
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /build/target/*.jar app.jar
-EXPOSE 8080
+# Listen host/port come from SERVER_HOST / SERVER_PORT env (application.yml). No port literal here.
 ENTRYPOINT ["java", "-jar", "app.jar"]

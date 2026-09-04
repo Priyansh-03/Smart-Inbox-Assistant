@@ -30,6 +30,7 @@ app:
   ai:
     base-url: ${AI_SERVICE_URL}
     timeout-seconds: ${AI_TIMEOUT_SECONDS}
+    connect-timeout-seconds: ${AI_CONNECT_TIMEOUT_SECONDS}
   mail:
     enabled: ${MAIL_ENABLED}
     host: ${MAIL_HOST}

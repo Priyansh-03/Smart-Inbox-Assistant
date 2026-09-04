@@ -5,14 +5,16 @@ from pathlib import Path
 import httpx
 import pytest
 
-API = os.getenv("API_BASE_URL", "http://localhost:8080")
+API = os.getenv("API_BASE_URL")               # no default; unset -> suite skips
 POLL_TIMEOUT_S = int(os.getenv("E2E_POLL_TIMEOUT_S", "180"))
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SAMPLES = Path(os.getenv("SAMPLE_DIR", REPO_ROOT / "sample-data"))
 
 
 def _up() -> bool:
-    """True only if OUR backend answers with the batch-report shape."""
+    """True only if API_BASE_URL is set and OUR backend answers with the batch-report shape."""
+    if not API:
+        return False
     try:
         r = httpx.get(f"{API}/api/batch/report", timeout=3)
         return r.status_code == 200 and "rows" in r.json()

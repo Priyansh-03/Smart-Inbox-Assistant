@@ -1,7 +1,12 @@
-// API base URL is injected at container start into window.__API_BASE__ (see docker entrypoint).
-// No hardcoded host: falls back to same-origin only when nothing is injected (local `ng serve` proxy).
+// API base URL is injected into window.__API_BASE__ at container start (docker-entrypoint.sh)
+// or by `npm run prestart` for local `ng serve`. No default: a missing value is a hard error.
 declare global {
   interface Window { __API_BASE__?: string; }
 }
 
-export const API_BASE = (typeof window !== 'undefined' && window.__API_BASE__) || '';
+const injected = typeof window !== 'undefined' ? window.__API_BASE__ : undefined;
+if (!injected) {
+  throw new Error('API base URL not configured (window.__API_BASE__ is empty)');
+}
+
+export const API_BASE = injected;

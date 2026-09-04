@@ -30,7 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     RestClient aiRestClient() {
         var factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(Duration.ofSeconds(10));
+        factory.setConnectTimeout(Duration.ofSeconds(props.ai().connectTimeoutSeconds()));
         factory.setReadTimeout(Duration.ofSeconds(props.ai().timeoutSeconds()));
         return RestClient.builder().baseUrl(props.ai().baseUrl())
                 .requestFactory(factory).build();

@@ -37,7 +37,7 @@ class IngestionServiceTest {
         AppProperties props = new AppProperties(storage.toString(), "reviewer-1",
                 new AppProperties.Ingest(maxAttachMb, maxBodyChars),
                 new AppProperties.Worker(1000, 1),
-                new AppProperties.Ai("http://ai", 30),
+                new AppProperties.Ai("http://ai", 30, 10),
                 new AppProperties.Mail(false, "h", 993, "u", "p", "INBOX", 1000));
         return new IngestionService(repo, mock(AuditService.class), props);
     }

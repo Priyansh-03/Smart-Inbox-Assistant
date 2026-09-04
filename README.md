@@ -27,13 +27,27 @@ test-case / edge-case matrix: [`docs/TODO.md`](docs/TODO.md).
 
 ## Run it
 
-Prereqs: Docker + Docker Compose. Nothing is hardcoded - every setting comes from `.env`.
+Prereqs: Docker + Docker Compose. **No setting is hardcoded** - every host, port and
+URL is read from an env file (CLI flags override it). Two files:
+
+| File | Used by | Contents |
+|------|---------|----------|
+| `.env.local` | `./run.sh -local ...` | localhost values, committed, no secrets |
+| `.env` | `./run.sh ...` (default) | production values, git-ignored, you create it from `.env.example` |
 
 ```bash
-make env                 # writes .env from .env.example
-$EDITOR .env             # fill in OPENAI_API_KEY, MAIL_* (or set MAIL_ENABLED=false)
-make up                  # starts postgres + ai-service + backend + frontend
+# local
+cp .env.local .env.local        # already present; add OPENAI_API_KEY
+./run.sh -local up              # postgres + ai-service + backend + frontend
+./run.sh -local seed            # push the sample emails through
+./run.sh -local report          # per-document timing
+
+# production
+cp .env.example .env && $EDITOR .env
+./run.sh up
 ```
+
+`make up` / `make up LOCAL=1` wrap the same thing.
 
 - UI: `http://<FRONTEND_HOST>:<FRONTEND_PORT>`
 - Backend: `http://<SERVER_HOST>:<SERVER_PORT>`

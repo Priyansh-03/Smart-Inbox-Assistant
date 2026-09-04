@@ -2,7 +2,8 @@
   "name": "smart-inbox-frontend",
   "version": "1.0.0",
   "scripts": {
-    "start": "ng serve --host ${FRONTEND_HOST:-0.0.0.0} --port ${FRONTEND_PORT:-4200}",
+    "prestart": "node scripts/write-env.js",
+    "start": "ng serve --host \"$FRONTEND_HOST\" --port \"$FRONTEND_PORT\"",
     "build": "ng build"
   },
   "private": true,
