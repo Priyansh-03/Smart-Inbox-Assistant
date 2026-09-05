@@ -19,11 +19,11 @@ import { ApiService } from './api.service';
       </label>
     </p>
     <table>
-      <thead><tr><th>From</th><th>Subject</th><th>Buckets</th><th>Min conf.</th><th>Status</th><th>ms</th><th></th></tr></thead>
+      <thead><tr><th>From</th><th>Subject</th><th>Categories</th><th>Min conf.</th><th>Status</th><th>ms</th><th></th></tr></thead>
       <tbody>
         <tr *ngFor="let m of rows">
           <td>{{ m.sender }}</td>
-          <td>{{ m.subject }}</td>
+          <td>{{ m.subject }} <span *ngIf="m.injectionFlagged" class="warn" title="{{ m.injectionNotes }}">⚠</span></td>
           <td><span class="chip" *ngFor="let b of buckets(m)">{{ b }}</span></td>
           <td [class.low]="m.minConf !== null && m.minConf < 0.5">{{ m.minConf ?? '-' }}</td>
           <td>{{ m.status }}</td>
@@ -33,6 +33,7 @@ import { ApiService } from './api.service';
       </tbody>
     </table>
   `,
+  styles: [`.warn { color: #b00020; font-weight: 700; }`],
 })
 export class QueueComponent implements OnInit, OnDestroy {
   rows: any[] = [];

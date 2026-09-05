@@ -55,6 +55,7 @@ public class ReviewController {
             row.put("buckets", buckets);
             row.put("minConf", minConf);
             row.put("injectionFlagged", m.injectionFlagged);
+            row.put("injectionNotes", m.injectionNotes);
             return row;
         }).toList();
     }
@@ -75,8 +76,10 @@ public class ReviewController {
     public ResponseEntity<Void> setClassification(@PathVariable String id, @RequestBody ClassificationEdit body) {
         repo.updateClassification(id, body.bucket(), body.applies(),
                 body.applies() ? Constants.REVIEW_ACCEPTED : Constants.REVIEW_OVERRIDDEN);
+        String detail = body.reason() == null || body.reason().isBlank() ? null
+                : "{\"reason\":" + com.fasterxml.jackson.databind.node.TextNode.valueOf(body.reason()) + "}";
         audit.event(id, reviewerId, "classification_" + (body.applies() ? "accepted" : "overridden"),
-                body.bucket(), null, String.valueOf(body.applies()), null);
+                body.bucket(), null, String.valueOf(body.applies()), detail);
         return ResponseEntity.noContent().build();
     }
 
@@ -112,7 +115,7 @@ public class ReviewController {
         return ResponseEntity.noContent().build();
     }
 
-    public record ClassificationEdit(String bucket, boolean applies) {}
+    public record ClassificationEdit(String bucket, boolean applies, String reason) {}
 
     public record FactEdit(String factId, String value) {}
 }

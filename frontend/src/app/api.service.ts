@@ -16,8 +16,8 @@ export class ApiService {
     return this.http.get<any>(`${API_BASE}/api/messages/${id}`);
   }
 
-  setClassification(id: string, bucket: string, applies: boolean) {
-    return this.http.patch<void>(`${API_BASE}/api/messages/${id}/classification`, { bucket, applies });
+  setClassification(id: string, bucket: string, applies: boolean, reason = '') {
+    return this.http.patch<void>(`${API_BASE}/api/messages/${id}/classification`, { bucket, applies, reason });
   }
 
   editFacts(id: string, edits: { factId: string; value: string }[]) {
