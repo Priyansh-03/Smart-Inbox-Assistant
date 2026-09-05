@@ -1,0 +1,546 @@
+{
+  "pdfExtractions": [
+    {
+      "id": "4",
+      "messageId": "7",
+      "attachmentId": "4",
+      "filename": "pdf_scanned_01.pdf",
+      "flavor": "SCANNED",
+      "language": "unknown",
+      "pageCount": 1,
+      "fullText": "[page 1]\nADVERSE EVENT REPORT (hand-completed)\n\nPatient: 57 yo male  Wt: 90 kg\nHx: hypertension, gout\nDrug: Uratrol 300 mg  - 1 tab daily\nStarted: ~2 weeks ago\nProblem: swollen painful joints got worse, then bad skin peeling\nSent to hospital 02 Sep\nReporter: nurse J. Adeyemi (Nigeria)",
+      "originalText": null,
+      "ocrConfidence": 0.99,
+      "tables": [],
+      "images": [
+        {
+          "kind": "form_or_checkbox",
+          "page": 1,
+          "description": "The image shows a hand-completed adverse event report. It includes details about a 57-year-old male patient weighing 90 kg with a history of hypertension and gout. The patient was on Uratrol 300 mg (1 tablet daily) and experienced worsening swollen painful joints and severe skin peeling, leading to hospitalization on September 2. The report is signed by nurse J. Adeyemi from Nigeria.",
+          "reviewer_note": "Verify the accuracy of the reported adverse event details and ensure proper documentation.",
+          "needs_human_review": true
+        }
+      ],
+      "summary": "The document is a hand-completed adverse event report. It concerns a 57-year-old male patient with a history of hypertension and gout, who was taking Uratrol 300 mg (1 tablet daily) for approximately two weeks. The patient experienced worsening swollen and painful joints, followed by severe skin peeling, which led to hospitalization on September 2. The report was submitted by nurse J. Adeyemi from Nigeria. There are no additional form fields or tables included in the document. An image of the report is flagged for human review to verify the accuracy of the adverse event details and ensure proper documentation. The document appears relevant to pharmacovigilance as it reports a serious adverse reaction potentially linked to a medication. However, the exact timeline of symptom onset and additional clinical details are not provided, leaving some information unclear.",
+      "looksRelevant": true,
+      "relevanceReason": "It reports a serious adverse reaction potentially linked to a medication.",
+      "injectionFlagged": false,
+      "injectionNotes": ""
+    }
+  ],
+  "message": {
+    "id": "7",
+    "messageIdHdr": "<pdf-scanned-001@example.com>",
+    "sender": "\"Nurse J. Adeyemi\" <j.adeyemi@example-clinic.test>",
+    "subject": "Scanned handwritten AE form - Uratrol reaction",
+    "receivedAt": "2025-09-05T10:00:00Z",
+    "bodyText": "Attaching a scan of the hand-completed form for a patient with a severe skin reaction on Uratrol. Handwriting is a bit rough, sorry.",
+    "status": "READY_FOR_REVIEW",
+    "attempts": 1,
+    "processingMs": 13044,
+    "errorDetail": null,
+    "injectionFlagged": false,
+    "injectionNotes": "",
+    "createdAt": "2026-09-05T18:53:30.416112Z"
+  },
+  "audit": [
+    {
+      "id": "7",
+      "messageId": "7",
+      "actor": "ai",
+      "action": "ingested",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"pdfsStored\": 1, \"attachments\": 1}",
+      "createdAt": "2026-09-05T18:53:30.442842Z"
+    },
+    {
+      "id": "33",
+      "messageId": "7",
+      "actor": "ai",
+      "action": "pdf_extracted",
+      "target": "pdf_scanned_01.pdf",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"flavor\": \"SCANNED\", \"language\": \"unknown\"}",
+      "createdAt": "2026-09-05T18:55:03.235811Z"
+    },
+    {
+      "id": "34",
+      "messageId": "7",
+      "actor": "ai",
+      "action": "classified",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"buckets\": 4}",
+      "createdAt": "2026-09-05T18:55:03.247767Z"
+    },
+    {
+      "id": "35",
+      "messageId": "7",
+      "actor": "ai",
+      "action": "facts_extracted",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"count\": 23}",
+      "createdAt": "2026-09-05T18:55:03.302921Z"
+    },
+    {
+      "id": "36",
+      "messageId": "7",
+      "actor": "ai",
+      "action": "processed",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 12900, \"extract\": 4868, \"classify\": 1583, \"pdf:pdf_scanned_01.pdf\": 6448}}",
+      "createdAt": "2026-09-05T18:55:03.309627Z"
+    }
+  ],
+  "classifications": [
+    {
+      "id": "25",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "applies": true,
+      "confidence": 1.0,
+      "reason": "Clear adverse event linked to Uratrol reported.",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v2",
+      "createdAt": "2026-09-05T18:55:03.238688Z"
+    },
+    {
+      "id": "27",
+      "messageId": "7",
+      "bucket": "MI",
+      "applies": false,
+      "confidence": 0.9,
+      "reason": "No request for medical information present.",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v2",
+      "createdAt": "2026-09-05T18:55:03.243305Z"
+    },
+    {
+      "id": "28",
+      "messageId": "7",
+      "bucket": "NOT_RELEVANT",
+      "applies": false,
+      "confidence": 1.0,
+      "reason": "Adverse event report is pharmacovigilance-relevant.",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v2",
+      "createdAt": "2026-09-05T18:55:03.245385Z"
+    },
+    {
+      "id": "26",
+      "messageId": "7",
+      "bucket": "PQC",
+      "applies": false,
+      "confidence": 0.9,
+      "reason": "No product defect mentioned in the report.",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v2",
+      "createdAt": "2026-09-05T18:55:03.241097Z"
+    }
+  ],
+  "facts": [
+    {
+      "id": "119",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "NARRATIVE",
+      "fieldName": "narrative",
+      "fieldValue": "A 57-year-old male patient with a history of hypertension and gout experienced swollen painful joints that worsened, followed by severe skin peeling after starting Uratrol 300 mg daily approximately two weeks ago. The patient was hospitalized on 02 Sep. The reporter was nurse J. Adeyemi from Nigeria. Other details such as the route of administration, outcome, and whether the reaction was life-threatening are not stated.",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "97",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "age",
+      "fieldValue": "57",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_scanned_01.pdf",
+        "page": 1,
+        "quote": "57 yo male"
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "100",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "height",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "101",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "medical_history",
+      "fieldValue": "hypertension, gout",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_scanned_01.pdf",
+        "page": 1,
+        "quote": "Hx: hypertension, gout"
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "98",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "sex",
+      "fieldValue": "male",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_scanned_01.pdf",
+        "page": 1,
+        "quote": "57 yo male"
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "99",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "weight",
+      "fieldValue": "90 kg",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_scanned_01.pdf",
+        "page": 1,
+        "quote": "Wt: 90 kg"
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "106",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "dose",
+      "fieldValue": "300 mg - 1 tab daily",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_scanned_01.pdf",
+        "page": 1,
+        "quote": "Drug: Uratrol 300 mg  - 1 tab daily"
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "105",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "product_name",
+      "fieldValue": "Uratrol",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_scanned_01.pdf",
+        "page": 1,
+        "quote": "Drug: Uratrol 300 mg"
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "107",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "route",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "108",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "start_date",
+      "fieldValue": "~2 weeks ago",
+      "confidence": 0.7,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_scanned_01.pdf",
+        "page": 1,
+        "quote": "Started: ~2 weeks ago"
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "109",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "stop_date",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "111",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "onset_date",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "112",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "outcome",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "110",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "reaction",
+      "fieldValue": "swollen painful joints got worse, then bad skin peeling",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_scanned_01.pdf",
+        "page": 1,
+        "quote": "Problem: swollen painful joints got worse, then bad skin peeling"
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "104",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "country",
+      "fieldValue": "Nigeria",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_scanned_01.pdf",
+        "page": 1,
+        "quote": "nurse J. Adeyemi (Nigeria)"
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "102",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "name",
+      "fieldValue": "J. Adeyemi",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_scanned_01.pdf",
+        "page": 1,
+        "quote": "nurse J. Adeyemi"
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "103",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "role",
+      "fieldValue": "nurse",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_scanned_01.pdf",
+        "page": 1,
+        "quote": "nurse J. Adeyemi"
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "117",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "congenital_anomaly",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "113",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "death",
+      "fieldValue": "false",
+      "confidence": 0.7,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_scanned_01.pdf",
+        "page": 1,
+        "quote": "Sent to hospital 02 Sep"
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "116",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "disability",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "114",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "hospitalization",
+      "fieldValue": "true",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_scanned_01.pdf",
+        "page": 1,
+        "quote": "Sent to hospital 02 Sep"
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "115",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "life_threatening",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "118",
+      "messageId": "7",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "medically_important",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    }
+  ]
+}

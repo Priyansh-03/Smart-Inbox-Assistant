@@ -28,8 +28,8 @@ class Fact(BaseModel):
     section: str
     field_name: str
     value: str = "Not stated"
-    confidence: float = 0.0
-    source: Source = Field(default_factory=Source)
+    confidence: Optional[float] = None      # null when the field is "Not stated" (spec §8)
+    source: Optional[Source] = None         # null when the field is "Not stated"
 
 
 class BucketVerdict(BaseModel):

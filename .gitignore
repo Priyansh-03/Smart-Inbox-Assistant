@@ -17,7 +17,7 @@ frontend/.angular/
 .env
 .env.local
 storage/
-sample-data/outputs/*.json
+# sample-data/outputs/*.json is a deliverable - kept in the repo
 
 # IDE / OS
 .idea/

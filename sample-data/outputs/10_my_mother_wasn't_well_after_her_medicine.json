@@ -1,0 +1,507 @@
+{
+  "pdfExtractions": [],
+  "message": {
+    "id": "10",
+    "messageIdHdr": "<sample-vague-001@example.com>",
+    "sender": "Concerned Person <someone@example-mail.test>",
+    "subject": "my mother wasn't well after her medicine",
+    "receivedAt": "2025-09-06T18:45:00Z",
+    "bodyText": "Hi, my mother felt really unwell after starting one of her new heart tablets last\nweek. She's a bit better now. I don't know the name or dose. Just wanted to let\nsomeone know.",
+    "status": "READY_FOR_REVIEW",
+    "attempts": 1,
+    "processingMs": 5299,
+    "errorDetail": null,
+    "injectionFlagged": false,
+    "injectionNotes": "",
+    "createdAt": "2026-09-05T18:53:30.481767Z"
+  },
+  "audit": [
+    {
+      "id": "10",
+      "messageId": "10",
+      "actor": "ai",
+      "action": "ingested",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"pdfsStored\": 0, \"attachments\": 0}",
+      "createdAt": "2026-09-05T18:53:30.483550Z"
+    },
+    {
+      "id": "43",
+      "messageId": "10",
+      "actor": "ai",
+      "action": "classified",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"buckets\": 4}",
+      "createdAt": "2026-09-05T18:55:35.902715Z"
+    },
+    {
+      "id": "44",
+      "messageId": "10",
+      "actor": "ai",
+      "action": "facts_extracted",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"count\": 23}",
+      "createdAt": "2026-09-05T18:55:35.953446Z"
+    },
+    {
+      "id": "45",
+      "messageId": "10",
+      "actor": "ai",
+      "action": "processed",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 5218, \"extract\": 3517, \"classify\": 1700}}",
+      "createdAt": "2026-09-05T18:55:35.960874Z"
+    }
+  ],
+  "classifications": [
+    {
+      "id": "37",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "applies": true,
+      "confidence": 0.8,
+      "reason": "Adverse event linked to a medicine reported.",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v2",
+      "createdAt": "2026-09-05T18:55:35.886295Z"
+    },
+    {
+      "id": "39",
+      "messageId": "10",
+      "bucket": "MI",
+      "applies": false,
+      "confidence": 0.7,
+      "reason": "No request for medical information present.",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v2",
+      "createdAt": "2026-09-05T18:55:35.898537Z"
+    },
+    {
+      "id": "40",
+      "messageId": "10",
+      "bucket": "NOT_RELEVANT",
+      "applies": false,
+      "confidence": 0.8,
+      "reason": "Adverse event makes it relevant for ICSR.",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v2",
+      "createdAt": "2026-09-05T18:55:35.900524Z"
+    },
+    {
+      "id": "38",
+      "messageId": "10",
+      "bucket": "PQC",
+      "applies": false,
+      "confidence": 0.6,
+      "reason": "No product defect mentioned or implied.",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v2",
+      "createdAt": "2026-09-05T18:55:35.896548Z"
+    }
+  ],
+  "facts": [
+    {
+      "id": "179",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "NARRATIVE",
+      "fieldName": "narrative",
+      "fieldValue": "The patient's mother felt really unwell after starting a new heart tablet last week. The specific product name and dose are unknown. She is reported to be a bit better now. No serious outcomes such as death were mentioned.",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "157",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "age",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "160",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "height",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "161",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "medical_history",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "158",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "sex",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "159",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "weight",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "166",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "dose",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "165",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "product_name",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "167",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "route",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "168",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "start_date",
+      "fieldValue": "last week",
+      "confidence": 0.7,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "starting one of her new heart tablets last week"
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "169",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "stop_date",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "171",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "onset_date",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "172",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "outcome",
+      "fieldValue": "a bit better now",
+      "confidence": 0.7,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "She's a bit better now"
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "170",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "reaction",
+      "fieldValue": "felt really unwell",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "felt really unwell"
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "164",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "country",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "162",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "name",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "163",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "role",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "177",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "congenital_anomaly",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "173",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "death",
+      "fieldValue": "false",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "She's a bit better now"
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "176",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "disability",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "174",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "hospitalization",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "175",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "life_threatening",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "178",
+      "messageId": "10",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "medically_important",
+      "fieldValue": "Not stated",
+      "confidence": 0.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": null
+      },
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    }
+  ]
+}

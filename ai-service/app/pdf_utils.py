@@ -51,12 +51,17 @@ def _image_coverage(page) -> float:
 
 def _looks_multicolumn(page) -> bool:
     blocks = [b for b in page.get_text("blocks") if b[6] == 0 and b[4].strip()]
-    if len(blocks) < 6:
+    if len(blocks) < 2:
         return False
     mid = page.rect.width / 2
-    left = sum(1 for b in blocks if b[2] < mid)
-    right = sum(1 for b in blocks if b[0] > mid)
-    return left >= 3 and right >= 3
+    left = [b for b in blocks if b[2] < mid]           # ends left of centre
+    right = [b for b in blocks if b[0] > mid]          # starts right of centre
+    if len(left) >= 3 and len(right) >= 3:
+        return True
+    # a real second column = at least two prose blocks on each side, both sides substantial
+    l_chars = sum(len(b[4]) for b in left)
+    r_chars = sum(len(b[4]) for b in right)
+    return len(left) >= 2 and len(right) >= 2 and min(l_chars, r_chars) >= 200
 
 
 def detect_language(text: str) -> str:
