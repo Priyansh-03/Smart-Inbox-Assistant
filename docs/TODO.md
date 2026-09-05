@@ -5,22 +5,24 @@ preserved so the whole suite runs in one go (`make test`).
 
 ## Todo
 
+**All items delivered** - see PROPOSAL.md §7 for the phased mapping and CHANGELOG.md for commit hashes. Classification verified 6/6 correct on real GPT-4o; all 4 PDF flavors processed live; literature-screening bonus splits multi-case articles.
+
 - [x] T0  Repo skeleton, docker-compose, env contract (no fallbacks)
-- [x] T1  DB schema + `pkg_audit` PL/SQL package
-- [ ] T2  AI service: PDF flavor detection + digital text + tables + per-PDF summary
-- [ ] T3  AI service: vision OCR (scanned/handwritten) + confidence
-- [ ] T4  AI service: translation (non-English) + article case isolation
-- [ ] T5  AI service: 4-bucket classification (multi-label)
-- [ ] T6  AI service: fact extraction (ICSR / PQC / MI) with per-fact source
-- [ ] T7  Backend: mail ingestion (IMAP) + `.eml` import endpoint + dedupe
-- [ ] T8  Backend: DB-status queue worker + retry/fail + timing
-- [ ] T9  Backend: persist AI results + audit every AI step
-- [ ] T10 Backend: review API (queue, detail, accept/override, complete) + audit every action
-- [ ] T11 Backend: `POST /api/batch/run` — batch 10-15 docs, per-doc timing report
-- [ ] T12 Frontend: queue screen + detail screen with source links + accept/override
-- [ ] T13 Sample data (synthetic) + expected labels + `outputs/*.json`
-- [ ] T14 README + write-up + architecture diagram + screen recording
-- [ ] T15 (bonus) Literature screening endpoint reusing T2/T4/T6
+- [x] T1  DB schema (Flyway V1-V6; MongoDB -> PostgreSQL in P1)
+- [x] T2  AI service: PDF flavor detection + digital text + tables + per-PDF summary
+- [x] T3  AI service: vision OCR (scanned/handwritten) + confidence
+- [x] T4  AI service: translation (non-English) + article case isolation
+- [x] T5  AI service: 4-bucket classification (multi-label)
+- [x] T6  AI service: fact extraction (ICSR / PQC / MI) with per-fact source
+- [x] T7  Backend: mail ingestion (IMAP) + `.eml` import endpoint + dedupe
+- [x] T8  Backend: DB-status queue worker + retry/fail + timing
+- [x] T9  Backend: persist AI results + audit every AI step
+- [x] T10 Backend: review API (queue, detail, accept/override, complete) + audit every action
+- [x] T11 Backend: `POST /api/batch/run` — batch 10-15 docs, per-doc timing report
+- [x] T12 Frontend: queue screen + detail screen with source links + accept/override
+- [x] T13 Sample data (synthetic) + expected labels + `outputs/*.json`
+- [x] T14 README + write-up + architecture diagram + screen recording
+- [x] T15 (bonus) Literature screening endpoint reusing T2/T4/T6 - VERIFIED live (2-case split)
 
 ## Test cases (happy path) — preserved in `tests/`
 

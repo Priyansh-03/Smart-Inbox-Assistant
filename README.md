@@ -4,26 +4,42 @@ Reads incoming healthcare emails and PDF attachments, classifies each into
 **ICSR / PQC / MI / Not Relevant**, extracts the key facts with a link back to
 their exact source, and hands everything to a human reviewer to accept or override.
 
-## Architecture
+Angular → Spring Boot → in-process queue → Python/FastAPI AI service → PostgreSQL.
+Architecture diagram, tech-choice rationale, prompting approach and benchmark
+numbers are in **[`docs/writeup.md`](docs/writeup.md)**. Build plan + the full
+test-case / edge-case matrix: [`docs/TODO.md`](docs/TODO.md). Rollback log:
+[`docs/CHANGELOG.md`](docs/CHANGELOG.md).
 
-```
-Test mailbox (IMAP)                 Angular review UI
-        |                                   |
-        v                                   v
-  Spring Boot backend  <---- REST ----  (queue + detail screens)
-   - IMAP poll / .eml import
-   - DB-status queue worker  ---- REST ----> Python AI service (FastAPI)
-   - review + audit API                       - PDF flavor detection
-        |                                     - OCR / translate / article
-        v                                     - 4-bucket classification
-     PostgreSQL 16                            - fact extraction + sources
-   message, attachment,
-   pdf_extraction, classification,
-   fact, audit_event (append-only)
-```
+## What it does
 
-Full write-up: [`docs/writeup.md`](docs/writeup.md). Build plan and the full
-test-case / edge-case matrix: [`docs/TODO.md`](docs/TODO.md).
+- **Ingest** a mailbox over IMAP (UID cursor) or `.eml` upload; parse the MIME tree
+  (prefers text/plain, strips HTML), dedupe on `Message-ID`, store PDF attachments,
+  size-cap everything.
+- **Understand PDFs**: detect flavor (digital / scanned / article / non-English /
+  mixed) and route — direct text with column-aware ordering + form-field pairing,
+  vision OCR with a confidence score, multi-column de-column + patient-case
+  isolation, language detect + translate keeping the original. Plus tables →
+  structured rows, meaningful images → caption + human-review flag, a 10–15 sentence
+  summary.
+- **Classify** into ICSR / PQC / MI / Not Relevant, multi-label, with confidence +
+  a one-line reason each.
+- **Extract** ICSR (patient / reporter / product / reaction / 6 seriousness
+  booleans / narrative), PQC (product, batch/lot, defect, counterfeit,
+  contamination, photo), MI (product, questions, context). Every field is
+  `{value, confidence, source{document, page, evidence}}`; absent ⇒ `"Not stated"`,
+  `null`, `null`.
+- **Guardrails**: untrusted content is fenced, prompt-injection attempts are
+  flagged for human review, model output is re-validated against the schema.
+- **Audit**: `ai_call` records model / prompt version / input hash / output / token
+  usage / duration per LLM call; `audit_event` is an append-only log of every AI
+  step and reviewer action.
+- **Review UI** (Angular): queue with injection badges; detail screen with the
+  email + PDF viewer, editable fields with confidence + clickable source, image
+  flags, the AI-call trace, and the audit trail. Accept / override / mark reviewed;
+  `/retry` redrives a FAILED message.
+- **Batch**: `POST /api/batch/report` gives per-document timing.
+- **Bonus**: `POST /api/literature/upload` screens article PDFs — splits multiple
+  patient cases out of one article, ICSR facts per case.
 
 ## Run it
 
@@ -76,17 +92,37 @@ cd backend && ./mvnw spring-boot:run           # or: java -jar target/*.jar --se
 ## Tests
 
 ```bash
-make test        # ai-service + backend unit suites
-make up && cd tests/integration && python -m pytest   # end-to-end (needs API key)
+make test-ai       # 39 unit tests, no network
+make test-backend  # 11 unit tests, JDK 21
+./run.sh -local up && ./run.sh -local test-e2e   # end-to-end against the live stack
 ```
 
-## Configuration
+## Synthetic test data
 
-Every key is documented in [`.env.example`](.env.example). Secrets that need
-rotation (DB password, mail password, `OPENAI_API_KEY`) are read only from the
-environment and never committed.
+`sample-data/` holds 11 emails (4 with PDF attachments) and 14 PDFs
+(5 digital forms, 2 scanned, 5 articles incl. one 2-case + one no-case, DE + ES).
+Regenerate with `python sample-data/generate_pdfs.py` and
+`python sample-data/generate_emails_with_pdfs.py`. Expected classifications:
+`sample-data/expected/labels.json`. Per-document extraction JSON:
+`sample-data/outputs/`.
 
-## Data handling
+## Deliverables (spec §17)
 
-Synthetic test data only. PDF and email text is sent to the OpenAI API for
-classification and extraction - see the trade-off note in `docs/writeup.md`.
+| # | Deliverable | Where |
+|---|---|---|
+| 1 | Runnable app (frontend + backend + DB) | `./run.sh -local up` |
+| 2 | Source | this repo |
+| 3 | README + setup | this file |
+| 4 | Env var template | `.env.example`, `.env.local.example` |
+| 5 | Architecture diagram + 2–5 page write-up | `docs/writeup.md` |
+| 6 | Sample extracted JSON | `sample-data/outputs/*.json` |
+| 7 | Processing benchmark | `docs/writeup.md` §5 |
+| 8 | Bonus: literature screening | `POST /api/literature/upload` |
+
+## Configuration & data handling
+
+Every key is documented in `.env.example`. Nothing is hardcoded — host, port and
+URL all come from the env file (CLI flags override). `.env` and `.env.local` hold
+real secrets and are git-ignored; only the `.example` templates are tracked.
+Synthetic data only; PDF/email text is sent to the OpenAI API — trade-off in
+`docs/writeup.md` §2.
