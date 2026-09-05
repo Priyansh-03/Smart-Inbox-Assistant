@@ -18,7 +18,7 @@ class ProcessRequest(BaseModel):
 
 
 class Source(BaseModel):
-    type: str = "email"          # "email" | "pdf"
+    type: Optional[str] = None    # "email" | "pdf"
     file: Optional[str] = None
     page: Optional[int] = None
     quote: Optional[str] = None

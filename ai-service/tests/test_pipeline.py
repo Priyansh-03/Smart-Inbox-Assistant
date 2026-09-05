@@ -5,6 +5,7 @@ article flavor substitutes the isolated case text, digital flavor carries form_f
 and the injection scan result reaches the PdfResult.
 """
 from app import pipeline
+from app.pipeline import extract_from_chunks
 
 
 def _stub_analyse(flavor, pages, full_text="digital text", language="en"):
@@ -86,3 +87,20 @@ def test_digital_pdf_carries_form_fields_and_injection_flag(monkeypatch):
     assert result.form_fields == [{"page": 1, "label": "Patient age", "value": "54", "source": "text"}]
     assert result.injection_flagged is True
     assert "override-instructions" in result.injection_notes
+
+
+def test_extract_marks_absent_fields_null_not_zero(monkeypatch):
+    """Spec §8: a 'Not stated' field has confidence null and source null - not 0.0/email."""
+    monkeypatch.setattr(pipeline, "_guarded", lambda name, text, **k: {"facts": [
+        {"section": "PATIENT", "field_name": "age", "value": "54", "confidence": 0.95,
+         "source": {"type": "email", "quote": "54-year-old"}},
+        {"section": "PATIENT", "field_name": "height", "value": "Not stated",
+         "confidence": None, "source": None},
+        {"section": "PATIENT", "field_name": "weight", "value": "  ", "confidence": 0.4,
+         "source": {"type": "email"}},   # blank value -> treated as Not stated
+    ]})
+    resp = extract_from_chunks(["ICSR"], ["[email]\n54-year-old male"])
+    by = {f.field_name: f for f in resp.facts}
+    assert by["age"].confidence == 0.95 and by["age"].source.type == "email"
+    assert by["height"].value == "Not stated" and by["height"].confidence is None and by["height"].source is None
+    assert by["weight"].value == "Not stated" and by["weight"].confidence is None and by["weight"].source is None

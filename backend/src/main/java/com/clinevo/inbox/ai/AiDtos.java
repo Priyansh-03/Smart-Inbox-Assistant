@@ -25,7 +25,7 @@ public final class AiDtos {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record Fact(String section,
                        @JsonProperty("field_name") String fieldName,
-                       String value, double confidence, Source source) {}
+                       String value, Double confidence, Source source) {}
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record BucketVerdict(String bucket, boolean applies, double confidence, String reason) {}

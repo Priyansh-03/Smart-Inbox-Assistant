@@ -36,7 +36,7 @@ import { ApiService } from './api.service';
             <td>{{ f.section }}</td>
             <td>{{ f.fieldName }}</td>
             <td><input [(ngModel)]="edits[f.id]" [placeholder]="f.reviewedValue || f.fieldValue" size="24"></td>
-            <td [class.low]="f.confidence < 0.5">{{ f.confidence }}</td>
+            <td [class.low]="f.confidence != null && f.confidence < 0.5">{{ f.confidence ?? '—' }}</td>
             <td>
               <a *ngIf="f.source?.type === 'pdf'" [href]="pdf(f.source.file, f.source.page)" target="_blank">
                 {{ f.source.file }} p{{ f.source.page }}</a>

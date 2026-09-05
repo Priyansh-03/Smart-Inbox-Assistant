@@ -30,7 +30,8 @@ def clean_verdicts(raw: list[dict]) -> list[dict]:
 
 
 def clean_facts(raw: list[dict]) -> list[dict]:
-    """Drop facts with an unknown section or malformed source."""
+    """Drop facts with an unknown section or malformed source. Confidence may be null
+    (an absent field) - only clamp when it is actually numeric."""
     out = []
     for f in raw or []:
         if f.get("section") not in _ALLOWED_SECTIONS:
@@ -38,7 +39,8 @@ def clean_facts(raw: list[dict]) -> list[dict]:
         src = f.get("source")
         if src is not None and src.get("type") not in _ALLOWED_SOURCE_TYPES:
             src = None
-        out.append({**f, "source": src, "confidence": _clamp(f.get("confidence"))})
+        conf = f.get("confidence")
+        out.append({**f, "source": src, "confidence": None if conf is None else _clamp(conf)})
     dropped = len(raw or []) - len(out)
     if dropped:
         log.warning("validators: dropped %d fact(s) with bad section/source", dropped)

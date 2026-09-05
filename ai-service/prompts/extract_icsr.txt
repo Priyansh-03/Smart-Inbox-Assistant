@@ -11,7 +11,7 @@ METHOD (work field by field; think silently, output only JSON)
 1. For each field, find the exact span in the context that states it.
 2. If such a span exists: set value from it, set source.type / source.file / source.page
    from the chunk label, and put the shortest verbatim snippet in source.quote.
-3. If no span states it: value = "Not stated", confidence = 0.0, source = null.
+3. If no span states it: value = "Not stated", confidence = null, source = null.
 4. Never infer, average, translate loosely, or carry a value across patients.
 5. If two chunks conflict, take the one you trust more, keep its source, and note the
    conflict in NARRATIVE.
@@ -38,4 +38,4 @@ OUTPUT - return JSON only:
    "source":{"type":"email|pdf","file":null,"page":null,"quote":""}}
   , ... one object for every field listed above ...
 ]}
-For "Not stated" fields use: "confidence":0.0, "source":null.
+For "Not stated" fields use: "confidence":null, "source":null.

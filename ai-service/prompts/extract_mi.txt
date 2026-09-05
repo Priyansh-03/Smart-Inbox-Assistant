@@ -22,5 +22,5 @@ OUTPUT - JSON only:
   {"section":"QUESTION","field_name":"product_or_topic","value":"","confidence":0.0,
    "source":{"type":"email|pdf","file":null,"page":null,"quote":""}}
   , {"section":"QUESTION","field_name":"question_1","value":"","confidence":0.0,"source":{...}}
-  , {"section":"QUESTION","field_name":"relevant_context","value":"Not stated","confidence":0.0,"source":null}
+  , {"section":"QUESTION","field_name":"relevant_context","value":"Not stated","confidence":null,"source":null}
 ]}

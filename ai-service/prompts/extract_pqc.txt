@@ -8,7 +8,7 @@ Product Quality Complaint fields.
 
 METHOD
 1. For each field, locate the exact span; set value + source (type/file/page/quote).
-2. No span => value "Not stated", confidence 0.0, source null. Never infer.
+2. No span => value "Not stated", confidence null, source null. Never infer.
 3. Boolean-style fields ("suspected_counterfeit", "contamination", "photo_mentioned")
    take "true" only on an explicit statement, else "false", else "Not stated".
 4. Self-check: drop any value not backed by its quote.
@@ -23,4 +23,4 @@ OUTPUT - JSON only:
    "source":{"type":"email|pdf","file":null,"page":null,"quote":""}}
   , ... one object per field above ...
 ]}
-"Not stated" fields: "confidence":0.0, "source":null.
+"Not stated" fields: "confidence":null, "source":null.

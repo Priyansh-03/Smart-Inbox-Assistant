@@ -108,13 +108,18 @@ def extract_from_chunks(categories: list[str], context_chunks: list[str]) -> Ext
     for bucket in active:
         r = _guarded(PROMPT_BY_BUCKET[bucket], ctx, max_tokens=3000)
         for f in clean_facts(r.get("facts", [])):
+            value = str(f.get("value", "Not stated")).strip() or "Not stated"
+            if value == "Not stated":                       # spec §8: absent -> null, null
+                facts.append(Fact(section=f.get("section", ""), field_name=f.get("field_name", ""),
+                                  value="Not stated", confidence=None, source=None))
+                continue
             src = f.get("source") or {}
+            src_type = src.get("type") if src.get("type") in ("email", "pdf") else None
             facts.append(Fact(
-                section=f.get("section", ""), field_name=f.get("field_name", ""),
-                value=str(f.get("value", "Not stated")),
-                confidence=float(f.get("confidence", 0.0) or 0.0),
-                source=Source(type=src.get("type", "email"), file=src.get("file"),
-                              page=src.get("page"), quote=src.get("quote")),
+                section=f.get("section", ""), field_name=f.get("field_name", ""), value=value,
+                confidence=f.get("confidence"),
+                source=Source(type=src_type, file=src.get("file"), page=src.get("page"),
+                              quote=src.get("quote")) if src_type else None,
             ))
     return ExtractResponse(model=MODEL, prompt_version=PROMPT_VERSION, facts=facts,
                            injection_flagged=scan["flagged"], injection_notes=", ".join(scan["tags"]))
