@@ -1,0 +1,434 @@
+{
+  "audit": [
+    {
+      "id": "12",
+      "messageId": "12",
+      "actor": "ai",
+      "action": "literature_screened",
+      "target": "pdf_article_01.pdf",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"cases\": 1, \"hasPatientCase\": true}",
+      "createdAt": "2026-09-05T19:27:57.018372Z"
+    }
+  ],
+  "facts": [
+    {
+      "id": "23",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "NARRATIVE",
+      "fieldName": "narrative",
+      "fieldValue": "A 58-year-old woman with no significant history was treated with Hepavex 500 mg twice daily for a chest infection. On day 12, she developed nausea, dark urine, and scleral icterus. She was hospitalized for five days and recovered over three weeks. The reaction was assessed as medically important, but there was no death or permanent disability.",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_01.pdf",
+        "page": null,
+        "quote": "A 58-year-old woman with no significant history was started on Hepavex 500 mg twice daily for a chest infection. On day 12 she developed nausea, dark urine and scleral icterus. ALT was 1240 U/L and bilirubin 96 umol/L. Hepavex was stopped. She was admitted for five days and recovered over three weeks."
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "1",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "age",
+      "fieldValue": "58",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_01.pdf",
+        "page": null,
+        "quote": "A 58-year-old woman"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "4",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "height",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "5",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "medical_history",
+      "fieldValue": "no significant history",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_01.pdf",
+        "page": null,
+        "quote": "no significant history"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "2",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "sex",
+      "fieldValue": "female",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_01.pdf",
+        "page": null,
+        "quote": "A 58-year-old woman"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "3",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "weight",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "10",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "dose",
+      "fieldValue": "500 mg twice daily",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_01.pdf",
+        "page": null,
+        "quote": "Hepavex 500 mg twice daily"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "9",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "product_name",
+      "fieldValue": "Hepavex",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_01.pdf",
+        "page": null,
+        "quote": "Hepavex"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "11",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "route",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "12",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "start_date",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "13",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "stop_date",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "15",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "onset_date",
+      "fieldValue": "day 12",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_01.pdf",
+        "page": null,
+        "quote": "On day 12"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "16",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "outcome",
+      "fieldValue": "recovered over three weeks",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_01.pdf",
+        "page": null,
+        "quote": "recovered over three weeks"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "14",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "reaction",
+      "fieldValue": "nausea, dark urine, scleral icterus",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_01.pdf",
+        "page": null,
+        "quote": "nausea, dark urine and scleral icterus"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "8",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "country",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "6",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "name",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "7",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "role",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "21",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "congenital_anomaly",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "17",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "death",
+      "fieldValue": "false",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_01.pdf",
+        "page": null,
+        "quote": "recovered over three weeks"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "20",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "disability",
+      "fieldValue": "false",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_01.pdf",
+        "page": null,
+        "quote": "recovered over three weeks"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "18",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "hospitalization",
+      "fieldValue": "true",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_01.pdf",
+        "page": null,
+        "quote": "She was admitted for five days"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "19",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "life_threatening",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "22",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "medically_important",
+      "fieldValue": "true",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_01.pdf",
+        "page": null,
+        "quote": "ALT was 1240 U/L and bilirubin 96 umol/L"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    }
+  ],
+  "message": {
+    "id": "12",
+    "messageIdHdr": "lit:pdf_article_01.pdf:2544004524033",
+    "sender": "literature-upload",
+    "subject": "Literature screening: pdf_article_01.pdf",
+    "receivedAt": "2026-09-05T19:27:56.929678Z",
+    "bodyText": "",
+    "status": "READY_FOR_REVIEW",
+    "attempts": 0,
+    "processingMs": null,
+    "processingStartedAt": null,
+    "processingEndedAt": "2026-09-05T19:27:57.020046Z",
+    "errorDetail": null,
+    "injectionFlagged": false,
+    "injectionNotes": null,
+    "createdAt": "2026-09-05T19:27:56.929943Z"
+  },
+  "pdfExtractions": [
+    {
+      "id": "1",
+      "messageId": "12",
+      "attachmentId": null,
+      "filename": "pdf_article_01.pdf",
+      "flavor": "ARTICLE",
+      "language": "en",
+      "pageCount": null,
+      "fullText": null,
+      "originalText": null,
+      "ocrConfidence": null,
+      "tables": null,
+      "images": null,
+      "summary": "The document is an article discussing a case involving a 58-year-old woman who was prescribed Hepavex 500 mg twice daily for a chest infection. On the 12th day of treatment, she developed symptoms including nausea, dark urine, and scleral icterus. Laboratory results showed ALT levels of 1240 U/L and bilirubin at 96 umol/L. Hepavex was discontinued, and the patient was hospitalized for five days, recovering fully over three weeks. The causality of the adverse reaction was assessed as probable. The document does not include any form fields, tables, or images for review. It appears to be relevant to pharmacovigilance as it describes an adverse drug reaction and its management. However, the document does not provide additional details such as the patient's weight, other medications, or underlying conditions that might have contributed to the reaction.",
+      "looksRelevant": true,
+      "relevanceReason": "The text describes an identifiable individual patient case involving a specific medicinal product (Hepavex), a specific adverse event (nausea, dark urine, scleral icterus, elevated ALT and bilirubin), and a clear outcome.",
+      "injectionFlagged": false,
+      "injectionNotes": null
+    }
+  ],
+  "classifications": [
+    {
+      "id": "1",
+      "messageId": "12",
+      "bucket": "ICSR",
+      "applies": true,
+      "confidence": 0.8,
+      "reason": "The text describes an identifiable individual patient case involving a specific medicinal product (Hepavex), a specific adverse event (nausea, dark urine, scleral icterus, elevated ALT and bilirubin), and a clear outcome.",
+      "reviewStatus": "AI",
+      "model": null,
+      "promptVersion": null,
+      "createdAt": "2026-09-05T19:27:56.971191Z"
+    }
+  ],
+  "aiCalls": []
+}

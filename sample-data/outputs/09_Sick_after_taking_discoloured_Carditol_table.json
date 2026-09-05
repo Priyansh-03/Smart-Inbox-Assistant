@@ -1,0 +1,1034 @@
+{
+  "audit": [
+    {
+      "id": "9",
+      "messageId": "9",
+      "actor": "ai",
+      "action": "ingested",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"pdfsStored\": 0, \"attachments\": 0}",
+      "createdAt": "2026-09-05T19:27:56.892630Z"
+    },
+    {
+      "id": "43",
+      "messageId": "9",
+      "actor": "ai",
+      "action": "classified",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"buckets\": 4}",
+      "createdAt": "2026-09-05T19:29:41.949841Z"
+    },
+    {
+      "id": "44",
+      "messageId": "9",
+      "actor": "ai",
+      "action": "facts_extracted",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"count\": 30}",
+      "createdAt": "2026-09-05T19:29:42.016544Z"
+    },
+    {
+      "id": "45",
+      "messageId": "9",
+      "actor": "ai",
+      "action": "processed",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 7844, \"extract\": 6453, \"classify\": 1390}}",
+      "createdAt": "2026-09-05T19:29:42.023598Z"
+    }
+  ],
+  "facts": [
+    {
+      "id": "220",
+      "messageId": "9",
+      "bucket": "PQC",
+      "section": "COMPLAINT",
+      "fieldName": "batch_or_lot",
+      "fieldValue": "CT-2231",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "the blister lot number is CT-2231"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "224",
+      "messageId": "9",
+      "bucket": "PQC",
+      "section": "COMPLAINT",
+      "fieldName": "contamination",
+      "fieldValue": "false",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "The tablet looked grey and smelled odd"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "221",
+      "messageId": "9",
+      "bucket": "PQC",
+      "section": "COMPLAINT",
+      "fieldName": "defect_description",
+      "fieldValue": "The tablet looked grey and smelled odd",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "The tablet looked grey and smelled odd"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "222",
+      "messageId": "9",
+      "bucket": "PQC",
+      "section": "COMPLAINT",
+      "fieldName": "packaging_issue",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "225",
+      "messageId": "9",
+      "bucket": "PQC",
+      "section": "COMPLAINT",
+      "fieldName": "photo_mentioned",
+      "fieldValue": "false",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "No mention of a photo in the email"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "219",
+      "messageId": "9",
+      "bucket": "PQC",
+      "section": "COMPLAINT",
+      "fieldName": "product_name",
+      "fieldValue": "Carditol 40 mg",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "took one Carditol 40 mg tablet yesterday"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "223",
+      "messageId": "9",
+      "bucket": "PQC",
+      "section": "COMPLAINT",
+      "fieldName": "suspected_counterfeit",
+      "fieldValue": "false",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "So there seem to be two problems: the tablet was defective, and she had a bad reaction after taking it."
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "218",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "NARRATIVE",
+      "fieldName": "narrative",
+      "fieldValue": "A 61-year-old female experienced severe stomach cramps and vomiting about an hour after taking one 40 mg Carditol tablet. She was treated at the emergency department and sent home the same day. The reporter, her husband from the UK, noted that the tablet appeared defective. The reaction was medically important and required hospitalization.",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "My wife (synthetic case), 61 years old, took one Carditol 40 mg tablet yesterday. The tablet looked grey and smelled odd - the blister lot number is CT-2231. About an hour later she had severe stomach cramps and vomiting and we went to the emergency department, where she was treated and sent home the same day. So there seem to be two problems: the tablet was defective, and she had a bad reaction after taking it. Reporter is me, her husband, in the UK."
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "196",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "age",
+      "fieldValue": "61 years old",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "61 years old"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "199",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "height",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "200",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "medical_history",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "197",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "sex",
+      "fieldValue": "female",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "My wife"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "198",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "weight",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "205",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "dose",
+      "fieldValue": "40 mg",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "40 mg"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "204",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "product_name",
+      "fieldValue": "Carditol",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "Carditol"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "206",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "route",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "207",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "start_date",
+      "fieldValue": "yesterday",
+      "confidence": 0.7,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "took one Carditol 40 mg tablet yesterday"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "208",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "stop_date",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "210",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "onset_date",
+      "fieldValue": "about an hour later",
+      "confidence": 0.7,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "About an hour later"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "211",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "outcome",
+      "fieldValue": "treated and sent home the same day",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "treated and sent home the same day"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "209",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "reaction",
+      "fieldValue": "severe stomach cramps and vomiting",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "severe stomach cramps and vomiting"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "203",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "country",
+      "fieldValue": "UK",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "in the UK"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "201",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "name",
+      "fieldValue": "Tom",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "Tom"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "202",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "role",
+      "fieldValue": "husband",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "Reporter is me, her husband"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "216",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "congenital_anomaly",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "212",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "death",
+      "fieldValue": "false",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "treated and sent home the same day"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "215",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "disability",
+      "fieldValue": "false",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "treated and sent home the same day"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "213",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "hospitalization",
+      "fieldValue": "true",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "we went to the emergency department"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "214",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "life_threatening",
+      "fieldValue": "false",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "treated and sent home the same day"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "217",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "medically_important",
+      "fieldValue": "true",
+      "confidence": 0.7,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "severe stomach cramps and vomiting"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    }
+  ],
+  "message": {
+    "id": "9",
+    "messageIdHdr": "<sample-icsr-pqc-001@example.com>",
+    "sender": "Tom Riddle-Barnes <t.riddlebarnes@example-mail.test>",
+    "subject": "Sick after taking discoloured Carditol tablet (lot CT-2231)",
+    "receivedAt": "2025-09-05T07:20:00Z",
+    "bodyText": "Hi,\n\nMy wife (synthetic case), 61 years old, took one Carditol 40 mg tablet yesterday.\nThe tablet looked grey and smelled odd - the blister lot number is CT-2231. About\nan hour later she had severe stomach cramps and vomiting and we went to the\nemergency department, where she was treated and sent home the same day.\n\nSo there seem to be two problems: the tablet was defective, and she had a bad\nreaction after taking it. Reporter is me, her husband, in the UK.\n\nTom",
+    "status": "READY_FOR_REVIEW",
+    "attempts": 1,
+    "processingMs": 7948,
+    "processingStartedAt": "2026-09-05T19:29:34.071248Z",
+    "processingEndedAt": "2026-09-05T19:29:42.021277Z",
+    "errorDetail": null,
+    "injectionFlagged": false,
+    "injectionNotes": "",
+    "createdAt": "2026-09-05T19:27:56.890803Z"
+  },
+  "pdfExtractions": [],
+  "classifications": [
+    {
+      "id": "36",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "applies": true,
+      "confidence": 1.0,
+      "reason": "Adverse reaction linked to drug reported",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-05T19:29:41.942534Z"
+    },
+    {
+      "id": "38",
+      "messageId": "9",
+      "bucket": "MI",
+      "applies": false,
+      "confidence": 1.0,
+      "reason": "No request for medical information present",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-05T19:29:41.946068Z"
+    },
+    {
+      "id": "39",
+      "messageId": "9",
+      "bucket": "NOT_RELEVANT",
+      "applies": false,
+      "confidence": 1.0,
+      "reason": "Clear adverse event and product defect reported",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-05T19:29:41.947774Z"
+    },
+    {
+      "id": "37",
+      "messageId": "9",
+      "bucket": "PQC",
+      "applies": true,
+      "confidence": 1.0,
+      "reason": "Defective product described with lot number",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-05T19:29:41.944124Z"
+    }
+  ],
+  "aiCalls": [
+    {
+      "id": "24",
+      "messageId": "9",
+      "step": "classify",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "7ea65585fc6c1ebe031a0ccc82e2722513a6248244e8b2673d28094113bc945b",
+      "output": {
+        "verdicts": [
+          {
+            "bucket": "ICSR",
+            "reason": "Adverse reaction linked to drug reported",
+            "applies": true,
+            "confidence": 1.0
+          },
+          {
+            "bucket": "PQC",
+            "reason": "Defective product described with lot number",
+            "applies": true,
+            "confidence": 1.0
+          },
+          {
+            "bucket": "MI",
+            "reason": "No request for medical information present",
+            "applies": false,
+            "confidence": 1.0
+          },
+          {
+            "bucket": "NOT_RELEVANT",
+            "reason": "Clear adverse event and product defect reported",
+            "applies": false,
+            "confidence": 1.0
+          }
+        ]
+      },
+      "usage": {
+        "total_tokens": 1195,
+        "prompt_tokens": 1049,
+        "completion_tokens": 146
+      },
+      "durationMs": 1390,
+      "error": null,
+      "createdAt": "2026-09-05T19:29:41.928230Z"
+    },
+    {
+      "id": "25",
+      "messageId": "9",
+      "step": "extract_icsr",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "d644a29ae6e5a0ab821045f605b6931ccf72d3d339a1e2beb5b2e23b4904c4cc",
+      "output": {
+        "facts": [
+          {
+            "value": "61 years old",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "61 years old"
+            },
+            "section": "PATIENT",
+            "confidence": 1.0,
+            "field_name": "age"
+          },
+          {
+            "value": "female",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "My wife"
+            },
+            "section": "PATIENT",
+            "confidence": 1.0,
+            "field_name": "sex"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PATIENT",
+            "confidence": null,
+            "field_name": "weight"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PATIENT",
+            "confidence": null,
+            "field_name": "height"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PATIENT",
+            "confidence": null,
+            "field_name": "medical_history"
+          },
+          {
+            "value": "Tom",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "Tom"
+            },
+            "section": "REPORTER",
+            "confidence": 1.0,
+            "field_name": "name"
+          },
+          {
+            "value": "husband",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "Reporter is me, her husband"
+            },
+            "section": "REPORTER",
+            "confidence": 1.0,
+            "field_name": "role"
+          },
+          {
+            "value": "UK",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "in the UK"
+            },
+            "section": "REPORTER",
+            "confidence": 1.0,
+            "field_name": "country"
+          },
+          {
+            "value": "Carditol",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "Carditol"
+            },
+            "section": "PRODUCT",
+            "confidence": 1.0,
+            "field_name": "product_name"
+          },
+          {
+            "value": "40 mg",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "40 mg"
+            },
+            "section": "PRODUCT",
+            "confidence": 1.0,
+            "field_name": "dose"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PRODUCT",
+            "confidence": null,
+            "field_name": "route"
+          },
+          {
+            "value": "yesterday",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "took one Carditol 40 mg tablet yesterday"
+            },
+            "section": "PRODUCT",
+            "confidence": 0.7,
+            "field_name": "start_date"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PRODUCT",
+            "confidence": null,
+            "field_name": "stop_date"
+          },
+          {
+            "value": "severe stomach cramps and vomiting",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "severe stomach cramps and vomiting"
+            },
+            "section": "REACTION",
+            "confidence": 1.0,
+            "field_name": "reaction"
+          },
+          {
+            "value": "about an hour later",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "About an hour later"
+            },
+            "section": "REACTION",
+            "confidence": 0.7,
+            "field_name": "onset_date"
+          },
+          {
+            "value": "treated and sent home the same day",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "treated and sent home the same day"
+            },
+            "section": "REACTION",
+            "confidence": 1.0,
+            "field_name": "outcome"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "treated and sent home the same day"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "death"
+          },
+          {
+            "value": "true",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "we went to the emergency department"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "hospitalization"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "treated and sent home the same day"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "life_threatening"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "treated and sent home the same day"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "disability"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "SERIOUSNESS",
+            "confidence": null,
+            "field_name": "congenital_anomaly"
+          },
+          {
+            "value": "true",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "severe stomach cramps and vomiting"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 0.7,
+            "field_name": "medically_important"
+          },
+          {
+            "value": "A 61-year-old female experienced severe stomach cramps and vomiting about an hour after taking one 40 mg Carditol tablet. She was treated at the emergency department and sent home the same day. The reporter, her husband from the UK, noted that the tablet appeared defective. The reaction was medically important and required hospitalization.",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "My wife (synthetic case), 61 years old, took one Carditol 40 mg tablet yesterday. The tablet looked grey and smelled odd - the blister lot number is CT-2231. About an hour later she had severe stomach cramps and vomiting and we went to the emergency department, where she was treated and sent home the same day. So there seem to be two problems: the tablet was defective, and she had a bad reaction after taking it. Reporter is me, her husband, in the UK."
+            },
+            "section": "NARRATIVE",
+            "confidence": 1.0,
+            "field_name": "narrative"
+          }
+        ]
+      },
+      "usage": {
+        "total_tokens": 1962,
+        "prompt_tokens": 772,
+        "completion_tokens": 1190
+      },
+      "durationMs": 4507,
+      "error": null,
+      "createdAt": "2026-09-05T19:29:41.938759Z"
+    },
+    {
+      "id": "26",
+      "messageId": "9",
+      "step": "extract_pqc",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "3ffb3bc724735f069d8cba9ab40d8f2cf1870e720fdd8cf723180920a38b9d96",
+      "output": {
+        "facts": [
+          {
+            "value": "Carditol 40 mg",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "took one Carditol 40 mg tablet yesterday"
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "product_name"
+          },
+          {
+            "value": "CT-2231",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "the blister lot number is CT-2231"
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "batch_or_lot"
+          },
+          {
+            "value": "The tablet looked grey and smelled odd",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "The tablet looked grey and smelled odd"
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "defect_description"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "COMPLAINT",
+            "confidence": null,
+            "field_name": "packaging_issue"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "So there seem to be two problems: the tablet was defective, and she had a bad reaction after taking it."
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "suspected_counterfeit"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "The tablet looked grey and smelled odd"
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "contamination"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "No mention of a photo in the email"
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "photo_mentioned"
+          }
+        ]
+      },
+      "usage": {
+        "total_tokens": 895,
+        "prompt_tokens": 532,
+        "completion_tokens": 363
+      },
+      "durationMs": 1944,
+      "error": null,
+      "createdAt": "2026-09-05T19:29:41.940589Z"
+    }
+  ]
+}

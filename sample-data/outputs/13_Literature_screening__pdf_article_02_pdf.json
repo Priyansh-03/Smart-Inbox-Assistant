@@ -1,0 +1,798 @@
+{
+  "audit": [
+    {
+      "id": "13",
+      "messageId": "13",
+      "actor": "ai",
+      "action": "literature_screened",
+      "target": "pdf_article_02.pdf",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"cases\": 2, \"hasPatientCase\": true}",
+      "createdAt": "2026-09-05T19:27:57.161175Z"
+    }
+  ],
+  "facts": [
+    {
+      "id": "46",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "NARRATIVE",
+      "fieldName": "narrative",
+      "fieldValue": "A 6-year-old boy received Broncholyt 5 mL for cough. Within 30 minutes, he developed generalised urticaria, facial swelling, and stridor. He was treated with intramuscular adrenaline and recovered. The case was life-threatening and medically important, but there was no death, disability, or congenital anomaly reported.",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "A 6-year-old boy received Broncholyt 5 mL for cough. Within 30 minutes he developed generalised urticaria, facial swelling and stridor. He was treated with intramuscular adrenaline and recovered."
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "69",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "NARRATIVE",
+      "fieldName": "narrative",
+      "fieldValue": "A 9-year-old girl was given Broncholyt for bronchitis. Two hours later, she experienced vomiting, wheeze, and hypotension, requiring adrenaline and overnight observation. She recovered fully. The dose, route, and medical history are not stated.",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "A 9-year-old girl was given Broncholyt for bronchitis. Two hours later she had vomiting, wheeze and hypotension, requiring adrenaline and overnight observation. Both children recovered fully."
+      },
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "24",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "age",
+      "fieldValue": "6-year-old",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "A 6-year-old boy"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "47",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "age",
+      "fieldValue": "9 years",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "A 9-year-old girl"
+      },
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "50",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "height",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "27",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "height",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "28",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "medical_history",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "51",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "medical_history",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "48",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "sex",
+      "fieldValue": "female",
+      "confidence": 0.7,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "A 9-year-old girl"
+      },
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "25",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "sex",
+      "fieldValue": "boy",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "A 6-year-old boy"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "26",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "weight",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "49",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "weight",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "56",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "dose",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "33",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "dose",
+      "fieldValue": "5 mL",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "5 mL"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "55",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "product_name",
+      "fieldValue": "Broncholyt",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "Broncholyt"
+      },
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "32",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "product_name",
+      "fieldValue": "Broncholyt",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "Broncholyt"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "57",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "route",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "34",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "route",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "35",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "start_date",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "58",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "start_date",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "59",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "stop_date",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "36",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "stop_date",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "38",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "onset_date",
+      "fieldValue": "Within 30 minutes",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "Within 30 minutes"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "61",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "onset_date",
+      "fieldValue": "Two hours later",
+      "confidence": 0.9,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "Two hours later"
+      },
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "62",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "outcome",
+      "fieldValue": "recovered fully",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "recovered fully"
+      },
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "39",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "outcome",
+      "fieldValue": "recovered",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "recovered"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "60",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "reaction",
+      "fieldValue": "vomiting, wheeze, hypotension",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "vomiting, wheeze and hypotension"
+      },
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "37",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "reaction",
+      "fieldValue": "generalised urticaria, facial swelling and stridor",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "generalised urticaria, facial swelling and stridor"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "31",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "country",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "54",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "country",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "29",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "name",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "52",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "name",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "53",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "role",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "30",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "role",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "44",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "congenital_anomaly",
+      "fieldValue": "false",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "A 6-year-old boy"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "67",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "congenital_anomaly",
+      "fieldValue": "false",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "A 9-year-old girl"
+      },
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "63",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "death",
+      "fieldValue": "false",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "Both children recovered fully"
+      },
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "40",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "death",
+      "fieldValue": "false",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "recovered"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "43",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "disability",
+      "fieldValue": "false",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "recovered"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "66",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "disability",
+      "fieldValue": "false",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "recovered fully"
+      },
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "64",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "hospitalization",
+      "fieldValue": "true",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "requiring adrenaline and overnight observation"
+      },
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "41",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "hospitalization",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "65",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "life_threatening",
+      "fieldValue": "true",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "requiring adrenaline"
+      },
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "42",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "life_threatening",
+      "fieldValue": "true",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "treated with intramuscular adrenaline"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "45",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "medically_important",
+      "fieldValue": "true",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "treated with intramuscular adrenaline"
+      },
+      "caseLabel": "Case 1",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "68",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "medically_important",
+      "fieldValue": "true",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_article_02.pdf",
+        "page": null,
+        "quote": "requiring adrenaline"
+      },
+      "caseLabel": "Case 2",
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    }
+  ],
+  "message": {
+    "id": "13",
+    "messageIdHdr": "lit:pdf_article_02.pdf:2544103929669",
+    "sender": "literature-upload",
+    "subject": "Literature screening: pdf_article_02.pdf",
+    "receivedAt": "2026-09-05T19:27:57.029078Z",
+    "bodyText": "",
+    "status": "READY_FOR_REVIEW",
+    "attempts": 0,
+    "processingMs": null,
+    "processingStartedAt": null,
+    "processingEndedAt": "2026-09-05T19:27:57.163489Z",
+    "errorDetail": null,
+    "injectionFlagged": false,
+    "injectionNotes": null,
+    "createdAt": "2026-09-05T19:27:57.029382Z"
+  },
+  "pdfExtractions": [
+    {
+      "id": "2",
+      "messageId": "13",
+      "attachmentId": null,
+      "filename": "pdf_article_02.pdf",
+      "flavor": "ARTICLE",
+      "language": "en",
+      "pageCount": null,
+      "fullText": null,
+      "originalText": null,
+      "ocrConfidence": null,
+      "tables": null,
+      "images": null,
+      "summary": "The document is an article discussing adverse reactions in two pediatric cases involving the use of Broncholyt. The first case concerns a 6-year-old boy who developed generalized urticaria, facial swelling, and stridor within 30 minutes of taking 5 mL of Broncholyt for a cough. He was treated with intramuscular adrenaline and recovered. The second case involves a 9-year-old girl who experienced vomiting, wheeze, and hypotension two hours after receiving Broncholyt for bronchitis. She required adrenaline treatment and overnight observation but also recovered fully. The document does not include any form fields, tables, or images. It appears relevant to pharmacovigilance as it reports adverse drug reactions in children. However, the document lacks detailed information on the patients' medical histories, the exact dosage for the second case, and whether any other factors could have contributed to the reactions.",
+      "looksRelevant": true,
+      "relevanceReason": "The text describes two identifiable individual patient cases involving a specific medicinal product (Broncholyt) and specific adverse events.",
+      "injectionFlagged": false,
+      "injectionNotes": null
+    }
+  ],
+  "classifications": [
+    {
+      "id": "2",
+      "messageId": "13",
+      "bucket": "ICSR",
+      "applies": true,
+      "confidence": 0.8,
+      "reason": "The text describes two identifiable individual patient cases involving a specific medicinal product (Broncholyt) and specific adverse events.",
+      "reviewStatus": "AI",
+      "model": null,
+      "promptVersion": null,
+      "createdAt": "2026-09-05T19:27:57.061504Z"
+    }
+  ],
+  "aiCalls": []
+}

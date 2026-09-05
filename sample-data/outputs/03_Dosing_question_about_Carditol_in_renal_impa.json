@@ -1,0 +1,304 @@
+{
+  "audit": [
+    {
+      "id": "3",
+      "messageId": "3",
+      "actor": "ai",
+      "action": "ingested",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"pdfsStored\": 0, \"attachments\": 0}",
+      "createdAt": "2026-09-05T19:27:56.713064Z"
+    },
+    {
+      "id": "21",
+      "messageId": "3",
+      "actor": "ai",
+      "action": "classified",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"buckets\": 4}",
+      "createdAt": "2026-09-05T19:28:22.181406Z"
+    },
+    {
+      "id": "22",
+      "messageId": "3",
+      "actor": "ai",
+      "action": "facts_extracted",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"count\": 4}",
+      "createdAt": "2026-09-05T19:28:22.190077Z"
+    },
+    {
+      "id": "23",
+      "messageId": "3",
+      "actor": "ai",
+      "action": "processed",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 3665, \"extract\": 2148, \"classify\": 1516}}",
+      "createdAt": "2026-09-05T19:28:22.195504Z"
+    }
+  ],
+  "facts": [
+    {
+      "id": "93",
+      "messageId": "3",
+      "bucket": "MI",
+      "section": "QUESTION",
+      "fieldName": "product_or_topic",
+      "fieldValue": "Carditol 40 mg",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "A prescriber has asked whether Carditol 40 mg once daily needs adjustment for a patient with moderate renal impairment (eGFR around 45)."
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "94",
+      "messageId": "3",
+      "bucket": "MI",
+      "section": "QUESTION",
+      "fieldName": "question_1",
+      "fieldValue": "Does Carditol 40 mg once daily need adjustment for a patient with moderate renal impairment (eGFR around 45)?",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "A prescriber has asked whether Carditol 40 mg once daily needs adjustment for a patient with moderate renal impairment (eGFR around 45)."
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "95",
+      "messageId": "3",
+      "bucket": "MI",
+      "section": "QUESTION",
+      "fieldName": "question_2",
+      "fieldValue": "Can Carditol be taken with food?",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "Also, can Carditol be taken with food?"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "96",
+      "messageId": "3",
+      "bucket": "MI",
+      "section": "QUESTION",
+      "fieldName": "relevant_context",
+      "fieldValue": "Patient with moderate renal impairment (eGFR around 45). No patient has taken a changed dose yet and there is no adverse event.",
+      "confidence": 1.0,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "A prescriber has asked whether Carditol 40 mg once daily needs adjustment for a patient with moderate renal impairment (eGFR around 45). No patient has taken a changed dose yet and there is no adverse event - this is purely an information request."
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    }
+  ],
+  "message": {
+    "id": "3",
+    "messageIdHdr": "<sample-mi-only-001@example.com>",
+    "sender": "Pharmacist Ben Ortiz <b.ortiz@example-pharmacy.test>",
+    "subject": "Dosing question about Carditol in renal impairment",
+    "receivedAt": "2025-09-02T11:02:00Z",
+    "bodyText": "Hi,\n\nA prescriber has asked whether Carditol 40 mg once daily needs adjustment for a\npatient with moderate renal impairment (eGFR around 45). No patient has taken a\nchanged dose yet and there is no adverse event - this is purely an information\nrequest. Also, can Carditol be taken with food?\n\nThanks,\nBen",
+    "status": "READY_FOR_REVIEW",
+    "attempts": 1,
+    "processingMs": 3704,
+    "processingStartedAt": "2026-09-05T19:28:18.479472Z",
+    "processingEndedAt": "2026-09-05T19:28:22.193745Z",
+    "errorDetail": null,
+    "injectionFlagged": false,
+    "injectionNotes": "",
+    "createdAt": "2026-09-05T19:27:56.711197Z"
+  },
+  "pdfExtractions": [],
+  "classifications": [
+    {
+      "id": "12",
+      "messageId": "3",
+      "bucket": "ICSR",
+      "applies": false,
+      "confidence": 1.0,
+      "reason": "No adverse event or reaction described",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-05T19:28:22.174480Z"
+    },
+    {
+      "id": "14",
+      "messageId": "3",
+      "bucket": "MI",
+      "applies": true,
+      "confidence": 1.0,
+      "reason": "Clear request for dosing and administration information",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-05T19:28:22.177984Z"
+    },
+    {
+      "id": "15",
+      "messageId": "3",
+      "bucket": "NOT_RELEVANT",
+      "applies": false,
+      "confidence": 1.0,
+      "reason": "Relevant medical information request",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-05T19:28:22.179606Z"
+    },
+    {
+      "id": "13",
+      "messageId": "3",
+      "bucket": "PQC",
+      "applies": false,
+      "confidence": 1.0,
+      "reason": "No product defect or quality issue mentioned",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-05T19:28:22.176338Z"
+    }
+  ],
+  "aiCalls": [
+    {
+      "id": "4",
+      "messageId": "3",
+      "step": "classify",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "a8b25d4b0df38ee4819abc4898f3ec1f508db78f358410226f116cefb9209c53",
+      "output": {
+        "verdicts": [
+          {
+            "bucket": "ICSR",
+            "reason": "No adverse event or reaction described",
+            "applies": false,
+            "confidence": 1.0
+          },
+          {
+            "bucket": "PQC",
+            "reason": "No product defect or quality issue mentioned",
+            "applies": false,
+            "confidence": 1.0
+          },
+          {
+            "bucket": "MI",
+            "reason": "Clear request for dosing and administration information",
+            "applies": true,
+            "confidence": 1.0
+          },
+          {
+            "bucket": "NOT_RELEVANT",
+            "reason": "Relevant medical information request",
+            "applies": false,
+            "confidence": 1.0
+          }
+        ]
+      },
+      "usage": {
+        "total_tokens": 1144,
+        "prompt_tokens": 1000,
+        "completion_tokens": 144
+      },
+      "durationMs": 1515,
+      "error": null,
+      "createdAt": "2026-09-05T19:28:22.159992Z"
+    },
+    {
+      "id": "5",
+      "messageId": "3",
+      "step": "extract_mi",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "ff2c29a2067650a2b98f4343629880245b96a6f904a1e15d474624ef8f41264b",
+      "output": {
+        "facts": [
+          {
+            "value": "Carditol 40 mg",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "A prescriber has asked whether Carditol 40 mg once daily needs adjustment for a patient with moderate renal impairment (eGFR around 45)."
+            },
+            "section": "QUESTION",
+            "confidence": 1.0,
+            "field_name": "product_or_topic"
+          },
+          {
+            "value": "Does Carditol 40 mg once daily need adjustment for a patient with moderate renal impairment (eGFR around 45)?",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "A prescriber has asked whether Carditol 40 mg once daily needs adjustment for a patient with moderate renal impairment (eGFR around 45)."
+            },
+            "section": "QUESTION",
+            "confidence": 1.0,
+            "field_name": "question_1"
+          },
+          {
+            "value": "Can Carditol be taken with food?",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "Also, can Carditol be taken with food?"
+            },
+            "section": "QUESTION",
+            "confidence": 1.0,
+            "field_name": "question_2"
+          },
+          {
+            "value": "Patient with moderate renal impairment (eGFR around 45). No patient has taken a changed dose yet and there is no adverse event.",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "A prescriber has asked whether Carditol 40 mg once daily needs adjustment for a patient with moderate renal impairment (eGFR around 45). No patient has taken a changed dose yet and there is no adverse event - this is purely an information request."
+            },
+            "section": "QUESTION",
+            "confidence": 1.0,
+            "field_name": "relevant_context"
+          }
+        ]
+      },
+      "usage": {
+        "total_tokens": 861,
+        "prompt_tokens": 508,
+        "completion_tokens": 353
+      },
+      "durationMs": 2147,
+      "error": null,
+      "createdAt": "2026-09-05T19:28:22.172301Z"
+    }
+  ]
+}

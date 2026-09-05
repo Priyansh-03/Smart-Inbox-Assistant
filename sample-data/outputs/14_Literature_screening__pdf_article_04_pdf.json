@@ -1,0 +1,69 @@
+{
+  "audit": [
+    {
+      "id": "14",
+      "messageId": "14",
+      "actor": "ai",
+      "action": "literature_screened",
+      "target": "pdf_article_04.pdf",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"cases\": 0, \"hasPatientCase\": false}",
+      "createdAt": "2026-09-05T19:27:57.217775Z"
+    }
+  ],
+  "facts": [],
+  "message": {
+    "id": "14",
+    "messageIdHdr": "lit:pdf_article_04.pdf:2544255324089",
+    "sender": "literature-upload",
+    "subject": "Literature screening: pdf_article_04.pdf",
+    "receivedAt": "2026-09-05T19:27:57.180485Z",
+    "bodyText": "",
+    "status": "READY_FOR_REVIEW",
+    "attempts": 0,
+    "processingMs": null,
+    "processingStartedAt": null,
+    "processingEndedAt": "2026-09-05T19:27:57.219461Z",
+    "errorDetail": null,
+    "injectionFlagged": false,
+    "injectionNotes": null,
+    "createdAt": "2026-09-05T19:27:57.181023Z"
+  },
+  "pdfExtractions": [
+    {
+      "id": "3",
+      "messageId": "14",
+      "attachmentId": null,
+      "filename": "pdf_article_04.pdf",
+      "flavor": "ARTICLE",
+      "language": "en",
+      "pageCount": null,
+      "fullText": null,
+      "originalText": null,
+      "ocrConfidence": null,
+      "tables": null,
+      "images": null,
+      "summary": "The document is an article analyzing a registry of 40,000 patients who received Coagustat, focusing on estimating major bleeding rates. It concerns a population-level analysis and does not include any identifiable individual patient data. The core finding is that the annualized major bleeding rate was 3.1 per 100 patient-years, with higher rates observed in patients over 75 years old and those with renal impairment. The study uses a retrospective cohort design and defines major bleeding according to ISTH criteria. There are no form fields, tables, or figures included in the document. No images are flagged for review. The article appears relevant to pharmacovigilance as it provides data on adverse events (major bleeding) associated with Coagustat. However, it lacks detailed case narratives or individual patient data, which limits its granularity for safety monitoring purposes.",
+      "looksRelevant": true,
+      "relevanceReason": "The article is a cohort analysis with no identifiable individual patient cases described.",
+      "injectionFlagged": false,
+      "injectionNotes": null
+    }
+  ],
+  "classifications": [
+    {
+      "id": "3",
+      "messageId": "14",
+      "bucket": "NOT_RELEVANT",
+      "applies": true,
+      "confidence": 0.6,
+      "reason": "The article is a cohort analysis with no identifiable individual patient cases described.",
+      "reviewStatus": "AI",
+      "model": null,
+      "promptVersion": null,
+      "createdAt": "2026-09-05T19:27:57.216223Z"
+    }
+  ],
+  "aiCalls": []
+}
