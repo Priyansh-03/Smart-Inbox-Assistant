@@ -98,7 +98,9 @@ public class InboxRepository {
 
     public Optional<Message> claimNextNew() {
         Optional<Message> claimed = jdbc.sql("""
-                UPDATE message SET status = 'PROCESSING', attempts = attempts + 1
+                UPDATE message
+                SET status = 'PROCESSING', attempts = attempts + 1,
+                    processing_started_at = now(), processing_ended_at = NULL
                 WHERE id = (
                     SELECT id FROM message WHERE status = 'NEW'
                     ORDER BY id FOR UPDATE SKIP LOCKED LIMIT 1
@@ -109,13 +111,39 @@ public class InboxRepository {
         return claimed;
     }
 
+    /** Requeue messages stuck in PROCESSING (worker crash). Returns how many were reset. */
+    public int reapStuck(int olderThanSeconds) {
+        int n = jdbc.sql("""
+                UPDATE message SET status = 'NEW', processing_ended_at = now()
+                WHERE status = 'PROCESSING'
+                  AND processing_started_at < now() - make_interval(secs => :s)
+                """).param("s", olderThanSeconds).update();
+        if (n > 0) log.warn("Reaper requeued {} message(s) stuck in PROCESSING > {}s", n, olderThanSeconds);
+        return n;
+    }
+
+    /** Manual redrive of a dead-lettered message. Returns true if one was reset. */
+    public boolean resetFailedToNew(String id) {
+        int n = jdbc.sql("""
+                UPDATE message SET status = 'NEW', attempts = 0, error_detail = NULL,
+                    processing_started_at = NULL, processing_ended_at = NULL
+                WHERE id = :id AND status = 'FAILED'
+                """).param("id", Long.valueOf(id)).update();
+        log.info("Retry requested for message id={}: {}", id, n > 0 ? "requeued" : "not FAILED, ignored");
+        return n > 0;
+    }
+
     public List<Attachment> processableAttachments(String messageId) {
         return jdbc.sql("SELECT * FROM attachment WHERE message_id = :m AND processed = true")
                 .param("m", Long.valueOf(messageId)).query(ATTACHMENT).list();
     }
 
     public void markMessage(String id, String status, Long ms, String error) {
-        jdbc.sql("UPDATE message SET status = :st, processing_ms = :ms, error_detail = :err WHERE id = :id")
+        jdbc.sql("""
+                UPDATE message SET status = :st, processing_ms = :ms, error_detail = :err,
+                    processing_ended_at = now()
+                WHERE id = :id
+                """)
                 .param("st", status).param("ms", ms).param("err", error).param("id", Long.valueOf(id))
                 .update();
         log.info("Message id={} -> {}{}", id, status, error == null ? "" : " (" + error + ")");
@@ -268,6 +296,8 @@ public class InboxRepository {
         m.attempts = rs.getInt("attempts");
         long ms = rs.getLong("processing_ms");
         m.processingMs = rs.wasNull() ? null : ms;
+        m.processingStartedAt = inst(rs, "processing_started_at");
+        m.processingEndedAt = inst(rs, "processing_ended_at");
         m.errorDetail = rs.getString("error_detail");
         m.injectionFlagged = rs.getBoolean("injection_flagged");
         m.injectionNotes = rs.getString("injection_notes");

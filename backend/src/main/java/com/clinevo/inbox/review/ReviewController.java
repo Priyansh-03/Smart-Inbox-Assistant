@@ -102,6 +102,15 @@ public class ReviewController {
         return ResponseEntity.noContent().build();
     }
 
+    /** Redrive a FAILED message back into the queue. */
+    @PostMapping("/{id}/retry")
+    public ResponseEntity<Void> retry(@PathVariable String id) {
+        boolean requeued = repo.resetFailedToNew(id);
+        if (!requeued) return ResponseEntity.status(409).build();
+        audit.event(id, reviewerId, "retry_requested", "message", Constants.STATUS_FAILED, Constants.STATUS_NEW, null);
+        return ResponseEntity.noContent().build();
+    }
+
     public record ClassificationEdit(String bucket, boolean applies) {}
 
     public record FactEdit(String factId, String value) {}

@@ -19,6 +19,8 @@ public final class Documents {
         public String status;
         public int attempts;
         public Long processingMs;
+        public Instant processingStartedAt;
+        public Instant processingEndedAt;
         public String errorDetail;
         public boolean injectionFlagged;
         public String injectionNotes;

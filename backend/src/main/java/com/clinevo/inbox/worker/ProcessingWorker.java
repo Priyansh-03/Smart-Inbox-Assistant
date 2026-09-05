@@ -37,17 +37,25 @@ public class ProcessingWorker {
     private final AiClient ai;
     private final AuditService audit;
     private final int maxAttempts;
+    private final int stuckSeconds;
 
     public ProcessingWorker(InboxRepository repo, AiClient ai, AuditService audit, AppProperties props) {
         this.repo = repo;
         this.ai = ai;
         this.audit = audit;
         this.maxAttempts = props.worker().maxAttempts();
+        this.stuckSeconds = props.worker().stuckSeconds();
     }
 
     @Scheduled(fixedDelayString = "${app.worker.poll-ms}")
     public void tick() {
         repo.claimNextNew().ifPresent(this::process);
+    }
+
+    /** Recover messages a crashed worker left stuck in PROCESSING. */
+    @Scheduled(fixedDelayString = "${app.worker.stuck-seconds}000")
+    public void reap() {
+        repo.reapStuck(stuckSeconds);
     }
 
     private void process(Message m) {

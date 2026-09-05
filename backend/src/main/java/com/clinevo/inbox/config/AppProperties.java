@@ -13,7 +13,7 @@ public record AppProperties(
 ) {
     public record Ingest(int maxAttachmentMb, int maxBodyChars) {}
 
-    public record Worker(long pollMs, int maxAttempts) {}
+    public record Worker(long pollMs, int maxAttempts, int stuckSeconds) {}
 
     public record Ai(String baseUrl, int timeoutSeconds, int connectTimeoutSeconds) {}
 

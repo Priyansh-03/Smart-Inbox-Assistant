@@ -27,6 +27,7 @@ app:
   worker:
     poll-ms: ${WORKER_POLL_MS}
     max-attempts: ${WORKER_MAX_ATTEMPTS}
+    stuck-seconds: ${WORKER_STUCK_SECONDS}
   ai:
     base-url: ${AI_SERVICE_URL}
     timeout-seconds: ${AI_TIMEOUT_SECONDS}
