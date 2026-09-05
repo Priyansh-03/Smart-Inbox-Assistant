@@ -12,6 +12,22 @@ public final class AiDtos {
 
     public record PdfIn(String filename, String base64) {}
 
+    public record LiteratureIn(String filename, String base64) {}
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record LiteratureCase(
+            @JsonProperty("case_label") String caseLabel,
+            String text, boolean reportable, List<Fact> facts) {}
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record LiteratureResult(
+            String filename, String flavor, String language, String summary,
+            @JsonProperty("looks_relevant") Boolean looksRelevant,
+            @JsonProperty("relevance_reason") String relevanceReason,
+            @JsonProperty("has_patient_case") boolean hasPatientCase,
+            List<LiteratureCase> cases,
+            @JsonProperty("ai_calls") List<AiCall> aiCalls) {}
+
     public record ProcessRequest(
             @JsonProperty("message_id") String messageId,
             @JsonProperty("email_from") String emailFrom,

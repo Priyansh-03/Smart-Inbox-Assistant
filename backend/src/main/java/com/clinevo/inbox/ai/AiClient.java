@@ -21,4 +21,13 @@ public class AiClient {
                 .retrieve()
                 .body(AiDtos.ProcessResponse.class);
     }
+
+    public AiDtos.LiteratureResult screenLiterature(AiDtos.LiteratureIn req) {
+        return client.post()
+                .uri("/ai/v1/literature")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(req)
+                .retrieve()
+                .body(AiDtos.LiteratureResult.class);
+    }
 }

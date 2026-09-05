@@ -219,12 +219,13 @@ public class InboxRepository {
 
     public void save(Fact f) {
         jdbc.sql("""
-                INSERT INTO fact (message_id, bucket, section, field_name, field_value, confidence, source, reviewed_value, review_status)
-                VALUES (:m, :b, :se, :fn, :fv, :c, CAST(:src AS jsonb), :rv, :rs)
+                INSERT INTO fact (message_id, bucket, section, field_name, field_value, confidence, source,
+                    case_label, reviewed_value, review_status)
+                VALUES (:m, :b, :se, :fn, :fv, :c, CAST(:src AS jsonb), :cl, :rv, :rs)
                 """)
                 .param("m", Long.valueOf(f.messageId)).param("b", f.bucket).param("se", f.section)
                 .param("fn", f.fieldName).param("fv", f.fieldValue).param("c", f.confidence)
-                .param("src", Jsonb.write(f.source)).param("rv", f.reviewedValue)
+                .param("src", Jsonb.write(f.source)).param("cl", f.caseLabel).param("rv", f.reviewedValue)
                 .param("rs", f.reviewStatus == null ? Constants.REVIEW_AI : f.reviewStatus)
                 .update();
     }
@@ -383,6 +384,7 @@ public class InboxRepository {
         f.fieldValue = rs.getString("field_value");
         f.confidence = dbl(rs, "confidence");
         f.source = Jsonb.read(rs.getString("source"), new TypeReference<>() {});
+        f.caseLabel = rs.getString("case_label");
         f.reviewedValue = rs.getString("reviewed_value");
         f.reviewStatus = rs.getString("review_status");
         return f;

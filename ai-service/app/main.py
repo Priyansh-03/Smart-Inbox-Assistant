@@ -4,7 +4,7 @@ import logging
 from fastapi import FastAPI, HTTPException
 
 from .llm import cache_stats, MODEL, PROMPT_VERSION
-from .pipeline import classify_context, extract_from_chunks, process_pdf, run
+from .pipeline import classify_context, extract_from_chunks, process_pdf, run, screen_article
 from .schemas import (ClassifyRequest, ClassifyResponse, ExtractRequest,
                       ExtractResponse, PdfRequest, PdfResult, ProcessRequest,
                       ProcessResponse)
@@ -45,6 +45,16 @@ def extract_stage(req: ExtractRequest):
         return extract_from_chunks(req.categories, req.context_chunks)
     except Exception as e:  # noqa: BLE001
         log.exception("extract stage failed")
+        raise HTTPException(status_code=502, detail=str(e))
+
+
+@app.post("/ai/v1/literature")
+def literature_stage(req: PdfRequest):
+    """Literature screening: split an article into identifiable cases + ICSR facts each."""
+    try:
+        return screen_article(req.filename, base64.b64decode(req.base64))
+    except Exception as e:  # noqa: BLE001
+        log.exception("literature screening failed for %s", req.filename)
         raise HTTPException(status_code=502, detail=str(e))
 
 

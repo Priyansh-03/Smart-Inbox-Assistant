@@ -79,6 +79,7 @@ public final class Documents {
         public String fieldValue;
         public Double confidence;
         public Source source;
+        public String caseLabel;
         public String reviewedValue;
         public String reviewStatus;
 

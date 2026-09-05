@@ -104,3 +104,27 @@ def test_extract_marks_absent_fields_null_not_zero(monkeypatch):
     assert by["age"].confidence == 0.95 and by["age"].source.type == "email"
     assert by["height"].value == "Not stated" and by["height"].confidence is None and by["height"].source is None
     assert by["weight"].value == "Not stated" and by["weight"].confidence is None and by["weight"].source is None
+
+
+def test_screen_article_splits_into_cases_with_facts(monkeypatch):
+    monkeypatch.setattr(pipeline.pu, "analyse",
+                        _stub_analyse(pipeline.pu.FLAVOR_ARTICLE, [{"page": 1, "scanned": False}],
+                                      full_text="Case 1 ... Case 2 ..."))
+    _patch_common(monkeypatch)
+
+    def fake_guarded(name, text, **k):
+        if name == "article_case":
+            return {"has_patient_case": True, "reason": "two identifiable cases",
+                    "cases": [{"case_label": "Case 1", "text": "6yo boy anaphylaxis on DrugY"},
+                              {"case_label": "Case 2", "text": "9yo girl anaphylaxis on DrugY"}]}
+        if name in ("extract_icsr",):
+            return {"facts": [{"section": "PATIENT", "field_name": "age", "value": "6",
+                               "confidence": 0.9, "source": {"type": "pdf", "quote": "6yo"}}]}
+        return {"summary": "s", "looks_relevant": True, "relevance_reason": "r"}
+    monkeypatch.setattr(pipeline, "_guarded", fake_guarded)
+
+    out = pipeline.screen_article("art.pdf", b"%PDF-fake")
+    assert out["has_patient_case"] is True
+    assert [c["case_label"] for c in out["cases"]] == ["Case 1", "Case 2"]
+    assert out["cases"][0]["facts"][0]["value"] == "6"
+    assert out["relevance_reason"] == "two identifiable cases"

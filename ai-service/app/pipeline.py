@@ -126,6 +126,31 @@ def extract_from_chunks(categories: list[str], context_chunks: list[str]) -> Ext
                            injection_flagged=scan["flagged"], injection_notes=", ".join(scan["tags"]))
 
 
+def screen_article(name: str, pdf_bytes: bytes) -> dict:
+    """Literature screening (spec §14): split an article into identifiable individual
+    patient cases and extract ICSR facts per case. Reuses process_pdf + extract."""
+    callrec.start()
+    pdf = process_pdf(name, pdf_bytes)          # gives flavor/language/summary + runs article_case
+    r = _guarded("article_case", pdf.full_text[:MAX_CTX_CHARS], max_tokens=3000)
+    raw_cases = r.get("cases", []) if r.get("has_patient_case") else []
+    cases = []
+    for i, c in enumerate(raw_cases, 1):
+        label = c.get("case_label") or f"Case {i}"
+        text = c.get("text", "")
+        facts = extract_from_chunks(["ICSR"], [f"[pdf {name}]\n{text}"]).facts
+        cases.append({"case_label": label, "text": text,
+                      "reportable": bool(text.strip()),
+                      "facts": [f.model_dump() for f in facts]})
+    log.info("Literature: %s -> %d identifiable case(s)", name, len(cases))
+    return {
+        "filename": name, "flavor": pdf.flavor, "language": pdf.language,
+        "summary": pdf.summary, "looks_relevant": pdf.looks_relevant,
+        "relevance_reason": r.get("reason", pdf.relevance_reason),
+        "has_patient_case": bool(cases), "cases": cases,
+        "ai_calls": [AiCall(**x).model_dump() for x in callrec.collect()],
+    }
+
+
 def run(req: ProcessRequest) -> ProcessResponse:
     callrec.start()
     lat: dict = {}
