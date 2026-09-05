@@ -3,13 +3,14 @@ import base64
 import logging
 import time
 
+from . import callrec
 from . import pdf_utils as pu
 from . import guardrails as gr
 from .config import config
 from .constants import MAX_CTX_CHARS
 from .llm import ask_json, image_part, load_prompt, text_part, MODEL, PROMPT_VERSION
-from .schemas import (BucketVerdict, ClassifyResponse, ExtractResponse, Fact,
-                      PdfResult, ProcessRequest, ProcessResponse, Source)
+from .schemas import (AiCall, BucketVerdict, ClassifyResponse, ExtractResponse,
+                      Fact, PdfResult, ProcessRequest, ProcessResponse, Source)
 from .validators import clean_facts, clean_verdicts
 
 log = logging.getLogger("ai-service.pipeline")
@@ -18,9 +19,9 @@ PROMPT_BY_BUCKET = {"ICSR": "extract_icsr", "PQC": "extract_pqc", "MI": "extract
 
 
 def _guarded(prompt_name: str, untrusted_text: str, **kw) -> dict:
-    """ask_json with the injection guard + fenced untrusted content."""
+    """ask_json with the injection guard + fenced untrusted content, recorded as `prompt_name`."""
     return ask_json(load_prompt(prompt_name), gr.wrap_untrusted(untrusted_text),
-                    untrusted_guard=True, **kw)
+                    step=prompt_name, untrusted_guard=True, **kw)
 
 
 def process_pdf(name: str, pdf_bytes: bytes) -> PdfResult:
@@ -37,7 +38,7 @@ def process_pdf(name: str, pdf_bytes: bytes) -> PdfResult:
             if p["scanned"]:
                 png = pu.render_page_png(pdf_bytes, p["page"] - 1)
                 r = ask_json(load_prompt("ocr"),
-                             [image_part(png), text_part("Transcribe this page.")])
+                             [image_part(png), text_part("Transcribe this page.")], step="ocr")
                 parts.append(f"[page {p['page']}]\n{r.get('text', '')}")
                 confs.append(float(r.get("confidence", 0.0)))
             else:
@@ -63,7 +64,7 @@ def process_pdf(name: str, pdf_bytes: bytes) -> PdfResult:
     for im in pu.list_images(pdf_bytes):
         png = pu.render_page_png(pdf_bytes, im["page"] - 1)
         cap = ask_json(load_prompt("image_caption"),
-                       [image_part(png), text_part(f"Describe the notable image on page {im['page']}.")])
+                       [image_part(png), text_part(f"Describe the notable image on page {im['page']}.")], step="image_caption")
         images.append({"page": im["page"], "needs_human_review": True, **cap})
 
     scan = gr.scan(info["full_text"] + "\n" + text)
@@ -126,6 +127,7 @@ def extract_from_chunks(categories: list[str], context_chunks: list[str]) -> Ext
 
 
 def run(req: ProcessRequest) -> ProcessResponse:
+    callrec.start()
     lat: dict = {}
     t0 = time.time()
     pdfs: list[PdfResult] = []
@@ -157,4 +159,5 @@ def run(req: ProcessRequest) -> ProcessResponse:
     return ProcessResponse(message_id=req.message_id, model=MODEL,
                            prompt_version=PROMPT_VERSION, latency_ms=lat,
                            pdfs=pdfs, classifications=cls.classifications, facts=ext.facts,
-                           injection_flagged=flagged, injection_notes="; ".join(notes))
+                           injection_flagged=flagged, injection_notes="; ".join(notes),
+                           ai_calls=[AiCall(**c) for c in callrec.collect()])

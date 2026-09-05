@@ -11,6 +11,7 @@ from openai import (APIConnectionError, APITimeoutError, InternalServerError,
 from tenacity import (retry, retry_if_exception_type, stop_after_attempt,
                       wait_exponential_jitter)
 
+from . import callrec
 from .cache import TTLCache, key as cache_key
 from .config import config
 from .guardrails import UNTRUSTED_SYSTEM_GUARD
@@ -88,21 +89,23 @@ def _create(messages: list, max_tokens: int, temperature: float, json_mode: bool
     return client().chat.completions.create(**kwargs)
 
 
-def ask_json(system: str, user_content, *, max_tokens: int = 2000,
+def ask_json(system: str, user_content, *, step: str = "call", max_tokens: int = 2000,
              temperature: float = 0.0, retries: int = 1, untrusted_guard: bool = False) -> dict:
-    """Model call in JSON mode, cached by request hash. `user_content` is a string or
-    a list of content parts (text_part / image_part). Set untrusted_guard=True when the
-    content carries email/PDF text so the injection guard is prepended to the system."""
+    """Model call in JSON mode, cached by request hash and recorded for the audit trail.
+    `user_content` is a string or a list of content parts (text_part / image_part).
+    Set untrusted_guard=True when the content carries email/PDF text."""
     if untrusted_guard:
         system = UNTRUSTED_SYSTEM_GUARD + "\n\n" + system
     ck = cache_key("json", MODEL, PROMPT_VERSION, temperature, untrusted_guard, system, user_content)
     cached = _cache.get(ck)
     if cached is not None:
+        callrec.record(step, MODEL, PROMPT_VERSION, ck, cached, None, 0, None)
         return cached
 
     messages = [{"role": "system", "content": system},
                 {"role": "user", "content": _content(user_content)}]
     last_err = None
+    started = time.time()
     for attempt in range(retries + 1):
         resp = _create(messages, max_tokens, temperature, json_mode=True)
         raw = (resp.choices[0].message.content or "").strip()
@@ -118,10 +121,14 @@ def ask_json(system: str, user_content, *, max_tokens: int = 2000,
                     continue
             else:
                 continue
-        log.info("ask_json ok (attempt %d, %d keys, usage=%s)",
-                 attempt + 1, len(result), getattr(resp, "usage", None))
+        dur = int((time.time() - started) * 1000)
+        log.info("ask_json[%s] ok (attempt %d, %d keys, usage=%s)",
+                 step, attempt + 1, len(result), getattr(resp, "usage", None))
+        callrec.record(step, MODEL, PROMPT_VERSION, ck, result, getattr(resp, "usage", None), dur, None)
         _cache.put(ck, result)
         return result
+    callrec.record(step, MODEL, PROMPT_VERSION, ck, {}, None,
+                   int((time.time() - started) * 1000), f"invalid JSON: {last_err}")
     raise ValueError(f"model did not return valid JSON: {last_err}")
 
 

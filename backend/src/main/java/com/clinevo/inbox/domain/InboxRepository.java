@@ -200,6 +200,23 @@ public class InboxRepository {
                 .update();
     }
 
+    public void saveAiCall(String messageId, String step, String model, String promptVersion,
+                           String inputHash, String outputJson, String usageJson, Long durationMs, String error) {
+        jdbc.sql("""
+                INSERT INTO ai_call (message_id, step, model, prompt_version, input_hash, output, usage, duration_ms, error)
+                VALUES (:m, :st, :md, :pv, :ih, CAST(:out AS jsonb), CAST(:use AS jsonb), :dur, :err)
+                """)
+                .param("m", Long.valueOf(messageId)).param("st", step).param("md", model)
+                .param("pv", promptVersion).param("ih", inputHash).param("out", outputJson)
+                .param("use", usageJson).param("dur", durationMs).param("err", error)
+                .update();
+    }
+
+    public List<Documents.AiCall> aiCalls(String messageId) {
+        return jdbc.sql("SELECT * FROM ai_call WHERE message_id = :m ORDER BY id")
+                .param("m", Long.valueOf(messageId)).query(AI_CALL).list();
+    }
+
     public void save(Fact f) {
         jdbc.sql("""
                 INSERT INTO fact (message_id, bucket, section, field_name, field_value, confidence, source, reviewed_value, review_status)
@@ -369,6 +386,23 @@ public class InboxRepository {
         f.reviewedValue = rs.getString("reviewed_value");
         f.reviewStatus = rs.getString("review_status");
         return f;
+    };
+
+    private static final RowMapper<Documents.AiCall> AI_CALL = (rs, i) -> {
+        Documents.AiCall a = new Documents.AiCall();
+        a.id = str(rs, "id");
+        a.messageId = str(rs, "message_id");
+        a.step = rs.getString("step");
+        a.model = rs.getString("model");
+        a.promptVersion = rs.getString("prompt_version");
+        a.inputHash = rs.getString("input_hash");
+        a.output = Jsonb.read(rs.getString("output"), new TypeReference<Object>() {});
+        a.usage = Jsonb.read(rs.getString("usage"), new TypeReference<Object>() {});
+        long d = rs.getLong("duration_ms");
+        a.durationMs = rs.wasNull() ? null : d;
+        a.error = rs.getString("error");
+        a.createdAt = inst(rs, "created_at");
+        return a;
     };
 
     private static final RowMapper<AuditEvent> AUDIT_EVENT = (rs, i) -> {

@@ -101,4 +101,18 @@ public final class Documents {
         public String detailJson;
         public Instant createdAt;
     }
+
+    public static class AiCall {
+        public String id;
+        public String messageId;
+        public String step;
+        public String model;
+        public String promptVersion;
+        public String inputHash;
+        public Object output;
+        public Object usage;
+        public Long durationMs;
+        public String error;
+        public Instant createdAt;
+    }
 }

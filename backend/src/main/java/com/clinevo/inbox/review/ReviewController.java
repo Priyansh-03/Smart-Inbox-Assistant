@@ -67,6 +67,7 @@ public class ReviewController {
                 "pdfExtractions", repo.pdfExtractions(id),
                 "classifications", repo.classifications(id),
                 "facts", repo.facts(id),
+                "aiCalls", repo.aiCalls(id),
                 "audit", repo.audit(id));
     }
 

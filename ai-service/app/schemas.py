@@ -57,6 +57,18 @@ class PdfResult(BaseModel):
     injection_notes: str = ""
 
 
+class AiCall(BaseModel):
+    step: str
+    model: str
+    prompt_version: str
+    input_hash: str
+    output: Any = None
+    usage: Optional[dict] = None
+    duration_ms: int = 0
+    error: Optional[str] = None
+    ts: float = 0.0
+
+
 class ProcessResponse(BaseModel):
     message_id: str
     model: str
@@ -65,6 +77,7 @@ class ProcessResponse(BaseModel):
     pdfs: List[PdfResult] = []
     classifications: List[BucketVerdict] = []
     facts: List[Fact] = []
+    ai_calls: List[AiCall] = []
     injection_flagged: bool = False
     injection_notes: str = ""
 

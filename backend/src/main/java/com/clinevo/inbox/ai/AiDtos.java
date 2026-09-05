@@ -45,6 +45,15 @@ public final class AiDtos {
             @JsonProperty("injection_notes") String injectionNotes) {}
 
     @JsonIgnoreProperties(ignoreUnknown = true)
+    public record AiCall(
+            String step, String model,
+            @JsonProperty("prompt_version") String promptVersion,
+            @JsonProperty("input_hash") String inputHash,
+            Object output, Map<String, Object> usage,
+            @JsonProperty("duration_ms") Integer durationMs,
+            String error, Double ts) {}
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public record ProcessResponse(
             @JsonProperty("message_id") String messageId,
             String model,
@@ -53,6 +62,7 @@ public final class AiDtos {
             List<PdfResult> pdfs,
             List<BucketVerdict> classifications,
             List<Fact> facts,
+            @JsonProperty("ai_calls") List<AiCall> aiCalls,
             @JsonProperty("injection_flagged") boolean injectionFlagged,
             @JsonProperty("injection_notes") String injectionNotes) {}
 }
