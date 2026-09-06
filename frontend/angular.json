@@ -15,7 +15,10 @@
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.json",
-            "assets": [{ "glob": "env.js", "input": "src", "output": "/" }],
+            "assets": [
+              { "glob": "env.js", "input": "src", "output": "/" },
+              { "glob": "**/*", "input": "src/assets", "output": "/assets" }
+            ],
             "styles": ["src/styles.css"]
           },
           "configurations": {

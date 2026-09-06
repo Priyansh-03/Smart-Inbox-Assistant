@@ -60,6 +60,14 @@ preserved so the whole suite runs in one go (`make test`).
 | EC13 | Worker picks same row twice (concurrency) | FOR UPDATE SKIP LOCKED prevents double-processing |
 | EC14 | Huge PDF (100+ pages) | page cap enforced; partial result flagged |
 
+## Follow-ups
+
+- [ ] **Edit résumé** — `frontend/src/assets/Priyansh_Srivastava_Resume.pdf` is
+  currently just a copy of `Priyansh_Srivastava_exp.pdf`. Update the content
+  (roles, dates, this project) and replace the file with the same name; the
+  top-bar "Résumé" link (`frontend/src/app/app.component.ts`) points at
+  `/assets/Priyansh_Srivastava_Resume.pdf`.
+
 ## Rollback
 
 Each todo item = one commit. Hashes recorded in `docs/CHANGELOG.md`.

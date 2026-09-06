@@ -50,6 +50,7 @@ public class ReviewController {
             row.put("id", m.id);
             row.put("sender", m.sender);
             row.put("subject", m.subject);
+            row.put("receivedAt", m.receivedAt);
             row.put("status", m.status);
             row.put("processingMs", m.processingMs);
             row.put("buckets", buckets);

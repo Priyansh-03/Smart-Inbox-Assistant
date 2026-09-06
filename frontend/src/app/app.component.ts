@@ -7,8 +7,16 @@ import { RouterOutlet, RouterLink } from '@angular/router';
   imports: [RouterOutlet, RouterLink],
   template: `
     <div class="bar">
-      <a routerLink="/" style="color:#fff">Smart Inbox Assistant</a>
-      <span style="opacity:.7;font-weight:400"> &nbsp;·&nbsp; pharmacovigilance triage</span>
+      <a routerLink="/" class="brand">
+        <span class="brand-co">Clinevo Technologies Pvt. Ltd.</span>
+        <span class="brand-app">Smart Inbox Assistant · pharmacovigilance triage</span>
+      </a>
+      <span class="devmark">
+        <span class="devmark-name">Built by Priyansh Srivastava</span>
+        <a href="https://www.linkedin.com/in/priyansh-srivastava-aiml-developer/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/Priyansh-03" target="_blank" rel="noopener">GitHub</a>
+        <a href="/assets/Priyansh_Srivastava_Resume.pdf" target="_blank" rel="noopener">Résumé</a>
+      </span>
     </div>
     <div class="wrap"><router-outlet></router-outlet></div>
   `,
