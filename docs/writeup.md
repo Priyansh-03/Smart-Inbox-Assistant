@@ -141,20 +141,31 @@ JSON in [`sample-data/outputs/`](../sample-data/outputs).
 | vague "mother wasn't well" | ICSR (conf 0.8) | 23 (5 stated) | — | 5.3 s |
 | corrupt PDF attached | — | — | — | **FAILED in 3 ms** |
 
-Average successful document: **7.1 s** (1.4 s – 13.0 s). All 10 non-corrupt
+Average successful document, **cold cache: ~7.1 s** (1.4 s – 13.0 s). All non-corrupt
 documents classified correctly against `sample-data/expected/labels.json`; the
 corrupt PDF failed fast without blocking the queue.
 
-Literature-screening bonus, verified separately: a 2-case article split into Case 1
-+ Case 2 (23 ICSR facts each); a cohort-analysis article correctly returned
-NOT_RELEVANT with 0 cases; a single-case article returned Case 1.
+Re-running the same corpus with a **warm cache** drops the average to **~135 ms**:
+identical prompt hashes are served from the in-process TTL cache and cost no OpenAI
+calls (a re-sent duplicate email is effectively free). A 16th message —
+`pdf_pqc_photo.pdf`, a digital PQC form with an embedded damaged-blister photo —
+classifies **PQC (1.0)**, and the vision model captions the image
+(`kind=product_photo`, `needs_human_review=true`) which is persisted and shown to
+the reviewer.
+
+Verified against **real services** (not just review): `.eml` upload, IMAP plain
+email, IMAP with a PDF attachment (Gmail multipart → `application/pdf` part
+extracted → SCANNED → OCR 0.95 → ICSR), dedupe on re-send, the UID cursor
+advancing, and the response cache.
+
+Literature-screening bonus: a 2-case article split into Case 1 + Case 2 (23 ICSR
+facts each); a cohort-analysis article correctly returned NOT_RELEVANT with 0
+cases; a single-case article returned Case 1.
 
 ---
 
 ## 6. Known limitations
 
-- The IMAP poller (UID cursor + UIDVALIDITY reset) is code-reviewed but not tested
-  against a live mailbox in this environment.
 - `PdfResult.form_fields` (label:value pairs / AcroForm widgets) reaches the PDF
   summary prompt but is not yet persisted or shown in the detail view.
 - Table extraction is `pdfplumber.extract_tables()`; tables spanning a page break
