@@ -1,9 +1,49 @@
 {
-  "email_icsr_full.eml":            { "buckets": ["ICSR"], "notes": "all 4 ICSR elements present" },
-  "email_mi_only.eml":              { "buckets": ["MI"], "notes": "question only, no AE, no defect" },
-  "email_pqc_only.eml":             { "buckets": ["PQC"], "notes": "broken seal + discolouration, lot CT-2231" },
-  "email_marketing.eml":            { "buckets": ["NOT_RELEVANT"], "notes": "mentions drug + 'side effects' but is marketing" },
-  "email_reaction_from_defect.eml": { "buckets": ["ICSR", "PQC"], "notes": "multi-label" },
-  "email_vague.eml":                { "buckets": ["ICSR"], "notes": "low confidence, most fields Not stated" },
-  "email_with_corrupt_pdf.eml":     { "buckets": [], "notes": "worker marks message FAILED, queue continues" }
+  "email_icsr_full.eml": {
+    "buckets": [
+      "ICSR"
+    ],
+    "notes": "all 4 ICSR elements present"
+  },
+  "email_mi_only.eml": {
+    "buckets": [
+      "MI"
+    ],
+    "notes": "question only, no AE, no defect"
+  },
+  "email_pqc_only.eml": {
+    "buckets": [
+      "PQC"
+    ],
+    "notes": "broken seal + discolouration, lot CT-2231"
+  },
+  "email_marketing.eml": {
+    "buckets": [
+      "NOT_RELEVANT"
+    ],
+    "notes": "mentions drug + 'side effects' but is marketing"
+  },
+  "email_reaction_from_defect.eml": {
+    "buckets": [
+      "ICSR",
+      "PQC"
+    ],
+    "notes": "multi-label"
+  },
+  "email_vague.eml": {
+    "buckets": [
+      "ICSR"
+    ],
+    "notes": "low confidence, most fields Not stated"
+  },
+  "email_with_corrupt_pdf.eml": {
+    "buckets": [],
+    "notes": "worker marks message FAILED, queue continues"
+  },
+  "email_pqc_photo.eml": {
+    "buckets": [
+      "PQC"
+    ],
+    "notes": "digital PQC form + embedded damaged-blister photo; image flagged for review"
+  }
 }

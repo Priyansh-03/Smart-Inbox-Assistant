@@ -1,4 +1,344 @@
 {
+  "aiCalls": [
+    {
+      "id": "17",
+      "messageId": "7",
+      "step": "ocr",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "ac9ccd62c042abcb35e0100f92bdf390f1df89b248a1836a4401e214eeac8fcf",
+      "output": {
+        "text": "ADVERSE EVENT REPORT (hand-completed)\n\nPatient: 57 yo male  Wt: 90 kg\nHx: hypertension, gout\nDrug: Uratrol 300 mg  - 1 tab daily\nStarted: ~2 weeks ago\nProblem: swollen painful joints got worse, then bad skin peeling\nSent to hospital 02 Sep\nReporter: nurse J. Adeyemi (Nigeria)",
+        "notes": "",
+        "confidence": 0.95
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:31:58.556901Z"
+    },
+    {
+      "id": "18",
+      "messageId": "7",
+      "step": "image_caption",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "6e5b8243a93a9681584a8fd6c1d2d4499ab38ad11aee14f4bbafde8bf3dcc56b",
+      "output": {
+        "kind": "form_or_checkbox",
+        "description": "The image shows a hand-completed adverse event report. It includes details about a 57-year-old male patient weighing 90 kg with a history of hypertension and gout. The patient was on Uratrol 300 mg (1 tablet daily) and experienced worsening swollen painful joints and severe skin peeling, leading to hospitalization on September 2. The report was submitted by nurse J. Adeyemi from Nigeria.",
+        "reviewer_note": "Verify the accuracy of the handwritten details and ensure all information is complete."
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:31:58.567485Z"
+    },
+    {
+      "id": "19",
+      "messageId": "7",
+      "step": "pdf_summary",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "0580479bd663fee99a5134788c43e95900c2a5f2dd7fede1502d4381d1aa00a8",
+      "output": {
+        "summary": "The document is a scanned, hand-completed adverse event report. It concerns a 57-year-old male patient weighing 90 kg with a medical history of hypertension and gout. The patient was taking Uratrol 300 mg (1 tablet daily) for approximately two weeks before experiencing worsening swollen and painful joints, followed by severe skin peeling. This led to hospitalization on September 2. The report was submitted by nurse J. Adeyemi from Nigeria. There are no notable form fields or tables included in the document. One image of the hand-completed report is flagged for human review to verify the accuracy and completeness of the handwritten details. The document appears relevant to pharmacovigilance as it reports a serious adverse reaction potentially linked to a medication. Missing information includes the exact start date of the medication, detailed medical history, and any follow-up or outcome after hospitalization.",
+        "looks_relevant": true,
+        "relevance_reason": "It reports a serious adverse reaction potentially linked to a medication."
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:31:58.569516Z"
+    },
+    {
+      "id": "20",
+      "messageId": "7",
+      "step": "classify",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "61b4eb453e31cc59890d477f32da376bc58b1bcd65db71517616ee57af8aa7bf",
+      "output": {
+        "verdicts": [
+          {
+            "bucket": "ICSR",
+            "reason": "Clear adverse event linked to Uratrol reported.",
+            "applies": true,
+            "confidence": 1.0
+          },
+          {
+            "bucket": "PQC",
+            "reason": "No product defect or quality issue mentioned.",
+            "applies": false,
+            "confidence": 0.9
+          },
+          {
+            "bucket": "MI",
+            "reason": "No request for medical information present.",
+            "applies": false,
+            "confidence": 0.9
+          },
+          {
+            "bucket": "NOT_RELEVANT",
+            "reason": "Adverse event report is pharmacovigilance-relevant.",
+            "applies": false,
+            "confidence": 1.0
+          }
+        ]
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:31:58.571557Z"
+    },
+    {
+      "id": "21",
+      "messageId": "7",
+      "step": "extract_icsr",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "14532066e754b5cd7e3063eb306b05ca53f7a74fb9ae78c1819056e076c9ac59",
+      "output": {
+        "facts": [
+          {
+            "value": "57 yo",
+            "source": {
+              "file": "pdf_scanned_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Patient: 57 yo male"
+            },
+            "section": "PATIENT",
+            "confidence": 1.0,
+            "field_name": "age"
+          },
+          {
+            "value": "male",
+            "source": {
+              "file": "pdf_scanned_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Patient: 57 yo male"
+            },
+            "section": "PATIENT",
+            "confidence": 1.0,
+            "field_name": "sex"
+          },
+          {
+            "value": "90 kg",
+            "source": {
+              "file": "pdf_scanned_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Wt: 90 kg"
+            },
+            "section": "PATIENT",
+            "confidence": 1.0,
+            "field_name": "weight"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PATIENT",
+            "confidence": null,
+            "field_name": "height"
+          },
+          {
+            "value": "hypertension, gout",
+            "source": {
+              "file": "pdf_scanned_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Hx: hypertension, gout"
+            },
+            "section": "PATIENT",
+            "confidence": 1.0,
+            "field_name": "medical_history"
+          },
+          {
+            "value": "J. Adeyemi",
+            "source": {
+              "file": "pdf_scanned_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Reporter: nurse J. Adeyemi"
+            },
+            "section": "REPORTER",
+            "confidence": 1.0,
+            "field_name": "name"
+          },
+          {
+            "value": "nurse",
+            "source": {
+              "file": "pdf_scanned_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Reporter: nurse J. Adeyemi"
+            },
+            "section": "REPORTER",
+            "confidence": 1.0,
+            "field_name": "role"
+          },
+          {
+            "value": "Nigeria",
+            "source": {
+              "file": "pdf_scanned_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Reporter: nurse J. Adeyemi (Nigeria)"
+            },
+            "section": "REPORTER",
+            "confidence": 1.0,
+            "field_name": "country"
+          },
+          {
+            "value": "Uratrol",
+            "source": {
+              "file": "pdf_scanned_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Drug: Uratrol 300 mg"
+            },
+            "section": "PRODUCT",
+            "confidence": 1.0,
+            "field_name": "product_name"
+          },
+          {
+            "value": "300 mg - 1 tab daily",
+            "source": {
+              "file": "pdf_scanned_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Drug: Uratrol 300 mg  - 1 tab daily"
+            },
+            "section": "PRODUCT",
+            "confidence": 1.0,
+            "field_name": "dose"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PRODUCT",
+            "confidence": null,
+            "field_name": "route"
+          },
+          {
+            "value": "~2 weeks ago",
+            "source": {
+              "file": "pdf_scanned_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Started: ~2 weeks ago"
+            },
+            "section": "PRODUCT",
+            "confidence": 0.7,
+            "field_name": "start_date"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PRODUCT",
+            "confidence": null,
+            "field_name": "stop_date"
+          },
+          {
+            "value": "swollen painful joints got worse, then bad skin peeling",
+            "source": {
+              "file": "pdf_scanned_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Problem: swollen painful joints got worse, then bad skin peeling"
+            },
+            "section": "REACTION",
+            "confidence": 1.0,
+            "field_name": "reaction"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "REACTION",
+            "confidence": null,
+            "field_name": "onset_date"
+          },
+          {
+            "value": "Sent to hospital 02 Sep",
+            "source": {
+              "file": "pdf_scanned_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Sent to hospital 02 Sep"
+            },
+            "section": "REACTION",
+            "confidence": 1.0,
+            "field_name": "outcome"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": "pdf_scanned_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Sent to hospital 02 Sep"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 0.7,
+            "field_name": "death"
+          },
+          {
+            "value": "true",
+            "source": {
+              "file": "pdf_scanned_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Sent to hospital 02 Sep"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "hospitalization"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "SERIOUSNESS",
+            "confidence": null,
+            "field_name": "life_threatening"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "SERIOUSNESS",
+            "confidence": null,
+            "field_name": "disability"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "SERIOUSNESS",
+            "confidence": null,
+            "field_name": "congenital_anomaly"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "SERIOUSNESS",
+            "confidence": null,
+            "field_name": "medically_important"
+          },
+          {
+            "value": "A 57-year-old male patient with a history of hypertension and gout experienced swollen painful joints that worsened, followed by severe skin peeling, after starting Uratrol 300 mg (1 tablet daily) approximately two weeks prior. The patient was hospitalized on 02 Sep. The reporter was nurse J. Adeyemi from Nigeria. Several details, including the route of administration and exact onset date, were not stated.",
+            "source": null,
+            "section": "NARRATIVE",
+            "confidence": 1.0,
+            "field_name": "narrative"
+          }
+        ]
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:31:58.573602Z"
+    }
+  ],
   "audit": [
     {
       "id": "7",
@@ -9,10 +349,10 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"pdfsStored\": 1, \"attachments\": 1}",
-      "createdAt": "2026-09-05T19:27:56.868225Z"
+      "createdAt": "2026-09-06T14:31:26.470038Z"
     },
     {
-      "id": "36",
+      "id": "37",
       "messageId": "7",
       "actor": "ai",
       "action": "pdf_extracted",
@@ -20,10 +360,10 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"flavor\": \"SCANNED\", \"language\": \"unknown\"}",
-      "createdAt": "2026-09-05T19:29:20.136860Z"
+      "createdAt": "2026-09-06T14:31:58.579683Z"
     },
     {
-      "id": "37",
+      "id": "38",
       "messageId": "7",
       "actor": "ai",
       "action": "classified",
@@ -31,10 +371,10 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"buckets\": 4}",
-      "createdAt": "2026-09-05T19:29:20.145323Z"
+      "createdAt": "2026-09-06T14:31:58.589509Z"
     },
     {
-      "id": "38",
+      "id": "39",
       "messageId": "7",
       "actor": "ai",
       "action": "facts_extracted",
@@ -42,18 +382,18 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"count\": 23}",
-      "createdAt": "2026-09-05T19:29:20.195931Z"
+      "createdAt": "2026-09-06T14:31:58.643122Z"
     },
     {
-      "id": "39",
+      "id": "40",
       "messageId": "7",
       "actor": "ai",
       "action": "processed",
       "target": "message",
       "oldValue": null,
       "newValue": null,
-      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 12451, \"extract\": 5081, \"classify\": 1278, \"pdf:pdf_scanned_01.pdf\": 6091}}",
-      "createdAt": "2026-09-05T19:29:20.203444Z"
+      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 421, \"extract\": 0, \"classify\": 0, \"pdf:pdf_scanned_01.pdf\": 421}}",
+      "createdAt": "2026-09-06T14:31:58.649824Z"
     }
   ],
   "facts": [
@@ -430,19 +770,20 @@
   "message": {
     "id": "7",
     "messageIdHdr": "<pdf-scanned-001@example.com>",
+    "emailUid": null,
     "sender": "\"Nurse J. Adeyemi\" <j.adeyemi@example-clinic.test>",
     "subject": "Scanned handwritten AE form - Uratrol reaction",
     "receivedAt": "2025-09-05T10:00:00Z",
     "bodyText": "Attaching a scan of the hand-completed form for a patient with a severe skin reaction on Uratrol. Handwriting is a bit rough, sorry.",
     "status": "READY_FOR_REVIEW",
     "attempts": 1,
-    "processingMs": 12586,
-    "processingStartedAt": "2026-09-05T19:29:07.602782Z",
-    "processingEndedAt": "2026-09-05T19:29:20.200655Z",
+    "processingMs": 590,
+    "processingStartedAt": "2026-09-06T14:31:58.046644Z",
+    "processingEndedAt": "2026-09-06T14:31:58.647477Z",
     "errorDetail": null,
     "injectionFlagged": false,
     "injectionNotes": "",
-    "createdAt": "2026-09-05T19:27:56.840928Z"
+    "createdAt": "2026-09-06T14:31:26.386548Z"
   },
   "pdfExtractions": [
     {
@@ -484,7 +825,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:29:20.138646Z"
+      "createdAt": "2026-09-06T14:31:58.582061Z"
     },
     {
       "id": "30",
@@ -496,7 +837,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:29:20.142004Z"
+      "createdAt": "2026-09-06T14:31:58.585605Z"
     },
     {
       "id": "31",
@@ -508,7 +849,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:29:20.143458Z"
+      "createdAt": "2026-09-06T14:31:58.587470Z"
     },
     {
       "id": "29",
@@ -520,367 +861,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:29:20.140380Z"
-    }
-  ],
-  "aiCalls": [
-    {
-      "id": "17",
-      "messageId": "7",
-      "step": "ocr",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "ac9ccd62c042abcb35e0100f92bdf390f1df89b248a1836a4401e214eeac8fcf",
-      "output": {
-        "text": "ADVERSE EVENT REPORT (hand-completed)\n\nPatient: 57 yo male  Wt: 90 kg\nHx: hypertension, gout\nDrug: Uratrol 300 mg  - 1 tab daily\nStarted: ~2 weeks ago\nProblem: swollen painful joints got worse, then bad skin peeling\nSent to hospital 02 Sep\nReporter: nurse J. Adeyemi (Nigeria)",
-        "notes": "",
-        "confidence": 0.95
-      },
-      "usage": {
-        "total_tokens": 1472,
-        "prompt_tokens": 1371,
-        "completion_tokens": 101
-      },
-      "durationMs": 2117,
-      "error": null,
-      "createdAt": "2026-09-05T19:29:20.122905Z"
-    },
-    {
-      "id": "18",
-      "messageId": "7",
-      "step": "image_caption",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "6e5b8243a93a9681584a8fd6c1d2d4499ab38ad11aee14f4bbafde8bf3dcc56b",
-      "output": {
-        "kind": "form_or_checkbox",
-        "description": "The image shows a hand-completed adverse event report. It includes details about a 57-year-old male patient weighing 90 kg with a history of hypertension and gout. The patient was on Uratrol 300 mg (1 tablet daily) and experienced worsening swollen painful joints and severe skin peeling, leading to hospitalization on September 2. The report was submitted by nurse J. Adeyemi from Nigeria.",
-        "reviewer_note": "Verify the accuracy of the handwritten details and ensure all information is complete."
-      },
-      "usage": {
-        "total_tokens": 1403,
-        "prompt_tokens": 1288,
-        "completion_tokens": 115
-      },
-      "durationMs": 1848,
-      "error": null,
-      "createdAt": "2026-09-05T19:29:20.125491Z"
-    },
-    {
-      "id": "19",
-      "messageId": "7",
-      "step": "pdf_summary",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "0580479bd663fee99a5134788c43e95900c2a5f2dd7fede1502d4381d1aa00a8",
-      "output": {
-        "summary": "The document is a scanned, hand-completed adverse event report. It concerns a 57-year-old male patient weighing 90 kg with a medical history of hypertension and gout. The patient was taking Uratrol 300 mg (1 tablet daily) for approximately two weeks before experiencing worsening swollen and painful joints, followed by severe skin peeling. This led to hospitalization on September 2. The report was submitted by nurse J. Adeyemi from Nigeria. There are no notable form fields or tables included in the document. One image of the hand-completed report is flagged for human review to verify the accuracy and completeness of the handwritten details. The document appears relevant to pharmacovigilance as it reports a serious adverse reaction potentially linked to a medication. Missing information includes the exact start date of the medication, detailed medical history, and any follow-up or outcome after hospitalization.",
-        "looks_relevant": true,
-        "relevance_reason": "It reports a serious adverse reaction potentially linked to a medication."
-      },
-      "usage": {
-        "total_tokens": 849,
-        "prompt_tokens": 645,
-        "completion_tokens": 204
-      },
-      "durationMs": 1831,
-      "error": null,
-      "createdAt": "2026-09-05T19:29:20.127845Z"
-    },
-    {
-      "id": "20",
-      "messageId": "7",
-      "step": "classify",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "61b4eb453e31cc59890d477f32da376bc58b1bcd65db71517616ee57af8aa7bf",
-      "output": {
-        "verdicts": [
-          {
-            "bucket": "ICSR",
-            "reason": "Clear adverse event linked to Uratrol reported.",
-            "applies": true,
-            "confidence": 1.0
-          },
-          {
-            "bucket": "PQC",
-            "reason": "No product defect or quality issue mentioned.",
-            "applies": false,
-            "confidence": 0.9
-          },
-          {
-            "bucket": "MI",
-            "reason": "No request for medical information present.",
-            "applies": false,
-            "confidence": 0.9
-          },
-          {
-            "bucket": "NOT_RELEVANT",
-            "reason": "Adverse event report is pharmacovigilance-relevant.",
-            "applies": false,
-            "confidence": 1.0
-          }
-        ]
-      },
-      "usage": {
-        "total_tokens": 1304,
-        "prompt_tokens": 1147,
-        "completion_tokens": 157
-      },
-      "durationMs": 1277,
-      "error": null,
-      "createdAt": "2026-09-05T19:29:20.130Z"
-    },
-    {
-      "id": "21",
-      "messageId": "7",
-      "step": "extract_icsr",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "14532066e754b5cd7e3063eb306b05ca53f7a74fb9ae78c1819056e076c9ac59",
-      "output": {
-        "facts": [
-          {
-            "value": "57 yo",
-            "source": {
-              "file": "pdf_scanned_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Patient: 57 yo male"
-            },
-            "section": "PATIENT",
-            "confidence": 1.0,
-            "field_name": "age"
-          },
-          {
-            "value": "male",
-            "source": {
-              "file": "pdf_scanned_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Patient: 57 yo male"
-            },
-            "section": "PATIENT",
-            "confidence": 1.0,
-            "field_name": "sex"
-          },
-          {
-            "value": "90 kg",
-            "source": {
-              "file": "pdf_scanned_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Wt: 90 kg"
-            },
-            "section": "PATIENT",
-            "confidence": 1.0,
-            "field_name": "weight"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "PATIENT",
-            "confidence": null,
-            "field_name": "height"
-          },
-          {
-            "value": "hypertension, gout",
-            "source": {
-              "file": "pdf_scanned_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Hx: hypertension, gout"
-            },
-            "section": "PATIENT",
-            "confidence": 1.0,
-            "field_name": "medical_history"
-          },
-          {
-            "value": "J. Adeyemi",
-            "source": {
-              "file": "pdf_scanned_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Reporter: nurse J. Adeyemi"
-            },
-            "section": "REPORTER",
-            "confidence": 1.0,
-            "field_name": "name"
-          },
-          {
-            "value": "nurse",
-            "source": {
-              "file": "pdf_scanned_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Reporter: nurse J. Adeyemi"
-            },
-            "section": "REPORTER",
-            "confidence": 1.0,
-            "field_name": "role"
-          },
-          {
-            "value": "Nigeria",
-            "source": {
-              "file": "pdf_scanned_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Reporter: nurse J. Adeyemi (Nigeria)"
-            },
-            "section": "REPORTER",
-            "confidence": 1.0,
-            "field_name": "country"
-          },
-          {
-            "value": "Uratrol",
-            "source": {
-              "file": "pdf_scanned_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Drug: Uratrol 300 mg"
-            },
-            "section": "PRODUCT",
-            "confidence": 1.0,
-            "field_name": "product_name"
-          },
-          {
-            "value": "300 mg - 1 tab daily",
-            "source": {
-              "file": "pdf_scanned_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Drug: Uratrol 300 mg  - 1 tab daily"
-            },
-            "section": "PRODUCT",
-            "confidence": 1.0,
-            "field_name": "dose"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "PRODUCT",
-            "confidence": null,
-            "field_name": "route"
-          },
-          {
-            "value": "~2 weeks ago",
-            "source": {
-              "file": "pdf_scanned_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Started: ~2 weeks ago"
-            },
-            "section": "PRODUCT",
-            "confidence": 0.7,
-            "field_name": "start_date"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "PRODUCT",
-            "confidence": null,
-            "field_name": "stop_date"
-          },
-          {
-            "value": "swollen painful joints got worse, then bad skin peeling",
-            "source": {
-              "file": "pdf_scanned_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Problem: swollen painful joints got worse, then bad skin peeling"
-            },
-            "section": "REACTION",
-            "confidence": 1.0,
-            "field_name": "reaction"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "REACTION",
-            "confidence": null,
-            "field_name": "onset_date"
-          },
-          {
-            "value": "Sent to hospital 02 Sep",
-            "source": {
-              "file": "pdf_scanned_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Sent to hospital 02 Sep"
-            },
-            "section": "REACTION",
-            "confidence": 1.0,
-            "field_name": "outcome"
-          },
-          {
-            "value": "false",
-            "source": {
-              "file": "pdf_scanned_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Sent to hospital 02 Sep"
-            },
-            "section": "SERIOUSNESS",
-            "confidence": 0.7,
-            "field_name": "death"
-          },
-          {
-            "value": "true",
-            "source": {
-              "file": "pdf_scanned_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Sent to hospital 02 Sep"
-            },
-            "section": "SERIOUSNESS",
-            "confidence": 1.0,
-            "field_name": "hospitalization"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "SERIOUSNESS",
-            "confidence": null,
-            "field_name": "life_threatening"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "SERIOUSNESS",
-            "confidence": null,
-            "field_name": "disability"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "SERIOUSNESS",
-            "confidence": null,
-            "field_name": "congenital_anomaly"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "SERIOUSNESS",
-            "confidence": null,
-            "field_name": "medically_important"
-          },
-          {
-            "value": "A 57-year-old male patient with a history of hypertension and gout experienced swollen painful joints that worsened, followed by severe skin peeling, after starting Uratrol 300 mg (1 tablet daily) approximately two weeks prior. The patient was hospitalized on 02 Sep. The reporter was nurse J. Adeyemi from Nigeria. Several details, including the route of administration and exact onset date, were not stated.",
-            "source": null,
-            "section": "NARRATIVE",
-            "confidence": 1.0,
-            "field_name": "narrative"
-          }
-        ]
-      },
-      "usage": {
-        "total_tokens": 1965,
-        "prompt_tokens": 788,
-        "completion_tokens": 1177
-      },
-      "durationMs": 5080,
-      "error": null,
-      "createdAt": "2026-09-05T19:29:20.132200Z"
+      "createdAt": "2026-09-06T14:31:58.583854Z"
     }
   ]
 }

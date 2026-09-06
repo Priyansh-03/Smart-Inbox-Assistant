@@ -1,21 +1,22 @@
 {
+  "aiCalls": [],
   "audit": [
     {
-      "id": "12",
-      "messageId": "12",
+      "id": "13",
+      "messageId": "13",
       "actor": "ai",
       "action": "literature_screened",
       "target": "pdf_article_01.pdf",
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"cases\": 1, \"hasPatientCase\": true}",
-      "createdAt": "2026-09-05T19:27:57.018372Z"
+      "createdAt": "2026-09-06T14:31:26.765645Z"
     }
   ],
   "facts": [
     {
       "id": "23",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "NARRATIVE",
       "fieldName": "narrative",
@@ -33,7 +34,7 @@
     },
     {
       "id": "1",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "PATIENT",
       "fieldName": "age",
@@ -51,7 +52,7 @@
     },
     {
       "id": "4",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "PATIENT",
       "fieldName": "height",
@@ -64,7 +65,7 @@
     },
     {
       "id": "5",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "PATIENT",
       "fieldName": "medical_history",
@@ -82,7 +83,7 @@
     },
     {
       "id": "2",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "PATIENT",
       "fieldName": "sex",
@@ -100,7 +101,7 @@
     },
     {
       "id": "3",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "PATIENT",
       "fieldName": "weight",
@@ -113,7 +114,7 @@
     },
     {
       "id": "10",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "PRODUCT",
       "fieldName": "dose",
@@ -131,7 +132,7 @@
     },
     {
       "id": "9",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "PRODUCT",
       "fieldName": "product_name",
@@ -149,7 +150,7 @@
     },
     {
       "id": "11",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "PRODUCT",
       "fieldName": "route",
@@ -162,7 +163,7 @@
     },
     {
       "id": "12",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "PRODUCT",
       "fieldName": "start_date",
@@ -175,7 +176,7 @@
     },
     {
       "id": "13",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "PRODUCT",
       "fieldName": "stop_date",
@@ -188,7 +189,7 @@
     },
     {
       "id": "15",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "REACTION",
       "fieldName": "onset_date",
@@ -206,7 +207,7 @@
     },
     {
       "id": "16",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "REACTION",
       "fieldName": "outcome",
@@ -224,7 +225,7 @@
     },
     {
       "id": "14",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "REACTION",
       "fieldName": "reaction",
@@ -242,7 +243,7 @@
     },
     {
       "id": "8",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "REPORTER",
       "fieldName": "country",
@@ -255,7 +256,7 @@
     },
     {
       "id": "6",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "REPORTER",
       "fieldName": "name",
@@ -268,7 +269,7 @@
     },
     {
       "id": "7",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "REPORTER",
       "fieldName": "role",
@@ -281,7 +282,7 @@
     },
     {
       "id": "21",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "SERIOUSNESS",
       "fieldName": "congenital_anomaly",
@@ -294,7 +295,7 @@
     },
     {
       "id": "17",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "SERIOUSNESS",
       "fieldName": "death",
@@ -312,7 +313,7 @@
     },
     {
       "id": "20",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "SERIOUSNESS",
       "fieldName": "disability",
@@ -330,7 +331,7 @@
     },
     {
       "id": "18",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "SERIOUSNESS",
       "fieldName": "hospitalization",
@@ -348,7 +349,7 @@
     },
     {
       "id": "19",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "SERIOUSNESS",
       "fieldName": "life_threatening",
@@ -361,7 +362,7 @@
     },
     {
       "id": "22",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "section": "SERIOUSNESS",
       "fieldName": "medically_important",
@@ -379,26 +380,27 @@
     }
   ],
   "message": {
-    "id": "12",
-    "messageIdHdr": "lit:pdf_article_01.pdf:2544004524033",
+    "id": "13",
+    "messageIdHdr": "lit:pdf_article_01.pdf:12102120603138",
+    "emailUid": null,
     "sender": "literature-upload",
     "subject": "Literature screening: pdf_article_01.pdf",
-    "receivedAt": "2026-09-05T19:27:56.929678Z",
+    "receivedAt": "2026-09-06T14:31:26.625492Z",
     "bodyText": "",
     "status": "READY_FOR_REVIEW",
     "attempts": 0,
     "processingMs": null,
     "processingStartedAt": null,
-    "processingEndedAt": "2026-09-05T19:27:57.020046Z",
+    "processingEndedAt": "2026-09-06T14:31:26.768287Z",
     "errorDetail": null,
     "injectionFlagged": false,
     "injectionNotes": null,
-    "createdAt": "2026-09-05T19:27:56.929943Z"
+    "createdAt": "2026-09-06T14:31:26.625818Z"
   },
   "pdfExtractions": [
     {
       "id": "1",
-      "messageId": "12",
+      "messageId": "13",
       "attachmentId": null,
       "filename": "pdf_article_01.pdf",
       "flavor": "ARTICLE",
@@ -419,7 +421,7 @@
   "classifications": [
     {
       "id": "1",
-      "messageId": "12",
+      "messageId": "13",
       "bucket": "ICSR",
       "applies": true,
       "confidence": 0.8,
@@ -427,8 +429,7 @@
       "reviewStatus": "AI",
       "model": null,
       "promptVersion": null,
-      "createdAt": "2026-09-05T19:27:56.971191Z"
+      "createdAt": "2026-09-06T14:31:26.703862Z"
     }
-  ],
-  "aiCalls": []
+  ]
 }

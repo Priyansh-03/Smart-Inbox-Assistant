@@ -1,0 +1,687 @@
+{
+  "aiCalls": [
+    {
+      "id": "31",
+      "messageId": "11",
+      "step": "classify",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "32e2945d0200f2ec8d3d79006fc95a36d8b951754144066af2d0d99929ad320e",
+      "output": {
+        "verdicts": [
+          {
+            "bucket": "ICSR",
+            "reason": "Adverse event linked to a medicine reported.",
+            "applies": true,
+            "confidence": 0.8
+          },
+          {
+            "bucket": "PQC",
+            "reason": "No product defect mentioned or implied.",
+            "applies": false,
+            "confidence": 0.6
+          },
+          {
+            "bucket": "MI",
+            "reason": "No request for medical information present.",
+            "applies": false,
+            "confidence": 0.7
+          },
+          {
+            "bucket": "NOT_RELEVANT",
+            "reason": "Adverse event makes it relevant for ICSR.",
+            "applies": false,
+            "confidence": 0.8
+          }
+        ]
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:32:19.077401Z"
+    },
+    {
+      "id": "32",
+      "messageId": "11",
+      "step": "extract_icsr",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "6f4f9f43052ed784cee99c1f1e03762abd88580b1e90e04b9f50907b3e05fbda",
+      "output": {
+        "facts": [
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PATIENT",
+            "confidence": null,
+            "field_name": "age"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PATIENT",
+            "confidence": null,
+            "field_name": "sex"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PATIENT",
+            "confidence": null,
+            "field_name": "weight"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PATIENT",
+            "confidence": null,
+            "field_name": "height"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PATIENT",
+            "confidence": null,
+            "field_name": "medical_history"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "REPORTER",
+            "confidence": null,
+            "field_name": "name"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "REPORTER",
+            "confidence": null,
+            "field_name": "role"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "REPORTER",
+            "confidence": null,
+            "field_name": "country"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PRODUCT",
+            "confidence": null,
+            "field_name": "product_name"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PRODUCT",
+            "confidence": null,
+            "field_name": "dose"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PRODUCT",
+            "confidence": null,
+            "field_name": "route"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PRODUCT",
+            "confidence": null,
+            "field_name": "start_date"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PRODUCT",
+            "confidence": null,
+            "field_name": "stop_date"
+          },
+          {
+            "value": "felt really unwell",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "felt really unwell"
+            },
+            "section": "REACTION",
+            "confidence": 0.7,
+            "field_name": "reaction"
+          },
+          {
+            "value": "last week",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "last week"
+            },
+            "section": "REACTION",
+            "confidence": 0.7,
+            "field_name": "onset_date"
+          },
+          {
+            "value": "a bit better now",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "a bit better now"
+            },
+            "section": "REACTION",
+            "confidence": 0.7,
+            "field_name": "outcome"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "She's a bit better now"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 0.7,
+            "field_name": "death"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "SERIOUSNESS",
+            "confidence": null,
+            "field_name": "hospitalization"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "SERIOUSNESS",
+            "confidence": null,
+            "field_name": "life_threatening"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "SERIOUSNESS",
+            "confidence": null,
+            "field_name": "disability"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "SERIOUSNESS",
+            "confidence": null,
+            "field_name": "congenital_anomaly"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "SERIOUSNESS",
+            "confidence": null,
+            "field_name": "medically_important"
+          },
+          {
+            "value": "The patient, described as the reporter's mother, experienced feeling unwell after starting a new heart medication last week. The specific product name, dose, and route are unknown. The patient is reported to be feeling a bit better now. No information is provided about hospitalization or other serious outcomes.",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "Hi, my mother felt really unwell after starting one of her new heart tablets last week. She's a bit better now."
+            },
+            "section": "NARRATIVE",
+            "confidence": 0.9,
+            "field_name": "narrative"
+          }
+        ]
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:32:19.080364Z"
+    }
+  ],
+  "audit": [
+    {
+      "id": "11",
+      "messageId": "11",
+      "actor": "ai",
+      "action": "ingested",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"pdfsStored\": 0, \"attachments\": 0}",
+      "createdAt": "2026-09-06T14:31:26.589240Z"
+    },
+    {
+      "id": "51",
+      "messageId": "11",
+      "actor": "ai",
+      "action": "classified",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"buckets\": 4}",
+      "createdAt": "2026-09-06T14:32:19.092530Z"
+    },
+    {
+      "id": "52",
+      "messageId": "11",
+      "actor": "ai",
+      "action": "facts_extracted",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"count\": 23}",
+      "createdAt": "2026-09-06T14:32:19.146594Z"
+    },
+    {
+      "id": "53",
+      "messageId": "11",
+      "actor": "ai",
+      "action": "processed",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 1, \"extract\": 0, \"classify\": 0}}",
+      "createdAt": "2026-09-06T14:32:19.153094Z"
+    }
+  ],
+  "facts": [
+    {
+      "id": "255",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "NARRATIVE",
+      "fieldName": "narrative",
+      "fieldValue": "The patient, described as the reporter's mother, experienced feeling unwell after starting a new heart medication last week. The specific product name, dose, and route are unknown. The patient is reported to be feeling a bit better now. No information is provided about hospitalization or other serious outcomes.",
+      "confidence": 0.9,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "Hi, my mother felt really unwell after starting one of her new heart tablets last week. She's a bit better now."
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "233",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "age",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "236",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "height",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "237",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "medical_history",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "234",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "sex",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "235",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "PATIENT",
+      "fieldName": "weight",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "242",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "dose",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "241",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "product_name",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "243",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "route",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "244",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "start_date",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "245",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "PRODUCT",
+      "fieldName": "stop_date",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "247",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "onset_date",
+      "fieldValue": "last week",
+      "confidence": 0.7,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "last week"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "248",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "outcome",
+      "fieldValue": "a bit better now",
+      "confidence": 0.7,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "a bit better now"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "246",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "REACTION",
+      "fieldName": "reaction",
+      "fieldValue": "felt really unwell",
+      "confidence": 0.7,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "felt really unwell"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "240",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "country",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "238",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "name",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "239",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "REPORTER",
+      "fieldName": "role",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "253",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "congenital_anomaly",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "249",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "death",
+      "fieldValue": "false",
+      "confidence": 0.7,
+      "source": {
+        "type": "email",
+        "file": null,
+        "page": null,
+        "quote": "She's a bit better now"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "252",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "disability",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "250",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "hospitalization",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "251",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "life_threatening",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "254",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "section": "SERIOUSNESS",
+      "fieldName": "medically_important",
+      "fieldValue": "Not stated",
+      "confidence": null,
+      "source": null,
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    }
+  ],
+  "message": {
+    "id": "11",
+    "messageIdHdr": "<sample-vague-001@example.com>",
+    "emailUid": null,
+    "sender": "Concerned Person <someone@example-mail.test>",
+    "subject": "my mother wasn't well after her medicine",
+    "receivedAt": "2025-09-06T18:45:00Z",
+    "bodyText": "Hi, my mother felt really unwell after starting one of her new heart tablets last\nweek. She's a bit better now. I don't know the name or dose. Just wanted to let\nsomeone know.",
+    "status": "READY_FOR_REVIEW",
+    "attempts": 1,
+    "processingMs": 83,
+    "processingStartedAt": "2026-09-06T14:32:19.056818Z",
+    "processingEndedAt": "2026-09-06T14:32:19.150919Z",
+    "errorDetail": null,
+    "injectionFlagged": false,
+    "injectionNotes": "",
+    "createdAt": "2026-09-06T14:31:26.587146Z"
+  },
+  "pdfExtractions": [],
+  "classifications": [
+    {
+      "id": "44",
+      "messageId": "11",
+      "bucket": "ICSR",
+      "applies": true,
+      "confidence": 0.8,
+      "reason": "Adverse event linked to a medicine reported.",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-06T14:32:19.083312Z"
+    },
+    {
+      "id": "46",
+      "messageId": "11",
+      "bucket": "MI",
+      "applies": false,
+      "confidence": 0.7,
+      "reason": "No request for medical information present.",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-06T14:32:19.088154Z"
+    },
+    {
+      "id": "47",
+      "messageId": "11",
+      "bucket": "NOT_RELEVANT",
+      "applies": false,
+      "confidence": 0.8,
+      "reason": "Adverse event makes it relevant for ICSR.",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-06T14:32:19.090447Z"
+    },
+    {
+      "id": "45",
+      "messageId": "11",
+      "bucket": "PQC",
+      "applies": false,
+      "confidence": 0.6,
+      "reason": "No product defect mentioned or implied.",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-06T14:32:19.085734Z"
+    }
+  ]
+}

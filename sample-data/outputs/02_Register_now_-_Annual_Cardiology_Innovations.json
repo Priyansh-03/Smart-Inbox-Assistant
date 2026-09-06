@@ -1,119 +1,4 @@
 {
-  "audit": [
-    {
-      "id": "2",
-      "messageId": "2",
-      "actor": "ai",
-      "action": "ingested",
-      "target": "message",
-      "oldValue": null,
-      "newValue": null,
-      "detailJson": "{\"pdfsStored\": 0, \"attachments\": 0}",
-      "createdAt": "2026-09-05T19:27:56.701172Z"
-    },
-    {
-      "id": "18",
-      "messageId": "2",
-      "actor": "ai",
-      "action": "classified",
-      "target": "message",
-      "oldValue": null,
-      "newValue": null,
-      "detailJson": "{\"buckets\": 4}",
-      "createdAt": "2026-09-05T19:28:13.466022Z"
-    },
-    {
-      "id": "19",
-      "messageId": "2",
-      "actor": "ai",
-      "action": "facts_extracted",
-      "target": "message",
-      "oldValue": null,
-      "newValue": null,
-      "detailJson": "{\"count\": 0}",
-      "createdAt": "2026-09-05T19:28:13.468809Z"
-    },
-    {
-      "id": "20",
-      "messageId": "2",
-      "actor": "ai",
-      "action": "processed",
-      "target": "message",
-      "oldValue": null,
-      "newValue": null,
-      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 1520, \"extract\": 0, \"classify\": 1519}}",
-      "createdAt": "2026-09-05T19:28:13.476545Z"
-    }
-  ],
-  "facts": [],
-  "message": {
-    "id": "2",
-    "messageIdHdr": "<sample-marketing-001@example.com>",
-    "sender": "Events Team <events@example-conference.test>",
-    "subject": "Register now - Annual Cardiology Innovations Summit 2025",
-    "receivedAt": "2025-09-04T13:00:00Z",
-    "bodyText": "Don't miss the Annual Cardiology Innovations Summit! Three days of talks,\nworkshops and networking. Early-bird pricing ends soon. Hear about the latest\ntherapies including Carditol and its side effects profile in our expert panel.\n\nClick here to book your seat. Unsubscribe any time.",
-    "status": "READY_FOR_REVIEW",
-    "attempts": 1,
-    "processingMs": 1554,
-    "processingStartedAt": "2026-09-05T19:28:11.908405Z",
-    "processingEndedAt": "2026-09-05T19:28:13.473776Z",
-    "errorDetail": null,
-    "injectionFlagged": false,
-    "injectionNotes": "",
-    "createdAt": "2026-09-05T19:27:56.699334Z"
-  },
-  "pdfExtractions": [],
-  "classifications": [
-    {
-      "id": "8",
-      "messageId": "2",
-      "bucket": "ICSR",
-      "applies": false,
-      "confidence": 1.0,
-      "reason": "No adverse event described",
-      "reviewStatus": "AI",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:28:13.453984Z"
-    },
-    {
-      "id": "10",
-      "messageId": "2",
-      "bucket": "MI",
-      "applies": false,
-      "confidence": 1.0,
-      "reason": "No specific medical information request",
-      "reviewStatus": "AI",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:28:13.460852Z"
-    },
-    {
-      "id": "11",
-      "messageId": "2",
-      "bucket": "NOT_RELEVANT",
-      "applies": true,
-      "confidence": 1.0,
-      "reason": "Promotional content about a conference",
-      "reviewStatus": "AI",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:28:13.463282Z"
-    },
-    {
-      "id": "9",
-      "messageId": "2",
-      "bucket": "PQC",
-      "applies": false,
-      "confidence": 1.0,
-      "reason": "No product defect mentioned",
-      "reviewStatus": "AI",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:28:13.458617Z"
-    }
-  ],
   "aiCalls": [
     {
       "id": "3",
@@ -150,14 +35,126 @@
           }
         ]
       },
-      "usage": {
-        "total_tokens": 1124,
-        "prompt_tokens": 985,
-        "completion_tokens": 139
-      },
-      "durationMs": 1518,
+      "usage": null,
+      "durationMs": 0,
       "error": null,
-      "createdAt": "2026-09-05T19:28:13.449825Z"
+      "createdAt": "2026-09-06T14:31:32.476589Z"
+    }
+  ],
+  "audit": [
+    {
+      "id": "2",
+      "messageId": "2",
+      "actor": "ai",
+      "action": "ingested",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"pdfsStored\": 0, \"attachments\": 0}",
+      "createdAt": "2026-09-06T14:31:26.123682Z"
+    },
+    {
+      "id": "19",
+      "messageId": "2",
+      "actor": "ai",
+      "action": "classified",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"buckets\": 4}",
+      "createdAt": "2026-09-06T14:31:32.488113Z"
+    },
+    {
+      "id": "20",
+      "messageId": "2",
+      "actor": "ai",
+      "action": "facts_extracted",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"count\": 0}",
+      "createdAt": "2026-09-06T14:31:32.490669Z"
+    },
+    {
+      "id": "21",
+      "messageId": "2",
+      "actor": "ai",
+      "action": "processed",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 1, \"extract\": 0, \"classify\": 1}}",
+      "createdAt": "2026-09-06T14:31:32.497792Z"
+    }
+  ],
+  "facts": [],
+  "message": {
+    "id": "2",
+    "messageIdHdr": "<sample-marketing-001@example.com>",
+    "emailUid": null,
+    "sender": "Events Team <events@example-conference.test>",
+    "subject": "Register now - Annual Cardiology Innovations Summit 2025",
+    "receivedAt": "2025-09-04T13:00:00Z",
+    "bodyText": "Don't miss the Annual Cardiology Innovations Summit! Three days of talks,\nworkshops and networking. Early-bird pricing ends soon. Hear about the latest\ntherapies including Carditol and its side effects profile in our expert panel.\n\nClick here to book your seat. Unsubscribe any time.",
+    "status": "READY_FOR_REVIEW",
+    "attempts": 1,
+    "processingMs": 27,
+    "processingStartedAt": "2026-09-06T14:31:32.456643Z",
+    "processingEndedAt": "2026-09-06T14:31:32.494988Z",
+    "errorDetail": null,
+    "injectionFlagged": false,
+    "injectionNotes": "",
+    "createdAt": "2026-09-06T14:31:26.120955Z"
+  },
+  "pdfExtractions": [],
+  "classifications": [
+    {
+      "id": "8",
+      "messageId": "2",
+      "bucket": "ICSR",
+      "applies": false,
+      "confidence": 1.0,
+      "reason": "No adverse event described",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-06T14:31:32.479128Z"
+    },
+    {
+      "id": "10",
+      "messageId": "2",
+      "bucket": "MI",
+      "applies": false,
+      "confidence": 1.0,
+      "reason": "No specific medical information request",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-06T14:31:32.483601Z"
+    },
+    {
+      "id": "11",
+      "messageId": "2",
+      "bucket": "NOT_RELEVANT",
+      "applies": true,
+      "confidence": 1.0,
+      "reason": "Promotional content about a conference",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-06T14:31:32.485710Z"
+    },
+    {
+      "id": "9",
+      "messageId": "2",
+      "bucket": "PQC",
+      "applies": false,
+      "confidence": 1.0,
+      "reason": "No product defect mentioned",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-06T14:31:32.481366Z"
     }
   ]
 }

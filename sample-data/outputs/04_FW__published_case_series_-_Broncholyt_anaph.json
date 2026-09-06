@@ -1,4 +1,336 @@
 {
+  "aiCalls": [
+    {
+      "id": "6",
+      "messageId": "4",
+      "step": "article_case",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "35b9a0520bf052a6f3f3d0f6ef4a90642f5947142ff6232e9b96f9ff87953eb3",
+      "output": {
+        "cases": [
+          {
+            "text": "A 6-year-old boy received Broncholyt 5 mL for cough. Within 30 minutes he developed generalised urticaria, facial swelling and stridor. He was treated with intramuscular adrenaline and recovered.",
+            "case_label": "Case 1"
+          },
+          {
+            "text": "A 9-year-old girl was given Broncholyt for bronchitis. Two hours later she had vomiting, wheeze and hypotension, requiring adrenaline and overnight observation. Both children recovered fully.",
+            "case_label": "Case 2"
+          }
+        ],
+        "reason": "The article describes two identifiable individual cases of anaphylaxis associated with a specific medicinal product (Broncholyt).",
+        "has_patient_case": true
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:31:42.641438Z"
+    },
+    {
+      "id": "7",
+      "messageId": "4",
+      "step": "pdf_summary",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "446c69573593d258c834092a5de51f0ec5a7bf5f748e2c6f6fb403dcb0feed24",
+      "output": {
+        "summary": "The document is an article discussing adverse reactions in two pediatric cases involving the use of Broncholyt. The first case concerns a 6-year-old boy who developed generalized urticaria, facial swelling, and stridor within 30 minutes of taking 5 mL of Broncholyt for a cough. He was treated with intramuscular adrenaline and recovered. The second case involves a 9-year-old girl who experienced vomiting, wheeze, and hypotension two hours after receiving Broncholyt for bronchitis. She required adrenaline treatment and overnight observation but also recovered fully. The document does not include any form fields, tables, or images. It appears relevant to pharmacovigilance as it reports adverse drug reactions in children. However, the document lacks detailed information on the patients' medical histories, the exact dosage for the second case, and whether any other factors could have contributed to the reactions.",
+        "looks_relevant": true,
+        "relevance_reason": "It reports adverse drug reactions in pediatric patients."
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:31:42.643964Z"
+    },
+    {
+      "id": "8",
+      "messageId": "4",
+      "step": "classify",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "4985e819f3e5251b23694f9418fc5b2f03cb778412fde7cc878446a6858491b2",
+      "output": {
+        "verdicts": [
+          {
+            "bucket": "ICSR",
+            "reason": "Two adverse reactions linked to Broncholyt described.",
+            "applies": true,
+            "confidence": 0.9
+          },
+          {
+            "bucket": "PQC",
+            "reason": "No product defect or quality issue mentioned.",
+            "applies": false,
+            "confidence": 0.8
+          },
+          {
+            "bucket": "MI",
+            "reason": "No request for medical information present.",
+            "applies": false,
+            "confidence": 0.7
+          },
+          {
+            "bucket": "NOT_RELEVANT",
+            "reason": "Content directly pertains to adverse drug reactions.",
+            "applies": false,
+            "confidence": 0.9
+          }
+        ]
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:31:42.646564Z"
+    },
+    {
+      "id": "9",
+      "messageId": "4",
+      "step": "extract_icsr",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "f1dc4819c994ca2784a5193b6fd5d54b52e3d8b6c1b2eb5c39d6603274dad0f8",
+      "output": {
+        "facts": [
+          {
+            "value": "6-year-old",
+            "source": {
+              "file": "pdf_article_02.pdf",
+              "page": null,
+              "type": "pdf",
+              "quote": "A 6-year-old boy"
+            },
+            "section": "PATIENT",
+            "confidence": 1.0,
+            "field_name": "age"
+          },
+          {
+            "value": "boy",
+            "source": {
+              "file": "pdf_article_02.pdf",
+              "page": null,
+              "type": "pdf",
+              "quote": "A 6-year-old boy"
+            },
+            "section": "PATIENT",
+            "confidence": 1.0,
+            "field_name": "sex"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PATIENT",
+            "confidence": null,
+            "field_name": "weight"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PATIENT",
+            "confidence": null,
+            "field_name": "height"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PATIENT",
+            "confidence": null,
+            "field_name": "medical_history"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "REPORTER",
+            "confidence": null,
+            "field_name": "name"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "REPORTER",
+            "confidence": null,
+            "field_name": "role"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "REPORTER",
+            "confidence": null,
+            "field_name": "country"
+          },
+          {
+            "value": "Broncholyt",
+            "source": {
+              "file": "pdf_article_02.pdf",
+              "page": null,
+              "type": "pdf",
+              "quote": "Broncholyt"
+            },
+            "section": "PRODUCT",
+            "confidence": 1.0,
+            "field_name": "product_name"
+          },
+          {
+            "value": "5 mL",
+            "source": {
+              "file": "pdf_article_02.pdf",
+              "page": null,
+              "type": "pdf",
+              "quote": "Broncholyt 5 mL"
+            },
+            "section": "PRODUCT",
+            "confidence": 1.0,
+            "field_name": "dose"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PRODUCT",
+            "confidence": null,
+            "field_name": "route"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PRODUCT",
+            "confidence": null,
+            "field_name": "start_date"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PRODUCT",
+            "confidence": null,
+            "field_name": "stop_date"
+          },
+          {
+            "value": "generalised urticaria, facial swelling and stridor",
+            "source": {
+              "file": "pdf_article_02.pdf",
+              "page": null,
+              "type": "pdf",
+              "quote": "generalised urticaria, facial swelling and stridor"
+            },
+            "section": "REACTION",
+            "confidence": 1.0,
+            "field_name": "reaction"
+          },
+          {
+            "value": "Within 30 minutes",
+            "source": {
+              "file": "pdf_article_02.pdf",
+              "page": null,
+              "type": "pdf",
+              "quote": "Within 30 minutes"
+            },
+            "section": "REACTION",
+            "confidence": 1.0,
+            "field_name": "onset_date"
+          },
+          {
+            "value": "recovered",
+            "source": {
+              "file": "pdf_article_02.pdf",
+              "page": null,
+              "type": "pdf",
+              "quote": "recovered"
+            },
+            "section": "REACTION",
+            "confidence": 1.0,
+            "field_name": "outcome"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": "pdf_article_02.pdf",
+              "page": null,
+              "type": "pdf",
+              "quote": "recovered"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "death"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": "pdf_article_02.pdf",
+              "page": null,
+              "type": "pdf",
+              "quote": "recovered"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "hospitalization"
+          },
+          {
+            "value": "true",
+            "source": {
+              "file": "pdf_article_02.pdf",
+              "page": null,
+              "type": "pdf",
+              "quote": "treated with intramuscular adrenaline"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "life_threatening"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": "pdf_article_02.pdf",
+              "page": null,
+              "type": "pdf",
+              "quote": "recovered"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "disability"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": "pdf_article_02.pdf",
+              "page": null,
+              "type": "pdf",
+              "quote": "recovered"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "congenital_anomaly"
+          },
+          {
+            "value": "true",
+            "source": {
+              "file": "pdf_article_02.pdf",
+              "page": null,
+              "type": "pdf",
+              "quote": "treated with intramuscular adrenaline"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "medically_important"
+          },
+          {
+            "value": "A 6-year-old boy experienced generalised urticaria, facial swelling, and stridor within 30 minutes of receiving Broncholyt 5 mL for cough. He was treated with intramuscular adrenaline and recovered. The route of administration, medical history, and reporter details are not stated.",
+            "source": {
+              "file": "pdf_article_02.pdf",
+              "page": null,
+              "type": "pdf",
+              "quote": "A 6-year-old boy received Broncholyt 5 mL for cough. Within 30 minutes he developed generalised urticaria, facial swelling and stridor. He was treated with intramuscular adrenaline and recovered."
+            },
+            "section": "NARRATIVE",
+            "confidence": 1.0,
+            "field_name": "narrative"
+          }
+        ]
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:31:42.649364Z"
+    }
+  ],
   "audit": [
     {
       "id": "4",
@@ -9,10 +341,10 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"pdfsStored\": 1, \"attachments\": 1}",
-      "createdAt": "2026-09-05T19:27:56.734461Z"
+      "createdAt": "2026-09-06T14:31:26.193459Z"
     },
     {
-      "id": "24",
+      "id": "25",
       "messageId": "4",
       "actor": "ai",
       "action": "pdf_extracted",
@@ -20,10 +352,10 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"flavor\": \"ARTICLE\", \"language\": \"en\"}",
-      "createdAt": "2026-09-05T19:28:33.553951Z"
+      "createdAt": "2026-09-06T14:31:42.655130Z"
     },
     {
-      "id": "25",
+      "id": "26",
       "messageId": "4",
       "actor": "ai",
       "action": "classified",
@@ -31,10 +363,10 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"buckets\": 4}",
-      "createdAt": "2026-09-05T19:28:33.563321Z"
+      "createdAt": "2026-09-06T14:31:42.666180Z"
     },
     {
-      "id": "26",
+      "id": "27",
       "messageId": "4",
       "actor": "ai",
       "action": "facts_extracted",
@@ -42,18 +374,18 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"count\": 23}",
-      "createdAt": "2026-09-05T19:28:33.615249Z"
+      "createdAt": "2026-09-06T14:31:42.721518Z"
     },
     {
-      "id": "27",
+      "id": "28",
       "messageId": "4",
       "actor": "ai",
       "action": "processed",
       "target": "message",
       "oldValue": null,
       "newValue": null,
-      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 6303, \"extract\": 4915, \"classify\": 1362, \"pdf:pdf_article_02.pdf\": 25}}",
-      "createdAt": "2026-09-05T19:28:33.622709Z"
+      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 57, \"extract\": 0, \"classify\": 0, \"pdf:pdf_article_02.pdf\": 55}}",
+      "createdAt": "2026-09-06T14:31:42.729270Z"
     }
   ],
   "facts": [
@@ -430,19 +762,20 @@
   "message": {
     "id": "4",
     "messageIdHdr": "<pdf-article-001@example.com>",
+    "emailUid": null,
     "sender": "Medical Librarian <library@example-pharma.test>",
     "subject": "FW: published case series - Broncholyt anaphylaxis (2 cases)",
     "receivedAt": "2025-09-05T10:00:00Z",
     "bodyText": "Forwarding a journal case report describing two paediatric anaphylaxis cases temporally associated with Broncholyt. Flagging for PV assessment.",
     "status": "READY_FOR_REVIEW",
     "attempts": 1,
-    "processingMs": 6408,
-    "processingStartedAt": "2026-09-05T19:28:27.198926Z",
-    "processingEndedAt": "2026-09-05T19:28:33.620029Z",
+    "processingMs": 151,
+    "processingStartedAt": "2026-09-06T14:31:42.563644Z",
+    "processingEndedAt": "2026-09-06T14:31:42.726651Z",
     "errorDetail": null,
     "injectionFlagged": false,
     "injectionNotes": "",
-    "createdAt": "2026-09-05T19:27:56.728049Z"
+    "createdAt": "2026-09-06T14:31:26.184427Z"
   },
   "pdfExtractions": [
     {
@@ -476,7 +809,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:28:33.555968Z"
+      "createdAt": "2026-09-06T14:31:42.657274Z"
     },
     {
       "id": "18",
@@ -488,7 +821,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:28:33.559752Z"
+      "createdAt": "2026-09-06T14:31:42.661272Z"
     },
     {
       "id": "19",
@@ -500,7 +833,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:28:33.561588Z"
+      "createdAt": "2026-09-06T14:31:42.663516Z"
     },
     {
       "id": "17",
@@ -512,347 +845,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:28:33.557858Z"
-    }
-  ],
-  "aiCalls": [
-    {
-      "id": "6",
-      "messageId": "4",
-      "step": "article_case",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "35b9a0520bf052a6f3f3d0f6ef4a90642f5947142ff6232e9b96f9ff87953eb3",
-      "output": {
-        "cases": [
-          {
-            "text": "A 6-year-old boy received Broncholyt 5 mL for cough. Within 30 minutes he developed generalised urticaria, facial swelling and stridor. He was treated with intramuscular adrenaline and recovered.",
-            "case_label": "Case 1"
-          },
-          {
-            "text": "A 9-year-old girl was given Broncholyt for bronchitis. Two hours later she had vomiting, wheeze and hypotension, requiring adrenaline and overnight observation. Both children recovered fully.",
-            "case_label": "Case 2"
-          }
-        ],
-        "reason": "The article describes two identifiable individual cases of anaphylaxis associated with a specific medicinal product (Broncholyt).",
-        "has_patient_case": true
-      },
-      "usage": null,
-      "durationMs": 0,
-      "error": null,
-      "createdAt": "2026-09-05T19:28:33.534457Z"
-    },
-    {
-      "id": "7",
-      "messageId": "4",
-      "step": "pdf_summary",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "446c69573593d258c834092a5de51f0ec5a7bf5f748e2c6f6fb403dcb0feed24",
-      "output": {
-        "summary": "The document is an article discussing adverse reactions in two pediatric cases involving the use of Broncholyt. The first case concerns a 6-year-old boy who developed generalized urticaria, facial swelling, and stridor within 30 minutes of taking 5 mL of Broncholyt for a cough. He was treated with intramuscular adrenaline and recovered. The second case involves a 9-year-old girl who experienced vomiting, wheeze, and hypotension two hours after receiving Broncholyt for bronchitis. She required adrenaline treatment and overnight observation but also recovered fully. The document does not include any form fields, tables, or images. It appears relevant to pharmacovigilance as it reports adverse drug reactions in children. However, the document lacks detailed information on the patients' medical histories, the exact dosage for the second case, and whether any other factors could have contributed to the reactions.",
-        "looks_relevant": true,
-        "relevance_reason": "It reports adverse drug reactions in pediatric patients."
-      },
-      "usage": null,
-      "durationMs": 0,
-      "error": null,
-      "createdAt": "2026-09-05T19:28:33.545385Z"
-    },
-    {
-      "id": "8",
-      "messageId": "4",
-      "step": "classify",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "4985e819f3e5251b23694f9418fc5b2f03cb778412fde7cc878446a6858491b2",
-      "output": {
-        "verdicts": [
-          {
-            "bucket": "ICSR",
-            "reason": "Two adverse reactions linked to Broncholyt described.",
-            "applies": true,
-            "confidence": 0.9
-          },
-          {
-            "bucket": "PQC",
-            "reason": "No product defect or quality issue mentioned.",
-            "applies": false,
-            "confidence": 0.8
-          },
-          {
-            "bucket": "MI",
-            "reason": "No request for medical information present.",
-            "applies": false,
-            "confidence": 0.7
-          },
-          {
-            "bucket": "NOT_RELEVANT",
-            "reason": "Content directly pertains to adverse drug reactions.",
-            "applies": false,
-            "confidence": 0.9
-          }
-        ]
-      },
-      "usage": {
-        "total_tokens": 1299,
-        "prompt_tokens": 1147,
-        "completion_tokens": 152
-      },
-      "durationMs": 1361,
-      "error": null,
-      "createdAt": "2026-09-05T19:28:33.547346Z"
-    },
-    {
-      "id": "9",
-      "messageId": "4",
-      "step": "extract_icsr",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "f1dc4819c994ca2784a5193b6fd5d54b52e3d8b6c1b2eb5c39d6603274dad0f8",
-      "output": {
-        "facts": [
-          {
-            "value": "6-year-old",
-            "source": {
-              "file": "pdf_article_02.pdf",
-              "page": null,
-              "type": "pdf",
-              "quote": "A 6-year-old boy"
-            },
-            "section": "PATIENT",
-            "confidence": 1.0,
-            "field_name": "age"
-          },
-          {
-            "value": "boy",
-            "source": {
-              "file": "pdf_article_02.pdf",
-              "page": null,
-              "type": "pdf",
-              "quote": "A 6-year-old boy"
-            },
-            "section": "PATIENT",
-            "confidence": 1.0,
-            "field_name": "sex"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "PATIENT",
-            "confidence": null,
-            "field_name": "weight"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "PATIENT",
-            "confidence": null,
-            "field_name": "height"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "PATIENT",
-            "confidence": null,
-            "field_name": "medical_history"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "REPORTER",
-            "confidence": null,
-            "field_name": "name"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "REPORTER",
-            "confidence": null,
-            "field_name": "role"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "REPORTER",
-            "confidence": null,
-            "field_name": "country"
-          },
-          {
-            "value": "Broncholyt",
-            "source": {
-              "file": "pdf_article_02.pdf",
-              "page": null,
-              "type": "pdf",
-              "quote": "Broncholyt"
-            },
-            "section": "PRODUCT",
-            "confidence": 1.0,
-            "field_name": "product_name"
-          },
-          {
-            "value": "5 mL",
-            "source": {
-              "file": "pdf_article_02.pdf",
-              "page": null,
-              "type": "pdf",
-              "quote": "Broncholyt 5 mL"
-            },
-            "section": "PRODUCT",
-            "confidence": 1.0,
-            "field_name": "dose"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "PRODUCT",
-            "confidence": null,
-            "field_name": "route"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "PRODUCT",
-            "confidence": null,
-            "field_name": "start_date"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "PRODUCT",
-            "confidence": null,
-            "field_name": "stop_date"
-          },
-          {
-            "value": "generalised urticaria, facial swelling and stridor",
-            "source": {
-              "file": "pdf_article_02.pdf",
-              "page": null,
-              "type": "pdf",
-              "quote": "generalised urticaria, facial swelling and stridor"
-            },
-            "section": "REACTION",
-            "confidence": 1.0,
-            "field_name": "reaction"
-          },
-          {
-            "value": "Within 30 minutes",
-            "source": {
-              "file": "pdf_article_02.pdf",
-              "page": null,
-              "type": "pdf",
-              "quote": "Within 30 minutes"
-            },
-            "section": "REACTION",
-            "confidence": 1.0,
-            "field_name": "onset_date"
-          },
-          {
-            "value": "recovered",
-            "source": {
-              "file": "pdf_article_02.pdf",
-              "page": null,
-              "type": "pdf",
-              "quote": "recovered"
-            },
-            "section": "REACTION",
-            "confidence": 1.0,
-            "field_name": "outcome"
-          },
-          {
-            "value": "false",
-            "source": {
-              "file": "pdf_article_02.pdf",
-              "page": null,
-              "type": "pdf",
-              "quote": "recovered"
-            },
-            "section": "SERIOUSNESS",
-            "confidence": 1.0,
-            "field_name": "death"
-          },
-          {
-            "value": "false",
-            "source": {
-              "file": "pdf_article_02.pdf",
-              "page": null,
-              "type": "pdf",
-              "quote": "recovered"
-            },
-            "section": "SERIOUSNESS",
-            "confidence": 1.0,
-            "field_name": "hospitalization"
-          },
-          {
-            "value": "true",
-            "source": {
-              "file": "pdf_article_02.pdf",
-              "page": null,
-              "type": "pdf",
-              "quote": "treated with intramuscular adrenaline"
-            },
-            "section": "SERIOUSNESS",
-            "confidence": 1.0,
-            "field_name": "life_threatening"
-          },
-          {
-            "value": "false",
-            "source": {
-              "file": "pdf_article_02.pdf",
-              "page": null,
-              "type": "pdf",
-              "quote": "recovered"
-            },
-            "section": "SERIOUSNESS",
-            "confidence": 1.0,
-            "field_name": "disability"
-          },
-          {
-            "value": "false",
-            "source": {
-              "file": "pdf_article_02.pdf",
-              "page": null,
-              "type": "pdf",
-              "quote": "recovered"
-            },
-            "section": "SERIOUSNESS",
-            "confidence": 1.0,
-            "field_name": "congenital_anomaly"
-          },
-          {
-            "value": "true",
-            "source": {
-              "file": "pdf_article_02.pdf",
-              "page": null,
-              "type": "pdf",
-              "quote": "treated with intramuscular adrenaline"
-            },
-            "section": "SERIOUSNESS",
-            "confidence": 1.0,
-            "field_name": "medically_important"
-          },
-          {
-            "value": "A 6-year-old boy experienced generalised urticaria, facial swelling, and stridor within 30 minutes of receiving Broncholyt 5 mL for cough. He was treated with intramuscular adrenaline and recovered. The route of administration, medical history, and reporter details are not stated.",
-            "source": {
-              "file": "pdf_article_02.pdf",
-              "page": null,
-              "type": "pdf",
-              "quote": "A 6-year-old boy received Broncholyt 5 mL for cough. Within 30 minutes he developed generalised urticaria, facial swelling and stridor. He was treated with intramuscular adrenaline and recovered."
-            },
-            "section": "NARRATIVE",
-            "confidence": 1.0,
-            "field_name": "narrative"
-          }
-        ]
-      },
-      "usage": {
-        "total_tokens": 1902,
-        "prompt_tokens": 782,
-        "completion_tokens": 1120
-      },
-      "durationMs": 4914,
-      "error": null,
-      "createdAt": "2026-09-05T19:28:33.549569Z"
+      "createdAt": "2026-09-06T14:31:42.659240Z"
     }
   ]
 }

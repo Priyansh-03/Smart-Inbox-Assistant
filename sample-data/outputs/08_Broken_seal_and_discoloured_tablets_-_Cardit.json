@@ -1,4 +1,146 @@
 {
+  "aiCalls": [
+    {
+      "id": "22",
+      "messageId": "8",
+      "step": "classify",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "0adbdaf45d3b08e1d1874508cae3d54615d0173e54c5fc3bd28879d31dff4cb2",
+      "output": {
+        "verdicts": [
+          {
+            "bucket": "ICSR",
+            "reason": "No adverse event reported",
+            "applies": false,
+            "confidence": 1.0
+          },
+          {
+            "bucket": "PQC",
+            "reason": "Broken seal and discoloured tablets described",
+            "applies": true,
+            "confidence": 1.0
+          },
+          {
+            "bucket": "MI",
+            "reason": "No request for medical information",
+            "applies": false,
+            "confidence": 1.0
+          },
+          {
+            "bucket": "NOT_RELEVANT",
+            "reason": "Product defect complaint is relevant",
+            "applies": false,
+            "confidence": 1.0
+          }
+        ]
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:32:03.673246Z"
+    },
+    {
+      "id": "23",
+      "messageId": "8",
+      "step": "extract_pqc",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "1208cf53f8b781a497d8ca785d9a0e319b081459aebef9ac7883438c25ed07f8",
+      "output": {
+        "facts": [
+          {
+            "value": "Carditol 40 mg",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "I bought a pack of Carditol 40 mg"
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "product_name"
+          },
+          {
+            "value": "CT-2231",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "Batch / lot number on the carton is CT-2231"
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "batch_or_lot"
+          },
+          {
+            "value": "The foil seal was already broken, several tablets are brown instead of white, and one is crumbled.",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "the foil seal was already broken when I opened the box. Several tablets are brown instead of white and one is crumbled."
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "defect_description"
+          },
+          {
+            "value": "true",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "the foil seal was already broken when I opened the box"
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "packaging_issue"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "I have not taken any of these tablets and I have not had any health problem."
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "suspected_counterfeit"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "I have not taken any of these tablets and I have not had any health problem."
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "contamination"
+          },
+          {
+            "value": "true",
+            "source": {
+              "file": null,
+              "page": null,
+              "type": "email",
+              "quote": "I can send a photo if useful."
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "photo_mentioned"
+          }
+        ]
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:32:03.675850Z"
+    }
+  ],
   "audit": [
     {
       "id": "8",
@@ -9,10 +151,10 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"pdfsStored\": 0, \"attachments\": 0}",
-      "createdAt": "2026-09-05T19:27:56.880957Z"
+      "createdAt": "2026-09-06T14:31:26.487128Z"
     },
     {
-      "id": "40",
+      "id": "41",
       "messageId": "8",
       "actor": "ai",
       "action": "classified",
@@ -20,10 +162,10 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"buckets\": 4}",
-      "createdAt": "2026-09-05T19:29:29.043812Z"
+      "createdAt": "2026-09-06T14:32:03.686742Z"
     },
     {
-      "id": "41",
+      "id": "42",
       "messageId": "8",
       "actor": "ai",
       "action": "facts_extracted",
@@ -31,18 +173,18 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"count\": 7}",
-      "createdAt": "2026-09-05T19:29:29.061699Z"
+      "createdAt": "2026-09-06T14:32:03.704203Z"
     },
     {
-      "id": "42",
+      "id": "43",
       "messageId": "8",
       "actor": "ai",
       "action": "processed",
       "target": "message",
       "oldValue": null,
       "newValue": null,
-      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 3806, \"extract\": 2253, \"classify\": 1553}}",
-      "createdAt": "2026-09-05T19:29:29.068050Z"
+      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 1, \"extract\": 0, \"classify\": 0}}",
+      "createdAt": "2026-09-06T14:32:03.710969Z"
     }
   ],
   "facts": [
@@ -176,19 +318,20 @@
   "message": {
     "id": "8",
     "messageIdHdr": "<sample-pqc-only-001@example.com>",
+    "emailUid": null,
     "sender": "Nadia Cole <nadia.cole@example-mail.test>",
     "subject": "Broken seal and discoloured tablets - Carditol lot CT-2231",
     "receivedAt": "2025-09-03T08:40:00Z",
     "bodyText": "Hello,\n\nI bought a pack of Carditol 40 mg and the foil seal was already broken when I\nopened the box. Several tablets are brown instead of white and one is crumbled.\nBatch / lot number on the carton is CT-2231, expiry 06/2027. I have not taken any\nof these tablets and I have not had any health problem. I can send a photo if\nuseful.\n\nRegards,\nNadia",
     "status": "READY_FOR_REVIEW",
     "attempts": 1,
-    "processingMs": 3855,
-    "processingStartedAt": "2026-09-05T19:29:25.207116Z",
-    "processingEndedAt": "2026-09-05T19:29:29.066041Z",
+    "processingMs": 44,
+    "processingStartedAt": "2026-09-06T14:32:03.653235Z",
+    "processingEndedAt": "2026-09-06T14:32:03.708725Z",
     "errorDetail": null,
     "injectionFlagged": false,
     "injectionNotes": "",
-    "createdAt": "2026-09-05T19:27:56.879128Z"
+    "createdAt": "2026-09-06T14:31:26.484948Z"
   },
   "pdfExtractions": [],
   "classifications": [
@@ -202,7 +345,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:29:29.036021Z"
+      "createdAt": "2026-09-06T14:32:03.678629Z"
     },
     {
       "id": "34",
@@ -214,7 +357,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:29:29.039940Z"
+      "createdAt": "2026-09-06T14:32:03.682906Z"
     },
     {
       "id": "35",
@@ -226,7 +369,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:29:29.041774Z"
+      "createdAt": "2026-09-06T14:32:03.684700Z"
     },
     {
       "id": "33",
@@ -238,157 +381,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:29:29.037996Z"
-    }
-  ],
-  "aiCalls": [
-    {
-      "id": "22",
-      "messageId": "8",
-      "step": "classify",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "0adbdaf45d3b08e1d1874508cae3d54615d0173e54c5fc3bd28879d31dff4cb2",
-      "output": {
-        "verdicts": [
-          {
-            "bucket": "ICSR",
-            "reason": "No adverse event reported",
-            "applies": false,
-            "confidence": 1.0
-          },
-          {
-            "bucket": "PQC",
-            "reason": "Broken seal and discoloured tablets described",
-            "applies": true,
-            "confidence": 1.0
-          },
-          {
-            "bucket": "MI",
-            "reason": "No request for medical information",
-            "applies": false,
-            "confidence": 1.0
-          },
-          {
-            "bucket": "NOT_RELEVANT",
-            "reason": "Product defect complaint is relevant",
-            "applies": false,
-            "confidence": 1.0
-          }
-        ]
-      },
-      "usage": {
-        "total_tokens": 1166,
-        "prompt_tokens": 1024,
-        "completion_tokens": 142
-      },
-      "durationMs": 1552,
-      "error": null,
-      "createdAt": "2026-09-05T19:29:29.025462Z"
-    },
-    {
-      "id": "23",
-      "messageId": "8",
-      "step": "extract_pqc",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "1208cf53f8b781a497d8ca785d9a0e319b081459aebef9ac7883438c25ed07f8",
-      "output": {
-        "facts": [
-          {
-            "value": "Carditol 40 mg",
-            "source": {
-              "file": null,
-              "page": null,
-              "type": "email",
-              "quote": "I bought a pack of Carditol 40 mg"
-            },
-            "section": "COMPLAINT",
-            "confidence": 1.0,
-            "field_name": "product_name"
-          },
-          {
-            "value": "CT-2231",
-            "source": {
-              "file": null,
-              "page": null,
-              "type": "email",
-              "quote": "Batch / lot number on the carton is CT-2231"
-            },
-            "section": "COMPLAINT",
-            "confidence": 1.0,
-            "field_name": "batch_or_lot"
-          },
-          {
-            "value": "The foil seal was already broken, several tablets are brown instead of white, and one is crumbled.",
-            "source": {
-              "file": null,
-              "page": null,
-              "type": "email",
-              "quote": "the foil seal was already broken when I opened the box. Several tablets are brown instead of white and one is crumbled."
-            },
-            "section": "COMPLAINT",
-            "confidence": 1.0,
-            "field_name": "defect_description"
-          },
-          {
-            "value": "true",
-            "source": {
-              "file": null,
-              "page": null,
-              "type": "email",
-              "quote": "the foil seal was already broken when I opened the box"
-            },
-            "section": "COMPLAINT",
-            "confidence": 1.0,
-            "field_name": "packaging_issue"
-          },
-          {
-            "value": "false",
-            "source": {
-              "file": null,
-              "page": null,
-              "type": "email",
-              "quote": "I have not taken any of these tablets and I have not had any health problem."
-            },
-            "section": "COMPLAINT",
-            "confidence": 1.0,
-            "field_name": "suspected_counterfeit"
-          },
-          {
-            "value": "false",
-            "source": {
-              "file": null,
-              "page": null,
-              "type": "email",
-              "quote": "I have not taken any of these tablets and I have not had any health problem."
-            },
-            "section": "COMPLAINT",
-            "confidence": 1.0,
-            "field_name": "contamination"
-          },
-          {
-            "value": "true",
-            "source": {
-              "file": null,
-              "page": null,
-              "type": "email",
-              "quote": "I can send a photo if useful."
-            },
-            "section": "COMPLAINT",
-            "confidence": 1.0,
-            "field_name": "photo_mentioned"
-          }
-        ]
-      },
-      "usage": {
-        "total_tokens": 937,
-        "prompt_tokens": 512,
-        "completion_tokens": 425
-      },
-      "durationMs": 2252,
-      "error": null,
-      "createdAt": "2026-09-05T19:29:29.033641Z"
+      "createdAt": "2026-09-06T14:32:03.680910Z"
     }
   ]
 }

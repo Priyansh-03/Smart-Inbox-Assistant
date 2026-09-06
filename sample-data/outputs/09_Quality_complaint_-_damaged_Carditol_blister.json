@@ -1,0 +1,460 @@
+{
+  "aiCalls": [
+    {
+      "id": "24",
+      "messageId": "9",
+      "step": "image_caption",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "ebf98f0819fb972c57256183ff99f0dcc1813ca38531ba5eda601716e0a49d1a",
+      "output": {
+        "kind": "product_photo",
+        "description": "The image shows a blister pack containing brown circular tablets. A black diagonal line is drawn across the pack, possibly indicating damage or an issue with the product.",
+        "reviewer_note": "Possible damaged blister pack as noted in the complaint."
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:32:08.887377Z"
+    },
+    {
+      "id": "25",
+      "messageId": "9",
+      "step": "pdf_summary",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "f09f00befdcc161dc5ed79fe72a071374e44e68d1c1f2ba39fd700455e0b8ded",
+      "output": {
+        "summary": "The document is a Product Quality Complaint Form concerning Carditol 40 mg tablets. It was submitted by pharmacist K. Owens from the United States. The complaint involves a blister pack that arrived with punctured foil, and two tablets were crumbled and discoloured brown. The batch/lot number is CT-4471, and the expiry date is March 2027. The form explicitly states that the product is not suspected to be counterfeit and no contamination was observed. Additionally, no patient harm has been reported. A photograph is attached, showing a blister pack with brown circular tablets and a black diagonal line drawn across it, possibly indicating damage. There are no tables in the document, but the image requires human review to confirm the described damage. The document appears relevant to pharmacovigilance as it reports a quality issue with a pharmaceutical product. However, it does not provide details on the storage or transportation conditions that might have contributed to the damage, leaving some context unclear.",
+        "looks_relevant": true,
+        "relevance_reason": "It reports a quality issue with a pharmaceutical product, which is pertinent to pharmacovigilance."
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:32:08.890069Z"
+    },
+    {
+      "id": "26",
+      "messageId": "9",
+      "step": "classify",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "2f5e02d8803dc3108a7d93b892c0e5c068ba3659fd8e9d8faedce5f4f039ab5a",
+      "output": {
+        "verdicts": [
+          {
+            "bucket": "ICSR",
+            "reason": "No adverse event or patient harm reported",
+            "applies": false,
+            "confidence": 1.0
+          },
+          {
+            "bucket": "PQC",
+            "reason": "Damaged blister pack with crumbled, discoloured tablets",
+            "applies": true,
+            "confidence": 1.0
+          },
+          {
+            "bucket": "MI",
+            "reason": "No request for medical information present",
+            "applies": false,
+            "confidence": 1.0
+          },
+          {
+            "bucket": "NOT_RELEVANT",
+            "reason": "Relevant quality complaint about a pharmaceutical product",
+            "applies": false,
+            "confidence": 1.0
+          }
+        ]
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:32:08.892289Z"
+    },
+    {
+      "id": "27",
+      "messageId": "9",
+      "step": "extract_pqc",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "4ca623db4105ad45a709368b3f0f43f1e09310bdc896e8931c3977effef96c4a",
+      "output": {
+        "facts": [
+          {
+            "value": "Carditol 40 mg tablets",
+            "source": {
+              "file": "pdf_pqc_photo.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Product name: Carditol 40 mg tablets"
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "product_name"
+          },
+          {
+            "value": "CT-4471",
+            "source": {
+              "file": "pdf_pqc_photo.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Batch / lot number: CT-4471"
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "batch_or_lot"
+          },
+          {
+            "value": "blister foil punctured on arrival; two tablets crumbled and discoloured brown",
+            "source": {
+              "file": "pdf_pqc_photo.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Complaint: blister foil punctured on arrival; two tablets crumbled and discoloured brown."
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "defect_description"
+          },
+          {
+            "value": "true",
+            "source": {
+              "file": "pdf_pqc_photo.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Complaint: blister foil punctured on arrival; two tablets crumbled and discoloured brown."
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "packaging_issue"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": "pdf_pqc_photo.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Suspected counterfeit: No"
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "suspected_counterfeit"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": "pdf_pqc_photo.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Contamination: not observed"
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "contamination"
+          },
+          {
+            "value": "true",
+            "source": {
+              "file": "pdf_pqc_photo.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Photograph attached: Yes (see below)"
+            },
+            "section": "COMPLAINT",
+            "confidence": 1.0,
+            "field_name": "photo_mentioned"
+          }
+        ]
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:32:08.894777Z"
+    }
+  ],
+  "audit": [
+    {
+      "id": "9",
+      "messageId": "9",
+      "actor": "ai",
+      "action": "ingested",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"pdfsStored\": 1, \"attachments\": 1}",
+      "createdAt": "2026-09-06T14:31:26.550627Z"
+    },
+    {
+      "id": "44",
+      "messageId": "9",
+      "actor": "ai",
+      "action": "pdf_extracted",
+      "target": "pdf_pqc_photo.pdf",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"flavor\": \"DIGITAL\", \"language\": \"en\"}",
+      "createdAt": "2026-09-06T14:32:08.903331Z"
+    },
+    {
+      "id": "45",
+      "messageId": "9",
+      "actor": "ai",
+      "action": "classified",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"buckets\": 4}",
+      "createdAt": "2026-09-06T14:32:08.913311Z"
+    },
+    {
+      "id": "46",
+      "messageId": "9",
+      "actor": "ai",
+      "action": "facts_extracted",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"count\": 7}",
+      "createdAt": "2026-09-06T14:32:08.929900Z"
+    },
+    {
+      "id": "47",
+      "messageId": "9",
+      "actor": "ai",
+      "action": "processed",
+      "target": "message",
+      "oldValue": null,
+      "newValue": null,
+      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 141, \"extract\": 0, \"classify\": 0, \"pdf:pdf_pqc_photo.pdf\": 140}}",
+      "createdAt": "2026-09-06T14:32:08.936811Z"
+    }
+  ],
+  "facts": [
+    {
+      "id": "197",
+      "messageId": "9",
+      "bucket": "PQC",
+      "section": "COMPLAINT",
+      "fieldName": "batch_or_lot",
+      "fieldValue": "CT-4471",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_pqc_photo.pdf",
+        "page": 1,
+        "quote": "Batch / lot number: CT-4471"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "201",
+      "messageId": "9",
+      "bucket": "PQC",
+      "section": "COMPLAINT",
+      "fieldName": "contamination",
+      "fieldValue": "false",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_pqc_photo.pdf",
+        "page": 1,
+        "quote": "Contamination: not observed"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "198",
+      "messageId": "9",
+      "bucket": "PQC",
+      "section": "COMPLAINT",
+      "fieldName": "defect_description",
+      "fieldValue": "blister foil punctured on arrival; two tablets crumbled and discoloured brown",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_pqc_photo.pdf",
+        "page": 1,
+        "quote": "Complaint: blister foil punctured on arrival; two tablets crumbled and discoloured brown."
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "199",
+      "messageId": "9",
+      "bucket": "PQC",
+      "section": "COMPLAINT",
+      "fieldName": "packaging_issue",
+      "fieldValue": "true",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_pqc_photo.pdf",
+        "page": 1,
+        "quote": "Complaint: blister foil punctured on arrival; two tablets crumbled and discoloured brown."
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "202",
+      "messageId": "9",
+      "bucket": "PQC",
+      "section": "COMPLAINT",
+      "fieldName": "photo_mentioned",
+      "fieldValue": "true",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_pqc_photo.pdf",
+        "page": 1,
+        "quote": "Photograph attached: Yes (see below)"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "196",
+      "messageId": "9",
+      "bucket": "PQC",
+      "section": "COMPLAINT",
+      "fieldName": "product_name",
+      "fieldValue": "Carditol 40 mg tablets",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_pqc_photo.pdf",
+        "page": 1,
+        "quote": "Product name: Carditol 40 mg tablets"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    },
+    {
+      "id": "200",
+      "messageId": "9",
+      "bucket": "PQC",
+      "section": "COMPLAINT",
+      "fieldName": "suspected_counterfeit",
+      "fieldValue": "false",
+      "confidence": 1.0,
+      "source": {
+        "type": "pdf",
+        "file": "pdf_pqc_photo.pdf",
+        "page": 1,
+        "quote": "Suspected counterfeit: No"
+      },
+      "caseLabel": null,
+      "reviewedValue": null,
+      "reviewStatus": "AI"
+    }
+  ],
+  "message": {
+    "id": "9",
+    "messageIdHdr": "<pqc-photo-001@example.com>",
+    "emailUid": null,
+    "sender": "\"pharmacist K. Owens\" <k.owens@example-pharmacy.test>",
+    "subject": "Quality complaint - damaged Carditol blister, photo attached",
+    "receivedAt": "2025-09-05T12:00:00Z",
+    "bodyText": "Attaching our completed quality complaint form with a photo of the damaged blister pack (synthetic). Batch CT-4471.",
+    "status": "READY_FOR_REVIEW",
+    "attempts": 1,
+    "processingMs": 209,
+    "processingStartedAt": "2026-09-06T14:32:08.714122Z",
+    "processingEndedAt": "2026-09-06T14:32:08.934338Z",
+    "errorDetail": null,
+    "injectionFlagged": false,
+    "injectionNotes": "",
+    "createdAt": "2026-09-06T14:31:26.531242Z"
+  },
+  "pdfExtractions": [
+    {
+      "id": "8",
+      "messageId": "9",
+      "attachmentId": "5",
+      "filename": "pdf_pqc_photo.pdf",
+      "flavor": "DIGITAL",
+      "language": "en",
+      "pageCount": 1,
+      "fullText": "[page 1]\nPRODUCT QUALITY COMPLAINT FORM  (synthetic - not real)\nProduct name: Carditol 40 mg tablets\nBatch / lot number: CT-4471\nExpiry: 03/2027\nComplaint: blister foil punctured on arrival; two tablets crumbled and discoloured brown.\nSuspected counterfeit: No\nContamination: not observed\nPhotograph attached: Yes (see below)\nReporter: pharmacist K. Owens, United States\nPatient harm: none reported",
+      "originalText": null,
+      "ocrConfidence": null,
+      "tables": [],
+      "images": [
+        {
+          "kind": "product_photo",
+          "page": 1,
+          "description": "The image shows a blister pack containing brown circular tablets. A black diagonal line is drawn across the pack, possibly indicating damage or an issue with the product.",
+          "reviewer_note": "Possible damaged blister pack as noted in the complaint.",
+          "needs_human_review": true
+        }
+      ],
+      "summary": "The document is a Product Quality Complaint Form concerning Carditol 40 mg tablets. It was submitted by pharmacist K. Owens from the United States. The complaint involves a blister pack that arrived with punctured foil, and two tablets were crumbled and discoloured brown. The batch/lot number is CT-4471, and the expiry date is March 2027. The form explicitly states that the product is not suspected to be counterfeit and no contamination was observed. Additionally, no patient harm has been reported. A photograph is attached, showing a blister pack with brown circular tablets and a black diagonal line drawn across it, possibly indicating damage. There are no tables in the document, but the image requires human review to confirm the described damage. The document appears relevant to pharmacovigilance as it reports a quality issue with a pharmaceutical product. However, it does not provide details on the storage or transportation conditions that might have contributed to the damage, leaving some context unclear.",
+      "looksRelevant": true,
+      "relevanceReason": "It reports a quality issue with a pharmaceutical product, which is pertinent to pharmacovigilance.",
+      "injectionFlagged": false,
+      "injectionNotes": ""
+    }
+  ],
+  "classifications": [
+    {
+      "id": "36",
+      "messageId": "9",
+      "bucket": "ICSR",
+      "applies": false,
+      "confidence": 1.0,
+      "reason": "No adverse event or patient harm reported",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-06T14:32:08.905715Z"
+    },
+    {
+      "id": "38",
+      "messageId": "9",
+      "bucket": "MI",
+      "applies": false,
+      "confidence": 1.0,
+      "reason": "No request for medical information present",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-06T14:32:08.909557Z"
+    },
+    {
+      "id": "39",
+      "messageId": "9",
+      "bucket": "NOT_RELEVANT",
+      "applies": false,
+      "confidence": 1.0,
+      "reason": "Relevant quality complaint about a pharmaceutical product",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-06T14:32:08.911433Z"
+    },
+    {
+      "id": "37",
+      "messageId": "9",
+      "bucket": "PQC",
+      "applies": true,
+      "confidence": 1.0,
+      "reason": "Damaged blister pack with crumbled, discoloured tablets",
+      "reviewStatus": "AI",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "createdAt": "2026-09-06T14:32:08.907664Z"
+    }
+  ]
+}

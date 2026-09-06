@@ -1,39 +1,41 @@
 {
+  "aiCalls": [],
   "audit": [
     {
-      "id": "14",
-      "messageId": "14",
+      "id": "15",
+      "messageId": "15",
       "actor": "ai",
       "action": "literature_screened",
       "target": "pdf_article_04.pdf",
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"cases\": 0, \"hasPatientCase\": false}",
-      "createdAt": "2026-09-05T19:27:57.217775Z"
+      "createdAt": "2026-09-06T14:31:27.066375Z"
     }
   ],
   "facts": [],
   "message": {
-    "id": "14",
-    "messageIdHdr": "lit:pdf_article_04.pdf:2544255324089",
+    "id": "15",
+    "messageIdHdr": "lit:pdf_article_04.pdf:12102491206402",
+    "emailUid": null,
     "sender": "literature-upload",
     "subject": "Literature screening: pdf_article_04.pdf",
-    "receivedAt": "2026-09-05T19:27:57.180485Z",
+    "receivedAt": "2026-09-06T14:31:26.994557Z",
     "bodyText": "",
     "status": "READY_FOR_REVIEW",
     "attempts": 0,
     "processingMs": null,
     "processingStartedAt": null,
-    "processingEndedAt": "2026-09-05T19:27:57.219461Z",
+    "processingEndedAt": "2026-09-06T14:31:27.068533Z",
     "errorDetail": null,
     "injectionFlagged": false,
     "injectionNotes": null,
-    "createdAt": "2026-09-05T19:27:57.181023Z"
+    "createdAt": "2026-09-06T14:31:26.995125Z"
   },
   "pdfExtractions": [
     {
       "id": "3",
-      "messageId": "14",
+      "messageId": "15",
       "attachmentId": null,
       "filename": "pdf_article_04.pdf",
       "flavor": "ARTICLE",
@@ -54,7 +56,7 @@
   "classifications": [
     {
       "id": "3",
-      "messageId": "14",
+      "messageId": "15",
       "bucket": "NOT_RELEVANT",
       "applies": true,
       "confidence": 0.6,
@@ -62,8 +64,7 @@
       "reviewStatus": "AI",
       "model": null,
       "promptVersion": null,
-      "createdAt": "2026-09-05T19:27:57.216223Z"
+      "createdAt": "2026-09-06T14:31:27.064421Z"
     }
-  ],
-  "aiCalls": []
+  ]
 }

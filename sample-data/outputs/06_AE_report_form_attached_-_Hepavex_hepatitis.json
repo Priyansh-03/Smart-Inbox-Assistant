@@ -1,4 +1,325 @@
 {
+  "aiCalls": [
+    {
+      "id": "14",
+      "messageId": "6",
+      "step": "pdf_summary",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "513ec67f64a115143f8c4ead895dbcb9ff4b1d13cfd525d04df2da66b3f714ff",
+      "output": {
+        "summary": "The document is an adverse event report form. It concerns a 61-year-old female patient with a medical history of type 2 diabetes who was taking Hepavex 500 mg capsules orally at a dose of 500 mg twice daily. The treatment started on July 3, 2025, and was stopped on July 18, 2025. The patient experienced nausea, vomiting, and jaundice, with symptoms beginning on July 15, 2025. The outcome was noted as 'recovering,' and the event was classified as serious, requiring hospitalisation. The report was submitted by Dr. Raymond Bell, a hepatologist based in Canada. The form includes detailed fields such as patient demographics, medical history, product details, reaction specifics, and outcome. No tables or images are included in the document. The report appears relevant to pharmacovigilance as it documents a serious adverse reaction to a pharmaceutical product. However, the document does not provide additional clinical details, such as laboratory results or a timeline of recovery, which could be important for further analysis.",
+        "looks_relevant": true,
+        "relevance_reason": "It documents a serious adverse reaction to a pharmaceutical product."
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:31:52.965304Z"
+    },
+    {
+      "id": "15",
+      "messageId": "6",
+      "step": "classify",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "d48e733ef229cf7d81b3f21ee37b8aea8adc5952e6ed1557d7cdfcbe0708a33e",
+      "output": {
+        "verdicts": [
+          {
+            "bucket": "ICSR",
+            "reason": "Clear adverse event linked to Hepavex reported.",
+            "applies": true,
+            "confidence": 1.0
+          },
+          {
+            "bucket": "PQC",
+            "reason": "No product quality defect mentioned.",
+            "applies": false,
+            "confidence": 0.9
+          },
+          {
+            "bucket": "MI",
+            "reason": "No request for medical information present.",
+            "applies": false,
+            "confidence": 0.9
+          },
+          {
+            "bucket": "NOT_RELEVANT",
+            "reason": "Adverse event report is pharmacovigilance-relevant.",
+            "applies": false,
+            "confidence": 1.0
+          }
+        ]
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:31:52.967482Z"
+    },
+    {
+      "id": "16",
+      "messageId": "6",
+      "step": "extract_icsr",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "03278cb0ac21a43c1721f9a6b63aa87c85ba4b79f4241c44092964a08e85dad8",
+      "output": {
+        "facts": [
+          {
+            "value": "61",
+            "source": {
+              "file": "pdf_report_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Patient age: 61"
+            },
+            "section": "PATIENT",
+            "confidence": 1.0,
+            "field_name": "age"
+          },
+          {
+            "value": "Female",
+            "source": {
+              "file": "pdf_report_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Patient sex: Female"
+            },
+            "section": "PATIENT",
+            "confidence": 1.0,
+            "field_name": "sex"
+          },
+          {
+            "value": "70 kg",
+            "source": {
+              "file": "pdf_report_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Patient weight: 70 kg"
+            },
+            "section": "PATIENT",
+            "confidence": 1.0,
+            "field_name": "weight"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PATIENT",
+            "confidence": null,
+            "field_name": "height"
+          },
+          {
+            "value": "type 2 diabetes",
+            "source": {
+              "file": "pdf_report_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Medical history: type 2 diabetes"
+            },
+            "section": "PATIENT",
+            "confidence": 1.0,
+            "field_name": "medical_history"
+          },
+          {
+            "value": "Dr. Raymond Bell",
+            "source": {
+              "file": "pdf_report_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Reporter: Dr. Raymond Bell"
+            },
+            "section": "REPORTER",
+            "confidence": 1.0,
+            "field_name": "name"
+          },
+          {
+            "value": "hepatologist",
+            "source": {
+              "file": "pdf_report_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Reporter: Dr. Raymond Bell, hepatologist"
+            },
+            "section": "REPORTER",
+            "confidence": 1.0,
+            "field_name": "role"
+          },
+          {
+            "value": "Canada",
+            "source": {
+              "file": "pdf_report_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Reporter country: Canada"
+            },
+            "section": "REPORTER",
+            "confidence": 1.0,
+            "field_name": "country"
+          },
+          {
+            "value": "Hepavex 500 mg capsules",
+            "source": {
+              "file": "pdf_report_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Product name: Hepavex 500 mg capsules"
+            },
+            "section": "PRODUCT",
+            "confidence": 1.0,
+            "field_name": "product_name"
+          },
+          {
+            "value": "500 mg twice daily",
+            "source": {
+              "file": "pdf_report_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Dose: 500 mg twice daily"
+            },
+            "section": "PRODUCT",
+            "confidence": 1.0,
+            "field_name": "dose"
+          },
+          {
+            "value": "oral",
+            "source": {
+              "file": "pdf_report_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Route: oral"
+            },
+            "section": "PRODUCT",
+            "confidence": 1.0,
+            "field_name": "route"
+          },
+          {
+            "value": "03 Jul 2025",
+            "source": {
+              "file": "pdf_report_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Start date: 03 Jul 2025"
+            },
+            "section": "PRODUCT",
+            "confidence": 1.0,
+            "field_name": "start_date"
+          },
+          {
+            "value": "18 Jul 2025",
+            "source": {
+              "file": "pdf_report_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Stop date: 18 Jul 2025"
+            },
+            "section": "PRODUCT",
+            "confidence": 1.0,
+            "field_name": "stop_date"
+          },
+          {
+            "value": "nausea, vomiting and jaundice",
+            "source": {
+              "file": "pdf_report_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Reaction: nausea, vomiting and jaundice"
+            },
+            "section": "REACTION",
+            "confidence": 1.0,
+            "field_name": "reaction"
+          },
+          {
+            "value": "15 Jul 2025",
+            "source": {
+              "file": "pdf_report_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Onset date: 15 Jul 2025"
+            },
+            "section": "REACTION",
+            "confidence": 1.0,
+            "field_name": "onset_date"
+          },
+          {
+            "value": "recovering",
+            "source": {
+              "file": "pdf_report_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Outcome: recovering"
+            },
+            "section": "REACTION",
+            "confidence": 1.0,
+            "field_name": "outcome"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": "pdf_report_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Serious - hospitalisation: Yes"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "death"
+          },
+          {
+            "value": "true",
+            "source": {
+              "file": "pdf_report_01.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Serious - hospitalisation: Yes"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "hospitalization"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "SERIOUSNESS",
+            "confidence": null,
+            "field_name": "life_threatening"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "SERIOUSNESS",
+            "confidence": null,
+            "field_name": "disability"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "SERIOUSNESS",
+            "confidence": null,
+            "field_name": "congenital_anomaly"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "SERIOUSNESS",
+            "confidence": null,
+            "field_name": "medically_important"
+          },
+          {
+            "value": "The patient, a 61-year-old female with type 2 diabetes, experienced nausea, vomiting, and jaundice after taking Hepavex 500 mg capsules orally. The reaction began on 15 Jul 2025, and the patient was hospitalized but is now recovering. The treatment period was from 03 Jul 2025 to 18 Jul 2025.",
+            "source": null,
+            "section": "NARRATIVE",
+            "confidence": 1.0,
+            "field_name": "narrative"
+          }
+        ]
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:31:52.969674Z"
+    }
+  ],
   "audit": [
     {
       "id": "6",
@@ -9,10 +330,10 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"pdfsStored\": 1, \"attachments\": 1}",
-      "createdAt": "2026-09-05T19:27:56.769224Z"
+      "createdAt": "2026-09-06T14:31:26.269083Z"
     },
     {
-      "id": "32",
+      "id": "33",
       "messageId": "6",
       "actor": "ai",
       "action": "pdf_extracted",
@@ -20,10 +341,10 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"flavor\": \"DIGITAL\", \"language\": \"en\"}",
-      "createdAt": "2026-09-05T19:29:02.524795Z"
+      "createdAt": "2026-09-06T14:31:52.974391Z"
     },
     {
-      "id": "33",
+      "id": "34",
       "messageId": "6",
       "actor": "ai",
       "action": "classified",
@@ -31,10 +352,10 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"buckets\": 4}",
-      "createdAt": "2026-09-05T19:29:02.535434Z"
+      "createdAt": "2026-09-06T14:31:52.983745Z"
     },
     {
-      "id": "34",
+      "id": "35",
       "messageId": "6",
       "actor": "ai",
       "action": "facts_extracted",
@@ -42,18 +363,18 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"count\": 23}",
-      "createdAt": "2026-09-05T19:29:02.592555Z"
+      "createdAt": "2026-09-06T14:31:53.036723Z"
     },
     {
-      "id": "35",
+      "id": "36",
       "messageId": "6",
       "actor": "ai",
       "action": "processed",
       "target": "message",
       "oldValue": null,
       "newValue": null,
-      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 8812, \"extract\": 4711, \"classify\": 1433, \"pdf:pdf_report_01.pdf\": 2666}}",
-      "createdAt": "2026-09-05T19:29:02.599804Z"
+      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 58, \"extract\": 0, \"classify\": 0, \"pdf:pdf_report_01.pdf\": 56}}",
+      "createdAt": "2026-09-06T14:31:53.043552Z"
     }
   ],
   "facts": [
@@ -445,19 +766,20 @@
   "message": {
     "id": "6",
     "messageIdHdr": "<pdf-report-digital-001@example.com>",
+    "emailUid": null,
     "sender": "\"Dr. Raymond Bell\" <r.bell@example-hospital.test>",
     "subject": "AE report form attached - Hepavex hepatitis",
     "receivedAt": "2025-09-05T10:00:00Z",
     "bodyText": "Please find the completed adverse event report form attached (synthetic data). Patient developed hepatitis on Hepavex; details are on the form.",
     "status": "READY_FOR_REVIEW",
     "attempts": 1,
-    "processingMs": 8909,
-    "processingStartedAt": "2026-09-05T19:28:53.677682Z",
-    "processingEndedAt": "2026-09-05T19:29:02.597348Z",
+    "processingMs": 143,
+    "processingStartedAt": "2026-09-06T14:31:52.894912Z",
+    "processingEndedAt": "2026-09-06T14:31:53.040955Z",
     "errorDetail": null,
     "injectionFlagged": false,
     "injectionNotes": "",
-    "createdAt": "2026-09-05T19:27:56.763713Z"
+    "createdAt": "2026-09-06T14:31:26.261353Z"
   },
   "pdfExtractions": [
     {
@@ -491,7 +813,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:29:02.527100Z"
+      "createdAt": "2026-09-06T14:31:52.976278Z"
     },
     {
       "id": "26",
@@ -503,7 +825,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:29:02.531265Z"
+      "createdAt": "2026-09-06T14:31:52.979662Z"
     },
     {
       "id": "27",
@@ -515,7 +837,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:29:02.533302Z"
+      "createdAt": "2026-09-06T14:31:52.981509Z"
     },
     {
       "id": "25",
@@ -527,340 +849,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:29:02.529172Z"
-    }
-  ],
-  "aiCalls": [
-    {
-      "id": "14",
-      "messageId": "6",
-      "step": "pdf_summary",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "513ec67f64a115143f8c4ead895dbcb9ff4b1d13cfd525d04df2da66b3f714ff",
-      "output": {
-        "summary": "The document is an adverse event report form. It concerns a 61-year-old female patient with a medical history of type 2 diabetes who was taking Hepavex 500 mg capsules orally at a dose of 500 mg twice daily. The treatment started on July 3, 2025, and was stopped on July 18, 2025. The patient experienced nausea, vomiting, and jaundice, with symptoms beginning on July 15, 2025. The outcome was noted as 'recovering,' and the event was classified as serious, requiring hospitalisation. The report was submitted by Dr. Raymond Bell, a hepatologist based in Canada. The form includes detailed fields such as patient demographics, medical history, product details, reaction specifics, and outcome. No tables or images are included in the document. The report appears relevant to pharmacovigilance as it documents a serious adverse reaction to a pharmaceutical product. However, the document does not provide additional clinical details, such as laboratory results or a timeline of recovery, which could be important for further analysis.",
-        "looks_relevant": true,
-        "relevance_reason": "It documents a serious adverse reaction to a pharmaceutical product."
-      },
-      "usage": {
-        "total_tokens": 1221,
-        "prompt_tokens": 977,
-        "completion_tokens": 244
-      },
-      "durationMs": 2650,
-      "error": null,
-      "createdAt": "2026-09-05T19:29:02.504963Z"
-    },
-    {
-      "id": "15",
-      "messageId": "6",
-      "step": "classify",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "d48e733ef229cf7d81b3f21ee37b8aea8adc5952e6ed1557d7cdfcbe0708a33e",
-      "output": {
-        "verdicts": [
-          {
-            "bucket": "ICSR",
-            "reason": "Clear adverse event linked to Hepavex reported.",
-            "applies": true,
-            "confidence": 1.0
-          },
-          {
-            "bucket": "PQC",
-            "reason": "No product quality defect mentioned.",
-            "applies": false,
-            "confidence": 0.9
-          },
-          {
-            "bucket": "MI",
-            "reason": "No request for medical information present.",
-            "applies": false,
-            "confidence": 0.9
-          },
-          {
-            "bucket": "NOT_RELEVANT",
-            "reason": "Adverse event report is pharmacovigilance-relevant.",
-            "applies": false,
-            "confidence": 1.0
-          }
-        ]
-      },
-      "usage": {
-        "total_tokens": 1334,
-        "prompt_tokens": 1179,
-        "completion_tokens": 155
-      },
-      "durationMs": 1432,
-      "error": null,
-      "createdAt": "2026-09-05T19:29:02.515972Z"
-    },
-    {
-      "id": "16",
-      "messageId": "6",
-      "step": "extract_icsr",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "03278cb0ac21a43c1721f9a6b63aa87c85ba4b79f4241c44092964a08e85dad8",
-      "output": {
-        "facts": [
-          {
-            "value": "61",
-            "source": {
-              "file": "pdf_report_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Patient age: 61"
-            },
-            "section": "PATIENT",
-            "confidence": 1.0,
-            "field_name": "age"
-          },
-          {
-            "value": "Female",
-            "source": {
-              "file": "pdf_report_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Patient sex: Female"
-            },
-            "section": "PATIENT",
-            "confidence": 1.0,
-            "field_name": "sex"
-          },
-          {
-            "value": "70 kg",
-            "source": {
-              "file": "pdf_report_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Patient weight: 70 kg"
-            },
-            "section": "PATIENT",
-            "confidence": 1.0,
-            "field_name": "weight"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "PATIENT",
-            "confidence": null,
-            "field_name": "height"
-          },
-          {
-            "value": "type 2 diabetes",
-            "source": {
-              "file": "pdf_report_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Medical history: type 2 diabetes"
-            },
-            "section": "PATIENT",
-            "confidence": 1.0,
-            "field_name": "medical_history"
-          },
-          {
-            "value": "Dr. Raymond Bell",
-            "source": {
-              "file": "pdf_report_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Reporter: Dr. Raymond Bell"
-            },
-            "section": "REPORTER",
-            "confidence": 1.0,
-            "field_name": "name"
-          },
-          {
-            "value": "hepatologist",
-            "source": {
-              "file": "pdf_report_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Reporter: Dr. Raymond Bell, hepatologist"
-            },
-            "section": "REPORTER",
-            "confidence": 1.0,
-            "field_name": "role"
-          },
-          {
-            "value": "Canada",
-            "source": {
-              "file": "pdf_report_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Reporter country: Canada"
-            },
-            "section": "REPORTER",
-            "confidence": 1.0,
-            "field_name": "country"
-          },
-          {
-            "value": "Hepavex 500 mg capsules",
-            "source": {
-              "file": "pdf_report_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Product name: Hepavex 500 mg capsules"
-            },
-            "section": "PRODUCT",
-            "confidence": 1.0,
-            "field_name": "product_name"
-          },
-          {
-            "value": "500 mg twice daily",
-            "source": {
-              "file": "pdf_report_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Dose: 500 mg twice daily"
-            },
-            "section": "PRODUCT",
-            "confidence": 1.0,
-            "field_name": "dose"
-          },
-          {
-            "value": "oral",
-            "source": {
-              "file": "pdf_report_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Route: oral"
-            },
-            "section": "PRODUCT",
-            "confidence": 1.0,
-            "field_name": "route"
-          },
-          {
-            "value": "03 Jul 2025",
-            "source": {
-              "file": "pdf_report_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Start date: 03 Jul 2025"
-            },
-            "section": "PRODUCT",
-            "confidence": 1.0,
-            "field_name": "start_date"
-          },
-          {
-            "value": "18 Jul 2025",
-            "source": {
-              "file": "pdf_report_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Stop date: 18 Jul 2025"
-            },
-            "section": "PRODUCT",
-            "confidence": 1.0,
-            "field_name": "stop_date"
-          },
-          {
-            "value": "nausea, vomiting and jaundice",
-            "source": {
-              "file": "pdf_report_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Reaction: nausea, vomiting and jaundice"
-            },
-            "section": "REACTION",
-            "confidence": 1.0,
-            "field_name": "reaction"
-          },
-          {
-            "value": "15 Jul 2025",
-            "source": {
-              "file": "pdf_report_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Onset date: 15 Jul 2025"
-            },
-            "section": "REACTION",
-            "confidence": 1.0,
-            "field_name": "onset_date"
-          },
-          {
-            "value": "recovering",
-            "source": {
-              "file": "pdf_report_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Outcome: recovering"
-            },
-            "section": "REACTION",
-            "confidence": 1.0,
-            "field_name": "outcome"
-          },
-          {
-            "value": "false",
-            "source": {
-              "file": "pdf_report_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Serious - hospitalisation: Yes"
-            },
-            "section": "SERIOUSNESS",
-            "confidence": 1.0,
-            "field_name": "death"
-          },
-          {
-            "value": "true",
-            "source": {
-              "file": "pdf_report_01.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Serious - hospitalisation: Yes"
-            },
-            "section": "SERIOUSNESS",
-            "confidence": 1.0,
-            "field_name": "hospitalization"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "SERIOUSNESS",
-            "confidence": null,
-            "field_name": "life_threatening"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "SERIOUSNESS",
-            "confidence": null,
-            "field_name": "disability"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "SERIOUSNESS",
-            "confidence": null,
-            "field_name": "congenital_anomaly"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "SERIOUSNESS",
-            "confidence": null,
-            "field_name": "medically_important"
-          },
-          {
-            "value": "The patient, a 61-year-old female with type 2 diabetes, experienced nausea, vomiting, and jaundice after taking Hepavex 500 mg capsules orally. The reaction began on 15 Jul 2025, and the patient was hospitalized but is now recovering. The treatment period was from 03 Jul 2025 to 18 Jul 2025.",
-            "source": null,
-            "section": "NARRATIVE",
-            "confidence": 1.0,
-            "field_name": "narrative"
-          }
-        ]
-      },
-      "usage": {
-        "total_tokens": 2052,
-        "prompt_tokens": 832,
-        "completion_tokens": 1220
-      },
-      "durationMs": 4710,
-      "error": null,
-      "createdAt": "2026-09-05T19:29:02.519019Z"
+      "createdAt": "2026-09-06T14:31:52.978034Z"
     }
   ]
 }

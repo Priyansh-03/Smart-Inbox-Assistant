@@ -1,4 +1,366 @@
 {
+  "aiCalls": [
+    {
+      "id": "10",
+      "messageId": "5",
+      "step": "translate",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "11342a56f82659b090cba150aa20c980347d2842c3b8a08ed14eaf2225e73c74",
+      "output": {
+        "language": "de",
+        "english_text": "[page 1]\nADVERSE EVENT REPORT FORM (synthetic - not a real case)\nAdverse event report (synthetic case)\nPatient: 66 years, male, 88 kg\nMedical history: Hypertension\nMedication: Kardiodol 40 mg tablets\nDose: 40 mg once daily\nRoute: oral\nStart: 01.08.2025\nEnd: 20.08.2025\nReaction: severe skin rash and facial swelling\nReaction onset: 18.08.2025\nCourse: Improvement after discontinuation, hospitalized for one night\nReporter: Dr. Petra Vogel, cardiologist, Germany"
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:31:47.808276Z"
+    },
+    {
+      "id": "11",
+      "messageId": "5",
+      "step": "pdf_summary",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "62a2c44e661cc5694b1d535b2a946c0ffbe848976f7fa01d2fc25693ec5504bb",
+      "output": {
+        "summary": "The document is an adverse event report form, explicitly noted as a synthetic case. It concerns a 66-year-old male patient with a history of hypertension who was taking Kardiodol 40 mg tablets orally once daily. The medication was started on August 1, 2025, and discontinued on August 20, 2025. The patient experienced a severe skin rash and facial swelling, with symptoms beginning on August 18, 2025. The condition improved after the medication was stopped, and the patient was hospitalized for one night. The report was submitted by Dr. Petra Vogel, a cardiologist in Germany. There are no notable form fields, tables, or figures included in the document. No images are provided for review. The document appears relevant to pharmacovigilance as it details an adverse reaction to a medication. Missing information includes the patient's complete medical history, other concurrent medications, and any diagnostic tests performed to assess the reaction.",
+        "looks_relevant": true,
+        "relevance_reason": "It describes an adverse reaction to a medication, which is central to pharmacovigilance."
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:31:47.810364Z"
+    },
+    {
+      "id": "12",
+      "messageId": "5",
+      "step": "classify",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "ee442ce37b329ed83c32d1348cedc6d6fe9a9ae9ca3b2e28891217a089e07cb2",
+      "output": {
+        "verdicts": [
+          {
+            "bucket": "ICSR",
+            "reason": "Adverse event linked to Kardiodol reported by a physician.",
+            "applies": true,
+            "confidence": 1.0
+          },
+          {
+            "bucket": "PQC",
+            "reason": "No product defect or quality issue mentioned.",
+            "applies": false,
+            "confidence": 0.9
+          },
+          {
+            "bucket": "MI",
+            "reason": "No request for medical information present.",
+            "applies": false,
+            "confidence": 0.9
+          },
+          {
+            "bucket": "NOT_RELEVANT",
+            "reason": "Adverse event report is pharmacovigilance-relevant.",
+            "applies": false,
+            "confidence": 1.0
+          }
+        ]
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:31:47.812716Z"
+    },
+    {
+      "id": "13",
+      "messageId": "5",
+      "step": "extract_icsr",
+      "model": "gpt-4o-2024-11-20",
+      "promptVersion": "v3",
+      "inputHash": "f4f5049eb1b6cd8205fa541c6a046ca98c6e9c610a608b0c66dcda9802565349",
+      "output": {
+        "facts": [
+          {
+            "value": "66 years",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "66 years"
+            },
+            "section": "PATIENT",
+            "confidence": 1.0,
+            "field_name": "age"
+          },
+          {
+            "value": "male",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "male"
+            },
+            "section": "PATIENT",
+            "confidence": 1.0,
+            "field_name": "sex"
+          },
+          {
+            "value": "88 kg",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "88 kg"
+            },
+            "section": "PATIENT",
+            "confidence": 1.0,
+            "field_name": "weight"
+          },
+          {
+            "value": "Not stated",
+            "source": null,
+            "section": "PATIENT",
+            "confidence": null,
+            "field_name": "height"
+          },
+          {
+            "value": "Hypertension",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Hypertension"
+            },
+            "section": "PATIENT",
+            "confidence": 1.0,
+            "field_name": "medical_history"
+          },
+          {
+            "value": "Dr. Petra Vogel",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Dr. Petra Vogel"
+            },
+            "section": "REPORTER",
+            "confidence": 1.0,
+            "field_name": "name"
+          },
+          {
+            "value": "cardiologist",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "cardiologist"
+            },
+            "section": "REPORTER",
+            "confidence": 1.0,
+            "field_name": "role"
+          },
+          {
+            "value": "Germany",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Germany"
+            },
+            "section": "REPORTER",
+            "confidence": 1.0,
+            "field_name": "country"
+          },
+          {
+            "value": "Kardiodol",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Kardiodol"
+            },
+            "section": "PRODUCT",
+            "confidence": 1.0,
+            "field_name": "product_name"
+          },
+          {
+            "value": "40 mg once daily",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "40 mg once daily"
+            },
+            "section": "PRODUCT",
+            "confidence": 1.0,
+            "field_name": "dose"
+          },
+          {
+            "value": "oral",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "oral"
+            },
+            "section": "PRODUCT",
+            "confidence": 1.0,
+            "field_name": "route"
+          },
+          {
+            "value": "01.08.2025",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "01.08.2025"
+            },
+            "section": "PRODUCT",
+            "confidence": 1.0,
+            "field_name": "start_date"
+          },
+          {
+            "value": "20.08.2025",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "20.08.2025"
+            },
+            "section": "PRODUCT",
+            "confidence": 1.0,
+            "field_name": "stop_date"
+          },
+          {
+            "value": "severe skin rash and facial swelling",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "severe skin rash and facial swelling"
+            },
+            "section": "REACTION",
+            "confidence": 1.0,
+            "field_name": "reaction"
+          },
+          {
+            "value": "18.08.2025",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "18.08.2025"
+            },
+            "section": "REACTION",
+            "confidence": 1.0,
+            "field_name": "onset_date"
+          },
+          {
+            "value": "Improvement after discontinuation",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Improvement after discontinuation"
+            },
+            "section": "REACTION",
+            "confidence": 1.0,
+            "field_name": "outcome"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "hospitalized for one night"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "death"
+          },
+          {
+            "value": "true",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "hospitalized for one night"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "hospitalization"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "hospitalized for one night"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "life_threatening"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Improvement after discontinuation"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "disability"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Improvement after discontinuation"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "congenital_anomaly"
+          },
+          {
+            "value": "false",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Improvement after discontinuation"
+            },
+            "section": "SERIOUSNESS",
+            "confidence": 1.0,
+            "field_name": "medically_important"
+          },
+          {
+            "value": "The patient, a 66-year-old male weighing 88 kg with a medical history of hypertension, experienced severe skin rash and facial swelling after taking Kardiodol 40 mg orally once daily. The reaction began on 18.08.2025, and the patient was hospitalized for one night. The symptoms improved after discontinuation of the medication.",
+            "source": {
+              "file": "pdf_case_de.pdf",
+              "page": 1,
+              "type": "pdf",
+              "quote": "Patient: 66 years, male, 88 kg\nMedical history: Hypertension\nMedication: Kardiodol 40 mg tablets\nDose: 40 mg once daily\nRoute: oral\nStart: 01.08.2025\nEnd: 20.08.2025\nReaction: severe skin rash and facial swelling\nReaction onset: 18.08.2025\nCourse: Improvement after discontinuation, hospitalized for one night"
+            },
+            "section": "NARRATIVE",
+            "confidence": 1.0,
+            "field_name": "narrative"
+          }
+        ]
+      },
+      "usage": null,
+      "durationMs": 0,
+      "error": null,
+      "createdAt": "2026-09-06T14:31:47.815576Z"
+    }
+  ],
   "audit": [
     {
       "id": "5",
@@ -9,10 +371,10 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"pdfsStored\": 1, \"attachments\": 1}",
-      "createdAt": "2026-09-05T19:27:56.750698Z"
+      "createdAt": "2026-09-06T14:31:26.232082Z"
     },
     {
-      "id": "28",
+      "id": "29",
       "messageId": "5",
       "actor": "ai",
       "action": "pdf_extracted",
@@ -20,10 +382,10 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"flavor\": \"NON_ENGLISH\", \"language\": \"de\"}",
-      "createdAt": "2026-09-05T19:28:48.604193Z"
+      "createdAt": "2026-09-06T14:31:47.821960Z"
     },
     {
-      "id": "29",
+      "id": "30",
       "messageId": "5",
       "actor": "ai",
       "action": "classified",
@@ -31,10 +393,10 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"buckets\": 4}",
-      "createdAt": "2026-09-05T19:28:48.613049Z"
+      "createdAt": "2026-09-06T14:31:47.832814Z"
     },
     {
-      "id": "30",
+      "id": "31",
       "messageId": "5",
       "actor": "ai",
       "action": "facts_extracted",
@@ -42,18 +404,18 @@
       "oldValue": null,
       "newValue": null,
       "detailJson": "{\"count\": 23}",
-      "createdAt": "2026-09-05T19:28:48.666746Z"
+      "createdAt": "2026-09-06T14:31:47.885959Z"
     },
     {
-      "id": "31",
+      "id": "32",
       "messageId": "5",
       "actor": "ai",
       "action": "processed",
       "target": "message",
       "oldValue": null,
       "newValue": null,
-      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 9932, \"extract\": 5326, \"classify\": 1463, \"pdf:pdf_case_de.pdf\": 3142}}",
-      "createdAt": "2026-09-05T19:28:48.674831Z"
+      "detailJson": "{\"model\": \"gpt-4o-2024-11-20\", \"latencyMs\": {\"total\": 54, \"extract\": 0, \"classify\": 0, \"pdf:pdf_case_de.pdf\": 52}}",
+      "createdAt": "2026-09-06T14:31:47.891810Z"
     }
   ],
   "facts": [
@@ -470,19 +832,20 @@
   "message": {
     "id": "5",
     "messageIdHdr": "<pdf-de-001@example.com>",
+    "emailUid": null,
     "sender": "\"Dr. Petra Vogel\" <p.vogel@example-klinik.test>",
     "subject": "Nebenwirkungsmeldung - Kardiodol (Formular anbei)",
     "receivedAt": "2025-09-05T10:00:00Z",
     "bodyText": "Anbei die ausgefuellte Nebenwirkungsmeldung zu Kardiodol. Synthetische Daten.",
     "status": "READY_FOR_REVIEW",
     "attempts": 1,
-    "processingMs": 10034,
-    "processingStartedAt": "2026-09-05T19:28:38.626094Z",
-    "processingEndedAt": "2026-09-05T19:28:48.671644Z",
+    "processingMs": 145,
+    "processingStartedAt": "2026-09-06T14:31:47.732767Z",
+    "processingEndedAt": "2026-09-06T14:31:47.889853Z",
     "errorDetail": null,
     "injectionFlagged": false,
     "injectionNotes": "",
-    "createdAt": "2026-09-05T19:27:56.745978Z"
+    "createdAt": "2026-09-06T14:31:26.223790Z"
   },
   "pdfExtractions": [
     {
@@ -516,7 +879,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:28:48.606026Z"
+      "createdAt": "2026-09-06T14:31:47.824243Z"
     },
     {
       "id": "22",
@@ -528,7 +891,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:28:48.609501Z"
+      "createdAt": "2026-09-06T14:31:47.828544Z"
     },
     {
       "id": "23",
@@ -540,7 +903,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:28:48.611328Z"
+      "createdAt": "2026-09-06T14:31:47.830531Z"
     },
     {
       "id": "21",
@@ -552,385 +915,7 @@
       "reviewStatus": "AI",
       "model": "gpt-4o-2024-11-20",
       "promptVersion": "v3",
-      "createdAt": "2026-09-05T19:28:48.607747Z"
-    }
-  ],
-  "aiCalls": [
-    {
-      "id": "10",
-      "messageId": "5",
-      "step": "translate",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "11342a56f82659b090cba150aa20c980347d2842c3b8a08ed14eaf2225e73c74",
-      "output": {
-        "language": "de",
-        "english_text": "[page 1]\nADVERSE EVENT REPORT FORM (synthetic - not a real case)\nAdverse event report (synthetic case)\nPatient: 66 years, male, 88 kg\nMedical history: Hypertension\nMedication: Kardiodol 40 mg tablets\nDose: 40 mg once daily\nRoute: oral\nStart: 01.08.2025\nEnd: 20.08.2025\nReaction: severe skin rash and facial swelling\nReaction onset: 18.08.2025\nCourse: Improvement after discontinuation, hospitalized for one night\nReporter: Dr. Petra Vogel, cardiologist, Germany"
-      },
-      "usage": {
-        "total_tokens": 603,
-        "prompt_tokens": 458,
-        "completion_tokens": 145
-      },
-      "durationMs": 1317,
-      "error": null,
-      "createdAt": "2026-09-05T19:28:48.583754Z"
-    },
-    {
-      "id": "11",
-      "messageId": "5",
-      "step": "pdf_summary",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "62a2c44e661cc5694b1d535b2a946c0ffbe848976f7fa01d2fc25693ec5504bb",
-      "output": {
-        "summary": "The document is an adverse event report form, explicitly noted as a synthetic case. It concerns a 66-year-old male patient with a history of hypertension who was taking Kardiodol 40 mg tablets orally once daily. The medication was started on August 1, 2025, and discontinued on August 20, 2025. The patient experienced a severe skin rash and facial swelling, with symptoms beginning on August 18, 2025. The condition improved after the medication was stopped, and the patient was hospitalized for one night. The report was submitted by Dr. Petra Vogel, a cardiologist in Germany. There are no notable form fields, tables, or figures included in the document. No images are provided for review. The document appears relevant to pharmacovigilance as it details an adverse reaction to a medication. Missing information includes the patient's complete medical history, other concurrent medications, and any diagnostic tests performed to assess the reaction.",
-        "looks_relevant": true,
-        "relevance_reason": "It describes an adverse reaction to a medication, which is central to pharmacovigilance."
-      },
-      "usage": {
-        "total_tokens": 786,
-        "prompt_tokens": 560,
-        "completion_tokens": 226
-      },
-      "durationMs": 1789,
-      "error": null,
-      "createdAt": "2026-09-05T19:28:48.594576Z"
-    },
-    {
-      "id": "12",
-      "messageId": "5",
-      "step": "classify",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "ee442ce37b329ed83c32d1348cedc6d6fe9a9ae9ca3b2e28891217a089e07cb2",
-      "output": {
-        "verdicts": [
-          {
-            "bucket": "ICSR",
-            "reason": "Adverse event linked to Kardiodol reported by a physician.",
-            "applies": true,
-            "confidence": 1.0
-          },
-          {
-            "bucket": "PQC",
-            "reason": "No product defect or quality issue mentioned.",
-            "applies": false,
-            "confidence": 0.9
-          },
-          {
-            "bucket": "MI",
-            "reason": "No request for medical information present.",
-            "applies": false,
-            "confidence": 0.9
-          },
-          {
-            "bucket": "NOT_RELEVANT",
-            "reason": "Adverse event report is pharmacovigilance-relevant.",
-            "applies": false,
-            "confidence": 1.0
-          }
-        ]
-      },
-      "usage": {
-        "total_tokens": 1312,
-        "prompt_tokens": 1153,
-        "completion_tokens": 159
-      },
-      "durationMs": 1461,
-      "error": null,
-      "createdAt": "2026-09-05T19:28:48.596859Z"
-    },
-    {
-      "id": "13",
-      "messageId": "5",
-      "step": "extract_icsr",
-      "model": "gpt-4o-2024-11-20",
-      "promptVersion": "v3",
-      "inputHash": "f4f5049eb1b6cd8205fa541c6a046ca98c6e9c610a608b0c66dcda9802565349",
-      "output": {
-        "facts": [
-          {
-            "value": "66 years",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "66 years"
-            },
-            "section": "PATIENT",
-            "confidence": 1.0,
-            "field_name": "age"
-          },
-          {
-            "value": "male",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "male"
-            },
-            "section": "PATIENT",
-            "confidence": 1.0,
-            "field_name": "sex"
-          },
-          {
-            "value": "88 kg",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "88 kg"
-            },
-            "section": "PATIENT",
-            "confidence": 1.0,
-            "field_name": "weight"
-          },
-          {
-            "value": "Not stated",
-            "source": null,
-            "section": "PATIENT",
-            "confidence": null,
-            "field_name": "height"
-          },
-          {
-            "value": "Hypertension",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Hypertension"
-            },
-            "section": "PATIENT",
-            "confidence": 1.0,
-            "field_name": "medical_history"
-          },
-          {
-            "value": "Dr. Petra Vogel",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Dr. Petra Vogel"
-            },
-            "section": "REPORTER",
-            "confidence": 1.0,
-            "field_name": "name"
-          },
-          {
-            "value": "cardiologist",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "cardiologist"
-            },
-            "section": "REPORTER",
-            "confidence": 1.0,
-            "field_name": "role"
-          },
-          {
-            "value": "Germany",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Germany"
-            },
-            "section": "REPORTER",
-            "confidence": 1.0,
-            "field_name": "country"
-          },
-          {
-            "value": "Kardiodol",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Kardiodol"
-            },
-            "section": "PRODUCT",
-            "confidence": 1.0,
-            "field_name": "product_name"
-          },
-          {
-            "value": "40 mg once daily",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "40 mg once daily"
-            },
-            "section": "PRODUCT",
-            "confidence": 1.0,
-            "field_name": "dose"
-          },
-          {
-            "value": "oral",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "oral"
-            },
-            "section": "PRODUCT",
-            "confidence": 1.0,
-            "field_name": "route"
-          },
-          {
-            "value": "01.08.2025",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "01.08.2025"
-            },
-            "section": "PRODUCT",
-            "confidence": 1.0,
-            "field_name": "start_date"
-          },
-          {
-            "value": "20.08.2025",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "20.08.2025"
-            },
-            "section": "PRODUCT",
-            "confidence": 1.0,
-            "field_name": "stop_date"
-          },
-          {
-            "value": "severe skin rash and facial swelling",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "severe skin rash and facial swelling"
-            },
-            "section": "REACTION",
-            "confidence": 1.0,
-            "field_name": "reaction"
-          },
-          {
-            "value": "18.08.2025",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "18.08.2025"
-            },
-            "section": "REACTION",
-            "confidence": 1.0,
-            "field_name": "onset_date"
-          },
-          {
-            "value": "Improvement after discontinuation",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Improvement after discontinuation"
-            },
-            "section": "REACTION",
-            "confidence": 1.0,
-            "field_name": "outcome"
-          },
-          {
-            "value": "false",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "hospitalized for one night"
-            },
-            "section": "SERIOUSNESS",
-            "confidence": 1.0,
-            "field_name": "death"
-          },
-          {
-            "value": "true",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "hospitalized for one night"
-            },
-            "section": "SERIOUSNESS",
-            "confidence": 1.0,
-            "field_name": "hospitalization"
-          },
-          {
-            "value": "false",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "hospitalized for one night"
-            },
-            "section": "SERIOUSNESS",
-            "confidence": 1.0,
-            "field_name": "life_threatening"
-          },
-          {
-            "value": "false",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Improvement after discontinuation"
-            },
-            "section": "SERIOUSNESS",
-            "confidence": 1.0,
-            "field_name": "disability"
-          },
-          {
-            "value": "false",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Improvement after discontinuation"
-            },
-            "section": "SERIOUSNESS",
-            "confidence": 1.0,
-            "field_name": "congenital_anomaly"
-          },
-          {
-            "value": "false",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Improvement after discontinuation"
-            },
-            "section": "SERIOUSNESS",
-            "confidence": 1.0,
-            "field_name": "medically_important"
-          },
-          {
-            "value": "The patient, a 66-year-old male weighing 88 kg with a medical history of hypertension, experienced severe skin rash and facial swelling after taking Kardiodol 40 mg orally once daily. The reaction began on 18.08.2025, and the patient was hospitalized for one night. The symptoms improved after discontinuation of the medication.",
-            "source": {
-              "file": "pdf_case_de.pdf",
-              "page": 1,
-              "type": "pdf",
-              "quote": "Patient: 66 years, male, 88 kg\nMedical history: Hypertension\nMedication: Kardiodol 40 mg tablets\nDose: 40 mg once daily\nRoute: oral\nStart: 01.08.2025\nEnd: 20.08.2025\nReaction: severe skin rash and facial swelling\nReaction onset: 18.08.2025\nCourse: Improvement after discontinuation, hospitalized for one night"
-            },
-            "section": "NARRATIVE",
-            "confidence": 1.0,
-            "field_name": "narrative"
-          }
-        ]
-      },
-      "usage": {
-        "total_tokens": 2170,
-        "prompt_tokens": 821,
-        "completion_tokens": 1349
-      },
-      "durationMs": 5324,
-      "error": null,
-      "createdAt": "2026-09-05T19:28:48.598870Z"
+      "createdAt": "2026-09-06T14:31:47.826446Z"
     }
   ]
 }

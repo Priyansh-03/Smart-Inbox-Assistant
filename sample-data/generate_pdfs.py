@@ -221,3 +221,27 @@ _form_pdf("pdf_case_es.pdf", [
 ])
 
 print(f"wrote {len(list(OUT.glob('*.pdf')))} PDFs to {OUT}")
+
+# ---- 1 digital PQC form with an embedded 'damaged product' photo ----
+_doc = fitz.open()
+_p = _doc.new_page()
+_y = 60
+_p.insert_text((60, _y), "PRODUCT QUALITY COMPLAINT FORM  (synthetic - not real)", fontsize=13)
+_y += 30
+for _line in [
+    "Product name: Carditol 40 mg tablets", "Batch / lot number: CT-4471", "Expiry: 03/2027",
+    "Complaint: blister foil punctured on arrival; two tablets crumbled and discoloured brown.",
+    "Suspected counterfeit: No", "Contamination: not observed", "Photograph attached: Yes (see below)",
+    "Reporter: pharmacist K. Owens, United States", "Patient harm: none reported",
+]:
+    _p.insert_text((60, _y), _line, fontsize=11); _y += 22
+_img = fitz.open(); _ip = _img.new_page(width=320, height=220)
+_ip.draw_rect(fitz.Rect(20, 20, 300, 200), color=(0.6, 0.6, 0.6), fill=(0.85, 0.85, 0.85), width=2)
+for _cx in (70, 130, 190, 250):
+    _ip.draw_circle(fitz.Point(_cx, 90), 22, color=(0.4, 0.25, 0.1), fill=(0.55, 0.35, 0.15))
+    _ip.draw_circle(fitz.Point(_cx, 150), 22, color=(0.4, 0.25, 0.1), fill=(0.55, 0.35, 0.15))
+_ip.draw_line(fitz.Point(40, 30), fitz.Point(150, 190), color=(0.1, 0.1, 0.1), width=3)
+_pix = _ip.get_pixmap(dpi=120); _img.close()
+_p.insert_image(fitz.Rect(60, _y + 10, 360, _y + 200), pixmap=_pix)
+_doc.save(str(OUT / "pdf_pqc_photo.pdf")); _doc.close()
+print("wrote pdf_pqc_photo.pdf")
