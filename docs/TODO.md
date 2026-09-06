@@ -68,6 +68,50 @@ preserved so the whole suite runs in one go (`make test`).
   top-bar "Résumé" link (`frontend/src/app/app.component.ts`) points at
   `/assets/Priyansh_Srivastava_Resume.pdf`.
 
+- [ ] **Frontend unit tests** — no test runner is set up (no karma/jest, no
+  `.spec.ts`). The pure helpers added in the UI pass are unit-testable in
+  isolation and should get coverage when a runner is added:
+  `sender.util.parseSender`, `fact-fields.editorFor` / `isLongText`,
+  `glossary.glossaryKey` / `glossaryLookup`, `queue.component` confidence
+  banding. Manual checklist below stands in until then.
+
+## Frontend UI review pass (client-friendly queue + detail)
+
+Manual test checklist — run against a seeded stack (`make seed LOCAL=1`).
+
+| ID | Check | Expected |
+|----|-------|----------|
+| UI-Q1 | Open `/` | Header shows Clinevo logo + "Built by Priyansh Srivastava" with LinkedIn \| GitHub \| Résumé |
+| UI-Q2 | Queue table | No internal-id or processing-ms columns; From shows name + email on two lines |
+| UI-Q3 | Category chips | ICSR=red "Safety report", PQC=amber "Quality complaint", MI=blue "Info request", NOT_RELEVANT=grey "Not relevant" |
+| UI-Q4 | Confidence column | Low/Medium/High badge (red/amber/green), not a decimal; tooltip gives the % and advice |
+| UI-Q5 | Confidence filter | Segmented Any/Low/Medium/High; picking one narrows the list and resets to page 1 |
+| UI-Q6 | Click a row anywhere | Navigates to that message; the "Open" button also works and does not double-fire |
+| UI-Q7 | Pagination | 10 rows per page; "Page 1 of N"; Prev disabled on page 1, Next disabled on last |
+| UI-Q8 | Filter change | Always jumps back to page 1; 5s auto-refresh keeps the current page |
+| UI-Q9 | Tooltips | Hover/focus/tap a `.term` or chip shows a dark bubble, never clipped by the table |
+| UI-D1 | Open a message | "Back to queue" is a button; From shows name + email on two lines |
+| UI-D2 | Facts table | Grouped by source (email body / each PDF / cross-doc), ordered Patient→Reporter→Product→Reaction→Severity→Narrative |
+| UI-D3 | Long fact (narrative) | Renders as a full-width textarea row, not squeezed into one cell |
+| UI-D4 | Deterministic fields | sex/gender/route/outcome = dropdown; age = number 0–150; true/false + yes/no = tri-state select; current AI value stays selectable |
+| UI-D5 | Scanned PDF image flag | Reads "Scanned / handwritten page … needs a human check", not "image flagged for review" |
+| UI-D6 | UID line | Shows email UID, else Message-ID, else `#id` — never blank |
+
+Edge cases covered by the checklist:
+
+| ID | Scenario | Expected |
+|----|----------|----------|
+| UI-EC1 | Sender has no `<email>` (bare name or bare address) | name shown, email line hidden; never crashes |
+| UI-EC2 | `minConf` is null | confidence badge shows `—`, no band class |
+| UI-EC3 | Message with no categories | Category cell shows `—` |
+| UI-EC4 | Filters match 0 rows | "No messages match these filters."; pager hidden |
+| UI-EC5 | Only one page of results | Pager hidden entirely |
+| UI-EC6 | Date-only filter (from or to alone) | Rows with no `receivedAt` are excluded when a date filter is set |
+| UI-EC7 | Injection-flagged row | Red "⚑ flagged" pill with plain-language tooltip |
+| UI-EC8 | Logo asset missing | `alt` text renders; layout does not collapse |
+| UI-EC9 | Fact with unknown section/bucket slug | Chip/label falls back to the raw slug; no missing tooltip error |
+| UI-EC10 | Reopen a message within 15s | Served from the in-memory cache (see console log), no refetch; a write invalidates it |
+
 ## Rollback
 
 Each todo item = one commit. Hashes recorded in `docs/CHANGELOG.md`.

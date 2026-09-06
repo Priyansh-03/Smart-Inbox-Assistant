@@ -31,13 +31,16 @@ export const GLOSSARY: Record<string, string> = {
   none:
     'No pharmacovigilance relevance detected — nothing safety-reportable in this message.',
 
-  // fact sections (Section 3D of the assignment)
+  // fact sections (Section 3D of the assignment + PQC / MI sections)
   patient: 'Patient details: age, sex, weight/height, relevant medical history.',
   reporter: 'Reporter: who reported the case, their role (e.g. physician), and country.',
   product: 'Product: name, dose, route of administration, start/stop dates.',
   reaction: 'Reaction: what happened, when it started, and the outcome.',
   severity: 'Severity / seriousness: was it serious — death, hospitalisation, life-threatening, disability.',
   narrative: 'Narrative: a short AI-written case summary in plain language.',
+  complaint: 'Complaint (PQC): the product-quality problem — batch/lot number, what is wrong, packaging, contamination, whether a photo was mentioned.',
+  inquiry: 'Inquiry (MI): the actual question(s) being asked and which product or topic they are about.',
+  request: 'Request (MI): the actual question(s) being asked and which product or topic they are about.',
 
   // domain terms
   pharmacovigilance:

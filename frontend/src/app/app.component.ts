@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
+import { COMPANY, DEVELOPER } from './constants';
 
 @Component({
   selector: 'app-root',
@@ -8,17 +9,25 @@ import { RouterOutlet, RouterLink } from '@angular/router';
   template: `
     <div class="bar">
       <a routerLink="/" class="brand">
-        <span class="brand-co">Clinevo Technologies Pvt. Ltd.</span>
+        <img class="brand-logo" [src]="company.logo" [alt]="company.name" />
         <span class="brand-app">Smart Inbox Assistant · pharmacovigilance triage</span>
       </a>
+
       <span class="devmark">
-        <span class="devmark-name">Built by Priyansh Srivastava</span>
-        <a href="https://www.linkedin.com/in/priyansh-srivastava-aiml-developer/" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="https://github.com/Priyansh-03" target="_blank" rel="noopener">GitHub</a>
-        <a href="/assets/Priyansh_Srivastava_Resume.pdf" target="_blank" rel="noopener">Résumé</a>
+        <span class="devmark-name">Built by {{ dev.name }}</span>
+        <span class="devmark-links">
+          <a [href]="dev.linkedin" target="_blank" rel="noopener">LinkedIn</a>
+          <span class="sep">|</span>
+          <a [href]="dev.github" target="_blank" rel="noopener">GitHub</a>
+          <span class="sep">|</span>
+          <a [href]="dev.resume" target="_blank" rel="noopener">Résumé</a>
+        </span>
       </span>
     </div>
     <div class="wrap"><router-outlet></router-outlet></div>
   `,
 })
-export class AppComponent {}
+export class AppComponent {
+  company = COMPANY;
+  dev = DEVELOPER;
+}

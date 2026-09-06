@@ -6,23 +6,36 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService } from './api.service';
 import { glossaryKey, glossaryLookup } from './glossary';
 import { editorFor, isLongText } from './fact-fields';
+import { TooltipDirective } from './tooltip.directive';
+import { parseSender } from './sender.util';
+import { STATUS_LABEL } from './constants';
+import { log } from './log';
 
 @Component({
   selector: 'app-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, TooltipDirective],
   template: `
     <p><button class="back" routerLink="/">← Back to queue</button></p>
 
     <div class="card" *ngIf="data">
       <h2>{{ data.message.subject || '(no subject)' }}</h2>
-      <p class="muted">
-        <b>From</b> {{ data.message.sender }} &nbsp;·&nbsp;
-        <b>Date</b> {{ data.message.receivedAt ? (data.message.receivedAt | date: 'medium') : '—' }} &nbsp;·&nbsp;
-        <b><span class="term" [title]="tip('uid')">UID</span></b>
-        {{ data.message.emailUid || data.message.messageIdHdr || ('#' + data.message.id) }} &nbsp;·&nbsp;
-        <b>Processed</b> {{ data.message.processingMs ?? '—' }} ms
-      </p>
+      <div class="metagrid muted">
+        <div class="from">
+          <b>From</b>
+          <span class="from-name">{{ from.name }}</span>
+          <span class="from-mail" *ngIf="from.email">{{ from.email }}</span>
+        </div>
+        <div>
+          <b>Date</b>
+          {{ data.message.receivedAt ? (data.message.receivedAt | date: 'medium') : '—' }}
+        </div>
+        <div>
+          <b><span class="term" [tip]="tip('uid')">UID</span></b>
+          {{ data.message.emailUid || data.message.messageIdHdr || ('#' + data.message.id) }}
+        </div>
+        <div><b>Processed</b> {{ data.message.processingMs ?? '—' }} ms</div>
+      </div>
       <p>
         Status:
         <span class="pill"
@@ -35,7 +48,7 @@ import { editorFor, isLongText } from './fact-fields';
         <span class="muted"> ({{ data.message.status }})</span>
       </p>
       <p *ngIf="data.message.injectionFlagged" class="banner">
-        ⚠ Possible <span class="term" [title]="tip('injection')">prompt-injection</span> content in this
+        ⚠ Possible <span class="term" [tip]="tip('injection')">prompt-injection</span> content in this
         message — flagged for human review
         ({{ data.message.injectionNotes }}). The AI result was still produced from the document content only.
       </p>
@@ -47,7 +60,7 @@ import { editorFor, isLongText } from './fact-fields';
         <thead><tr><th>Category</th><th>Applies</th><th class="num">Confidence</th><th>Reason</th><th>Review</th></tr></thead>
         <tr *ngFor="let c of data.classifications">
           <td>
-            <span class="chip" [ngClass]="'cat-' + key(c.bucket)" [attr.title]="tip(c.bucket)">
+            <span class="chip" [ngClass]="'cat-' + key(c.bucket)" [tip]="tip(c.bucket)">
               {{ c.bucket }}</span>
           </td>
           <td>
@@ -82,7 +95,7 @@ import { editorFor, isLongText } from './fact-fields';
           <span *ngIf="g.type === 'email'">✉️ Email body</span>
           <span *ngIf="g.type === 'none'">
             🧩 Cross-document / no single source
-            <span class="term muted" title="The AI did not tie these fields to one specific page — often a summary or a value combined from several places. Check them against the documents.">(?)</span>
+            <span class="term muted" [tip]="'The AI did not tie these fields to one specific page — often a summary or a value combined from several places. Check them against the documents.'">(?)</span>
           </span>
           <span class="muted"> · {{ g.facts.length }} field(s)</span>
         </h4>
@@ -90,14 +103,14 @@ import { editorFor, isLongText } from './fact-fields';
           <thead><tr>
             <th class="nowrap">Category</th><th class="nowrap">Section</th><th>Field</th>
             <th>Value <span class="muted">(edit to override)</span></th>
-            <th class="num" [title]="tip('confidence')"><span class="term">Conf.</span></th>
+            <th class="num" [tip]="tip('confidence')"><span class="term">Conf.</span></th>
             <th class="nowrap">Page</th><th>Evidence</th>
           </tr></thead>
           <ng-container *ngFor="let f of g.facts">
             <!-- short fields: inline control -->
             <tr *ngIf="!f._long" [class.changed-row]="edits[f.id] !== originals[f.id]">
-              <td class="nowrap"><span class="term" [attr.title]="tip(f.bucket)">{{ f.bucket }}</span></td>
-              <td class="nowrap"><span class="term" [attr.title]="tip(f.section)">{{ f.section }}</span></td>
+              <td class="nowrap"><span class="term" [tip]="tip(f.bucket)">{{ f.bucket }}</span></td>
+              <td class="nowrap"><span class="term" [tip]="tip(f.section)">{{ f.section }}</span></td>
               <td>{{ f.fieldName }}</td>
               <td>
                 <ng-container [ngSwitch]="f._editor.kind">
@@ -129,8 +142,8 @@ import { editorFor, isLongText } from './fact-fields';
             <!-- long fields: meta row + full-width textarea row -->
             <ng-container *ngIf="f._long">
               <tr class="longmeta" [class.changed-row]="edits[f.id] !== originals[f.id]">
-                <td class="nowrap"><span class="term" [attr.title]="tip(f.bucket)">{{ f.bucket }}</span></td>
-                <td class="nowrap"><span class="term" [attr.title]="tip(f.section)">{{ f.section }}</span></td>
+                <td class="nowrap"><span class="term" [tip]="tip(f.bucket)">{{ f.bucket }}</span></td>
+                <td class="nowrap"><span class="term" [tip]="tip(f.section)">{{ f.section }}</span></td>
                 <td>{{ f.fieldName }}</td>
                 <td class="muted"><i>long text — edit below</i></td>
                 <td class="num" [class.low]="f.confidence != null && f.confidence < 0.5">{{ f.confidence ?? '—' }}</td>
@@ -167,7 +180,7 @@ import { editorFor, isLongText } from './fact-fields';
             <summary>
               <b>{{ p.filename }}</b> — {{ p.flavor }} / {{ p.language }}
               <span *ngIf="p.ocrConfidence != null" class="muted">·
-                <span class="term" [title]="tip('ocr')">OCR</span> {{ p.ocrConfidence }}</span>
+                <span class="term" [tip]="tip('ocr')">OCR</span> {{ p.ocrConfidence }}</span>
               <span *ngIf="p.injectionFlagged" class="warn"> · ⚠</span>
             </summary>
             <p>{{ p.summary }}</p>
@@ -229,6 +242,7 @@ import { editorFor, isLongText } from './fact-fields';
 export class DetailComponent implements OnInit {
   id!: string;
   data: any;
+  from = { name: '', email: '' };
   factGroups: { key: string; type: string; file?: string; facts: any[] }[] = [];
   edits: Record<string, string> = {};
   originals: Record<string, string> = {};
@@ -241,13 +255,15 @@ export class DetailComponent implements OnInit {
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id')!;
+    log.info(`opening message detail ${this.id}`);
     this.load();
   }
 
   load() {
     this.api.detail(this.id).subscribe((d) => {
       this.data = d;
-      // pre-fill the fact inputs with the current value (reviewed if any, else the AI value)
+      this.from = parseSender(d.message?.sender);
+      // pre-fill each fact input with its current value (reviewed if any, else the AI value)
       this.edits = {};
       this.originals = {};
       for (const f of d.facts || []) {
@@ -260,13 +276,11 @@ export class DetailComponent implements OnInit {
       if (this.pdfNames.length && !this.pdfNames.includes(this.selectedPdf)) {
         this.showPdf(this.pdfNames[0]);
       }
+      log.info(`message ${this.id} loaded: ${d.facts?.length || 0} fact(s), ${this.pdfNames.length} pdf(s), status ${d.message?.status}`);
     });
   }
 
-  statusLabel(s: string): string {
-    return { NEW: 'Queued', PROCESSING: 'Processing', READY_FOR_REVIEW: 'Awaiting review',
-             REVIEWED: 'Reviewed ✓', FAILED: 'Failed' }[s] || s;
-  }
+  statusLabel(s: string): string { return STATUS_LABEL[s] || s; }
 
   changedCount(): number {
     return Object.keys(this.edits).filter((k) => this.edits[k] !== this.originals[k]).length;
@@ -282,7 +296,7 @@ export class DetailComponent implements OnInit {
     catch { return []; }
   }
 
-  /** Classify what the flagged visual content actually is, so the label fits. */
+  // pick a label that fits the flagged visual: scanned page / form / photo / figure
   private flagCat(p: any, img: any): 'scan' | 'form' | 'photo' | 'figure' {
     const flavor = (p.flavor || '').toUpperCase();
     const kind = (img.kind || '').toLowerCase();
@@ -314,7 +328,7 @@ export class DetailComponent implements OnInit {
   key(s: string): string { return glossaryKey(s); }
   tip(s: string): string | null { return glossaryLookup(s); }
 
-  /** Group facts by their source document (each PDF, the email body, or unknown). */
+  // Group facts by their source document (each PDF, the email body, or unknown).
   private groupFacts(facts: any[]): { key: string; type: string; file?: string; facts: any[] }[] {
     const order = ['patient', 'reporter', 'product', 'reaction', 'severity', 'seriousness', 'narrative'];
     const rank = (s: string) => {
@@ -347,13 +361,19 @@ export class DetailComponent implements OnInit {
   }
 
   setClass(bucket: string, applies: boolean) {
+    log.info(`message ${this.id}: reviewer marks ${bucket} as ${applies ? 'applies' : 'does not apply'}`);
     this.api.setClassification(this.id, bucket, applies, this.reason).subscribe(() => this.load());
   }
   saveFacts() {
     const edits = Object.keys(this.edits)
       .filter((k) => this.edits[k] !== this.originals[k])
       .map((factId) => ({ factId, value: this.edits[factId] }));
-    if (edits.length) this.api.editFacts(this.id, edits).subscribe(() => this.load());
+    if (!edits.length) { log.info(`message ${this.id}: no field changes to save`); return; }
+    log.info(`message ${this.id}: saving ${edits.length} field override(s)`);
+    this.api.editFacts(this.id, edits).subscribe(() => this.load());
   }
-  complete() { this.api.complete(this.id).subscribe(() => this.load()); }
+  complete() {
+    log.info(`message ${this.id}: reviewer marks it reviewed`);
+    this.api.complete(this.id).subscribe(() => this.load());
+  }
 }

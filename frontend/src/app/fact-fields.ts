@@ -1,11 +1,5 @@
-/**
- * Editor hints for extracted fact fields.
- *
- * The AI writes free text (including the literal "Not stated"). For fields whose
- * real-world domain is deterministic we still let the reviewer pick from a
- * constrained control instead of retyping — while always keeping "Not stated"
- * and the current AI value reachable so nothing is lost.
- */
+// Editor hint per extracted fact field. Deterministic fields get a constrained
+// control; "Not stated" and the current AI value stay reachable so nothing is lost.
 
 export type FactEditor =
   | { kind: 'text' }
@@ -43,7 +37,7 @@ const YESNO_KEYS = new Set([
   'medically_important', 'congenital_anomaly',
 ]);
 
-/** Does the stored value look boolean? */
+// true when the stored value is a yes/no-ish token
 function looksBoolean(v: string): boolean {
   return ['true', 'false', 'yes', 'no'].includes((v || '').trim().toLowerCase());
 }
@@ -57,7 +51,7 @@ export function editorFor(fieldName: string, currentValue: string): FactEditor {
   return { kind: 'text' };
 }
 
-/** Long free-text values render better as a full-width textarea row. */
+// long free-text values render as a full-width textarea row
 export function isLongText(fieldName: string, value: string): boolean {
   const e = editorFor(fieldName, value);
   if (e.kind === 'textarea') return true;
