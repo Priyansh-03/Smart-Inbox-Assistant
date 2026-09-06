@@ -89,7 +89,8 @@ type ConfBand = '' | 'low' | 'medium' | 'high';
     <div class="tablewrap"><table class="queue">
       <thead><tr>
         <th>From</th><th>Subject</th><th>Category</th>
-        <th [tip]="tip('confidence')">Confidence</th><th class="nowrap">Received</th>
+        <th class="nowrap" [tip]="tip('confidence')">Confidence</th>
+        <th class="nowrap">Received</th>
         <th>Status</th><th></th>
       </tr></thead>
       <tbody>

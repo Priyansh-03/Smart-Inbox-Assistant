@@ -18,46 +18,45 @@ body { font: 14px/1.55 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; m
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-.bar {
-  padding: 14px 24px; color: #fff;
-  background: linear-gradient(120deg, var(--brand) 0%, var(--brand-2) 100%);
-  position: sticky; top: 0; z-index: 10;
-  display: flex; align-items: center; justify-content: space-between; gap: 14px 28px;
+/* band 1: white top bar with the logo on its natural background */
+.topbar {
+  background: #fff; border-bottom: 1px solid var(--line);
+  padding: 12px 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px 24px;
   flex-wrap: wrap;
 }
-.bar .brand {
-  display: flex; flex-direction: column; gap: 4px;
-  text-decoration: none; min-width: 0;
+.topbar .brand { display: inline-flex; text-decoration: none; }
+.topbar .brand:hover { text-decoration: none; }
+.topbar .brand-logo {
+  display: block; height: 38px; width: auto; object-fit: contain; flex: 0 0 auto;
 }
-.bar .brand:hover { text-decoration: none; }
-.bar .brand-logo {
-  display: block; height: 42px; width: auto; flex: 0 0 auto;
-  background: #fff; border-radius: 8px; padding: 6px 12px;
-  box-shadow: 0 1px 4px rgba(0,0,0,.18);
+.topbar .devmark {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
+  font-size: 13px; min-width: 0;
 }
-.bar .brand-app {
-  font-weight: 500; font-size: 12px; opacity: .82; letter-spacing: .4px;
-  text-transform: uppercase; color: #fff;
-}
+.topbar .devmark-name { color: var(--muted); white-space: nowrap; font-weight: 600; }
+.topbar .devmark-links { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.topbar .devmark-links .sep { color: var(--line); }
+.topbar .devmark a { color: var(--accent); }
 
-.bar .devmark {
-  display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
-  font-size: 14px; min-width: 0;
+/* band 2: gradient page-title strip */
+.titlebar {
+  background: linear-gradient(90deg, #1f6fd4 0%, #7b2ff7 45%, #d4318c 78%, #f0644b 100%);
+  color: #fff; padding: 28px 24px 24px; text-align: center;
 }
-.bar .devmark-name { opacity: .9; white-space: nowrap; font-weight: 600; }
-.bar .devmark-links { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
-.bar .devmark-links .sep { opacity: .5; }
-.bar .devmark a {
-  color: #fff; opacity: .95; border-bottom: 1px solid rgba(255,255,255,.55);
+.titlebar h1 {
+  margin: 0; font-size: 34px; font-weight: 800; letter-spacing: .3px;
+  text-shadow: 0 1px 2px rgba(0,0,0,.18);
 }
-.bar .devmark a:hover { opacity: 1; text-decoration: none; border-bottom-color: #fff; }
 
 @media (max-width: 720px) {
-  .bar { padding: 12px 16px; gap: 10px 16px; }
-  .bar .brand-logo { height: 34px; padding: 5px 10px; }
-  .bar .brand-app { font-size: 11px; }
-  .bar .devmark { align-items: flex-start; font-size: 13px; }
+  .topbar { padding: 10px 16px; gap: 8px 16px; }
+  .topbar .brand-logo { height: 32px; }
+  .topbar .devmark { align-items: flex-start; font-size: 12px; }
+  .titlebar { padding: 20px 16px 18px; }
+  .titlebar h1 { font-size: 26px; }
 }
+
 .wrap { padding: 20px; max-width: 1400px; margin: 0 auto; }
 @media (max-width: 640px) {
   .wrap { padding: 12px; }

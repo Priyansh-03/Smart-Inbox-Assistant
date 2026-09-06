@@ -42,3 +42,9 @@ export const COMPANY = {
   name: 'Clinevo Technologies',
   logo: '/assets/clinevo-logo.jpg',
 };
+
+// big title shown in the gradient band, chosen by the current route
+export const PAGE_TITLES = {
+  queue: 'Inbox',
+  detail: 'Message',
+};

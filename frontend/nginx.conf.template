@@ -2,6 +2,18 @@ server {
   listen ${NGINX_PORT};
   root /usr/share/nginx/html;
   index index.html;
+
+  # hashed bundles never change under a given name - cache hard
+  location ~* \.(?:js|css|woff2?|ttf|eot|svg|png|jpg|jpeg|gif|ico)$ {
+    try_files $uri =404;
+    expires 1y;
+    add_header Cache-Control "public, immutable";
+  }
+
+  # entry point + injected env must always be revalidated
+  location = /index.html { add_header Cache-Control "no-cache"; }
+  location = /env.js     { add_header Cache-Control "no-cache"; }
+
   location / {
     try_files $uri $uri/ /index.html;
   }
