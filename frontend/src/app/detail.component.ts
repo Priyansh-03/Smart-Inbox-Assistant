@@ -41,9 +41,9 @@ import { ApiService } from './api.service';
       <input [(ngModel)]="reason" size="40" placeholder="why you changed a classification"></p>
 
     <div class="split">
-      <div>
+      <div class="main">
         <h3>Extracted facts</h3>
-        <table>
+        <div class="tablewrap"><table>
           <thead><tr><th>Section</th><th>Field</th><th>Value (edit to override)</th><th>Conf.</th><th>Source</th><th>Evidence</th></tr></thead>
           <tr *ngFor="let f of data?.facts">
             <td>{{ f.section }}</td>
@@ -58,9 +58,9 @@ import { ApiService } from './api.service';
             </td>
             <td class="evidence">{{ f.source?.quote }}</td>
           </tr>
-        </table>
+        </table></div>
         <p>
-          <button (click)="saveFacts()">save field overrides</button>
+          <button class="primary" (click)="saveFacts()">save field overrides</button>
           <button (click)="complete()">mark reviewed</button>
         </p>
 
@@ -78,26 +78,26 @@ import { ApiService } from './api.service';
         </div>
 
         <h3>AI calls ({{ data?.aiCalls?.length || 0 }})</h3>
-        <table>
+        <div class="tablewrap"><table>
           <thead><tr><th>Step</th><th>Model</th><th>Prompt</th><th>ms</th><th>tokens</th><th>input hash</th><th>error</th></tr></thead>
           <tr *ngFor="let c of data?.aiCalls">
             <td>{{ c.step }}</td><td>{{ c.model }}</td><td>{{ c.promptVersion }}</td>
             <td>{{ c.durationMs }}</td><td>{{ c.usage?.total_tokens }}</td>
             <td class="hash">{{ c.inputHash?.slice(0, 12) }}</td><td>{{ c.error }}</td>
           </tr>
-        </table>
+        </table></div>
 
         <h3>Audit trail</h3>
-        <table>
+        <div class="tablewrap"><table>
           <thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Target</th><th>Old → New</th></tr></thead>
           <tr *ngFor="let a of data?.audit">
             <td>{{ a.createdAt | date: 'short' }}</td><td>{{ a.actor }}</td>
             <td>{{ a.action }}</td><td>{{ a.target }}</td>
             <td><span *ngIf="a.oldValue || a.newValue">{{ a.oldValue }} → {{ a.newValue }}</span></td>
           </tr>
-        </table>
+        </table></div>
       </div>
-      <div>
+      <div class="side">
         <h3>Email body</h3>
         <pre>{{ data?.message?.bodyText || '(empty)' }}</pre>
         <div *ngIf="pdfNames.length">

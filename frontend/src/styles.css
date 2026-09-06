@@ -30,9 +30,10 @@ h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .6px; color: va
   padding: 14px 16px; margin-bottom: 14px;
 }
 
+.tablewrap { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-size: 13px; }
-th, td { border-bottom: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
-th { background: #f0f3f7; font-weight: 600; color: var(--muted); position: sticky; top: 0; }
+th, td { border-bottom: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+th { background: #f0f3f7; font-weight: 600; color: var(--muted); }
 tbody tr:hover { background: #f8fafc; }
 
 .chip {
@@ -60,12 +61,21 @@ input, select {
 }
 
 .split { display: flex; gap: 18px; align-items: flex-start; }
-.split > * { flex: 1; min-width: 0; }
+.split > .main { flex: 1 1 auto; min-width: 0; }
+.split > .side {
+  flex: 0 0 40%; max-width: 40%; min-width: 0;
+  position: sticky; top: 56px; align-self: flex-start;
+  max-height: calc(100vh - 72px); overflow: auto;
+}
+@media (max-width: 1100px) {
+  .split { flex-direction: column; }
+  .split > .side { flex-basis: auto; max-width: 100%; position: static; max-height: none; }
+}
 
-iframe { width: 100%; height: 74vh; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
-pre { white-space: pre-wrap; background: #f8fafc; border: 1px solid var(--line); border-radius: 6px; padding: 10px; font-size: 12px; max-height: 40vh; overflow: auto; }
+iframe { width: 100%; height: 68vh; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #f8fafc; border: 1px solid var(--line); border-radius: 6px; padding: 10px; font-size: 12px; max-height: 32vh; overflow: auto; }
 
-.evidence { font-size: 12px; color: var(--muted); max-width: 280px; }
+.evidence { font-size: 12px; color: var(--muted); max-width: 260px; }
 .hash { font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: var(--muted); }
 .imgflag { background: #fff4e5; border: 1px solid #f2d9b3; border-radius: 6px; padding: 6px 10px; margin: 4px 0; font-size: 13px; }
 .pdfblock { border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px; }
