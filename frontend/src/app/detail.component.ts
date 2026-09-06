@@ -51,10 +51,10 @@ import { ApiService } from './api.service';
             <td><input [(ngModel)]="edits[f.id]" [placeholder]="f.reviewedValue || f.fieldValue" size="22"></td>
             <td [class.low]="f.confidence != null && f.confidence < 0.5">{{ f.confidence ?? '—' }}</td>
             <td>
-              <a *ngIf="f.source?.type === 'pdf'" [href]="pdf(f.source.file, f.source.page)" target="_blank">
-                {{ f.source.file }} p{{ f.source.page }}</a>
+              <a *ngIf="f.source?.type === 'pdf'" href="javascript:void(0)"
+                 (click)="showPdf(f.source.file, f.source.page)">{{ f.source.file }} p{{ f.source.page || '?' }}</a>
               <span *ngIf="f.source?.type === 'email'">email</span>
-              <span *ngIf="!f.source">—</span>
+              <span *ngIf="!f.source" class="muted">—</span>
             </td>
             <td class="evidence">{{ f.source?.quote }}</td>
           </tr>
@@ -99,28 +99,29 @@ import { ApiService } from './api.service';
       </div>
       <div>
         <h3>Email body</h3>
-        <pre style="white-space:pre-wrap">{{ data?.message?.bodyText }}</pre>
-        <div *ngIf="firstPdf">
-          <h3>{{ firstPdf }}</h3>
+        <pre>{{ data?.message?.bodyText || '(empty)' }}</pre>
+        <div *ngIf="pdfNames.length">
+          <h3>
+            Attachment preview
+            <select *ngIf="pdfNames.length > 1" [(ngModel)]="selectedPdf" (ngModelChange)="showPdf($event)">
+              <option *ngFor="let n of pdfNames" [value]="n">{{ n }}</option>
+            </select>
+            <span *ngIf="pdfNames.length === 1" class="muted"> — {{ selectedPdf }}</span>
+          </h3>
+          <p class="muted" *ngIf="pdfNames.length > 1">{{ pdfNames.length }} PDF attachments — pick one to view</p>
           <iframe *ngIf="safeUrl" [src]="safeUrl"></iframe>
         </div>
       </div>
     </div>
   `,
-  styles: [`
-    .warn { color: #b00020; font-weight: 600; }
-    .evidence { font-size: 12px; color: #444; max-width: 260px; }
-    .hash { font-family: monospace; font-size: 12px; }
-    .imgflag { background: #fff4e5; padding: 4px 8px; margin: 3px 0; font-size: 13px; }
-    .pdfblock { border-top: 1px solid #eee; padding-top: 8px; margin-top: 8px; }
-  `],
 })
 export class DetailComponent implements OnInit {
   id!: string;
   data: any;
   edits: Record<string, string> = {};
   reason = '';
-  firstPdf = '';
+  pdfNames: string[] = [];
+  selectedPdf = '';
   safeUrl?: SafeResourceUrl;
 
   constructor(private route: ActivatedRoute, private api: ApiService, private san: DomSanitizer) {}
@@ -133,12 +134,16 @@ export class DetailComponent implements OnInit {
   load() {
     this.api.detail(this.id).subscribe((d) => {
       this.data = d;
-      const p = d.pdfExtractions?.[0];
-      if (p) {
-        this.firstPdf = p.filename;
-        this.safeUrl = this.san.bypassSecurityTrustResourceUrl(this.api.pdfUrl(this.id, p.filename));
+      this.pdfNames = (d.pdfExtractions || []).map((p: any) => p.filename);
+      if (this.pdfNames.length && !this.pdfNames.includes(this.selectedPdf)) {
+        this.showPdf(this.pdfNames[0]);
       }
     });
+  }
+
+  showPdf(name: string, page?: number) {
+    this.selectedPdf = name;
+    this.safeUrl = this.san.bypassSecurityTrustResourceUrl(this.api.pdfUrl(this.id, name, page));
   }
 
   images(p: any): any[] {
@@ -146,7 +151,6 @@ export class DetailComponent implements OnInit {
     catch { return []; }
   }
 
-  pdf(file: string, page?: number) { return this.api.pdfUrl(this.id, file, page); }
   setClass(bucket: string, applies: boolean) {
     this.api.setClassification(this.id, bucket, applies, this.reason).subscribe(() => this.load());
   }
