@@ -306,6 +306,7 @@ public class InboxRepository {
         Message m = new Message();
         m.id = str(rs, "id");
         m.messageIdHdr = rs.getString("message_id_hdr");
+        m.emailUid = rs.getString("email_uid");
         m.sender = rs.getString("sender");
         m.subject = rs.getString("subject");
         m.receivedAt = inst(rs, "received_at");

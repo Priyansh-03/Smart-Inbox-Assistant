@@ -12,6 +12,7 @@ public final class Documents {
     public static class Message {
         public String id;
         public String messageIdHdr;
+        public String emailUid;
         public String sender;
         public String subject;
         public Instant receivedAt;
