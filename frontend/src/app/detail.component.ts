@@ -8,7 +8,8 @@ import { glossaryKey, glossaryLookup } from './glossary';
 import { editorFor, isLongText } from './fact-fields';
 import { TooltipDirective } from './tooltip.directive';
 import { parseSender } from './sender.util';
-import { STATUS_LABEL } from './constants';
+import { STATUS_LABEL, CATEGORY_LABEL } from './constants';
+import { buildGuided, patientLine, reporterLine, patientRows, fieldValue, Guided } from './guided';
 import { log } from './log';
 
 @Component({
@@ -18,7 +19,12 @@ import { log } from './log';
   template: `
     <p><button class="back" routerLink="/">← Back to queue</button></p>
 
-    <div class="card" *ngIf="data">
+    <div class="card head" *ngIf="data">
+      <div class="hero-pills">
+        <span class="catpill on" *ngFor="let b of appliesBuckets()" [ngClass]="'cat-' + key(b)"
+              [tip]="tip(b)">{{ catLabel(b) }}</span>
+        <span class="reviewstate">● {{ heroStatus() }}</span>
+      </div>
       <h2>{{ data.message.subject || '(no subject)' }}</h2>
       <div class="metagrid muted">
         <div class="from">
@@ -26,163 +32,268 @@ import { log } from './log';
           <span class="from-name">{{ from.name }}</span>
           <span class="from-mail" *ngIf="from.email">{{ from.email }}</span>
         </div>
-        <div>
-          <b>Date</b>
-          {{ data.message.receivedAt ? (data.message.receivedAt | date: 'medium') : '—' }}
-        </div>
+        <div><b>Date</b> {{ data.message.receivedAt ? (data.message.receivedAt | date: 'medium') : '—' }}</div>
         <div>
           <b><span class="term" [tip]="tip('uid')">UID</span></b>
           {{ data.message.emailUid || data.message.messageIdHdr || ('#' + data.message.id) }}
         </div>
-        <div><b>Processed</b> {{ data.message.processingMs ?? '—' }} ms</div>
+        <div>
+          <span class="pill"
+            [class.ready]="data.message.status === 'READY_FOR_REVIEW'"
+            [class.done]="data.message.status === 'REVIEWED'"
+            [class.failed]="data.message.status === 'FAILED'"
+            [class.other]="data.message.status === 'NEW' || data.message.status === 'PROCESSING'">
+            {{ statusLabel(data.message.status) }}
+          </span>
+        </div>
       </div>
-      <p>
-        Status:
-        <span class="pill"
-          [class.ready]="data.message.status === 'READY_FOR_REVIEW'"
-          [class.done]="data.message.status === 'REVIEWED'"
-          [class.failed]="data.message.status === 'FAILED'"
-          [class.other]="data.message.status === 'NEW' || data.message.status === 'PROCESSING'">
-          {{ statusLabel(data.message.status) }}
-        </span>
-        <span class="muted"> ({{ data.message.status }})</span>
-      </p>
       <p *ngIf="data.message.injectionFlagged" class="banner">
         ⚠ Possible <span class="term" [tip]="tip('injection')">prompt-injection</span> content in this
-        message — flagged for human review
-        ({{ data.message.injectionNotes }}). The AI result was still produced from the document content only.
+        message — flagged for human review ({{ data.message.injectionNotes }}).
+        The AI result was still produced from the document content only.
       </p>
     </div>
 
-    <div class="card" *ngIf="data">
-      <h3 style="margin-top:0">Classification</h3>
-      <div class="tablewrap"><table>
-        <thead><tr><th>Category</th><th>Applies</th><th class="num">Confidence</th><th>Reason</th><th>Review</th></tr></thead>
-        <tr *ngFor="let c of data.classifications">
-          <td>
-            <span class="chip" [ngClass]="'cat-' + key(c.bucket)" [tip]="tip(c.bucket)">
-              {{ c.bucket }}</span>
-          </td>
-          <td>
-            <span class="chip yn" [class.yes]="c.applies" [class.no]="!c.applies">
-              {{ c.applies ? 'yes' : 'no' }}</span>
-          </td>
-          <td class="num" [class.low]="c.confidence != null && c.confidence < 0.5">{{ c.confidence ?? '—' }}</td>
-          <td>{{ c.reason }}</td>
-          <td>
-            <button class="ok" (click)="setClass(c.bucket, true)">accept</button>
-            <button class="danger" (click)="setClass(c.bucket, false)">override</button>
-            <span *ngIf="c.reviewStatus !== 'AI'" class="muted"> {{ c.reviewStatus }}</span>
-          </td>
-        </tr>
-      </table></div>
-      <p><label>Override reason (optional)
-        <input [(ngModel)]="reason" size="46" placeholder="why you changed a classification"></label></p>
-    </div>
+    <!-- document tabs: only when the message has 2+ attached documents -->
+    <nav class="doctabs" *ngIf="data && tabs.length">
+      <button *ngFor="let t of tabs" [class.on]="t.file === activeTab" (click)="selectTab(t.file)">
+        📄 {{ t.file }}
+      </button>
+    </nav>
 
-    <div class="card" *ngIf="data">
-      <h3 style="margin-top:0">Extracted facts <span class="muted">({{ data.facts.length }} fields)</span></h3>
-      <p class="muted" style="margin-top:0">
-        Grouped by <b>source</b> — each document (and the email body) is shown separately, since
-        different attachments can describe different patients or cases.
-      </p>
+    <div class="review" *ngIf="data">
+      <!-- LEFT: guided review -->
+      <div class="reviewmain">
 
-      <div class="factgroup" *ngFor="let g of factGroups">
-        <h4 class="srchead">
-          <span *ngIf="g.type === 'pdf'">
-            📄 <a href="javascript:void(0)" (click)="showPdf(g.file || '')">{{ g.file }}</a>
-          </span>
-          <span *ngIf="g.type === 'email'">✉️ Email body</span>
-          <span *ngIf="g.type === 'none'">
-            🧩 Cross-document / no single source
-            <span class="term muted" [tip]="'The AI did not tie these fields to one specific page — often a summary or a value combined from several places. Check them against the documents.'">(?)</span>
-          </span>
-          <span class="muted"> · {{ g.facts.length }} field(s)</span>
-        </h4>
-        <div class="tablewrap"><table class="facts">
-          <thead><tr>
-            <th class="nowrap">Category</th><th class="nowrap">Section</th><th>Field</th>
-            <th>Value <span class="muted">(edit to override)</span></th>
-            <th class="num" [tip]="tip('confidence')"><span class="term">Conf.</span></th>
-            <th class="nowrap">Page</th><th>Evidence</th>
-          </tr></thead>
-          <ng-container *ngFor="let f of g.facts">
-            <!-- short fields: inline control -->
-            <tr *ngIf="!f._long" [class.changed-row]="edits[f.id] !== originals[f.id]">
-              <td class="nowrap"><span class="term" [tip]="tip(f.bucket)">{{ f.bucket }}</span></td>
-              <td class="nowrap"><span class="term" [tip]="tip(f.section)">{{ f.section }}</span></td>
-              <td>{{ f.fieldName }}</td>
-              <td>
-                <ng-container [ngSwitch]="f._editor.kind">
-                  <select *ngSwitchCase="'select'" class="factval"
-                          [class.changed]="edits[f.id] !== originals[f.id]" [(ngModel)]="edits[f.id]">
-                    <option *ngIf="!f._editor.options.includes(edits[f.id])" [value]="edits[f.id]">
-                      {{ edits[f.id] || '(empty)' }}</option>
-                    <option *ngFor="let o of f._editor.options" [value]="o">{{ o }}</option>
-                  </select>
-                  <span *ngSwitchCase="'number'" class="numwrap">
-                    <input type="number" class="factval" [min]="f._editor.min" [max]="f._editor.max"
-                           [step]="f._editor.step || 1"
-                           [class.changed]="edits[f.id] !== originals[f.id]" [(ngModel)]="edits[f.id]">
-                    <span class="muted" *ngIf="f._editor.unit">{{ f._editor.unit }}</span>
-                  </span>
-                  <input *ngSwitchDefault class="factval" [(ngModel)]="edits[f.id]"
-                         [class.changed]="edits[f.id] !== originals[f.id]">
+        <!-- hero: at-a-glance summary (active tab on multi-doc) -->
+        <section class="hero">
+          <div class="hero-block" *ngIf="situationText()">
+            <div class="hero-head">
+              <span class="isq">✉️</span>
+              <h3>What happened?</h3>
+            </div>
+            <p class="hero-summary">{{ situationText() }}</p>
+          </div>
+
+          <div class="keydetails" *ngIf="hasKeyValues()">
+            <div class="kd-head">
+              <h4>Key details</h4>
+            </div>
+            <div class="kd-grid">
+              <div class="kd-card" *ngFor="let c of keyCards()">
+                <span class="isq sm">{{ c.icon }}</span>
+                <span class="kd-label">{{ c.label }}</span>
+                <ng-container [ngSwitch]="true">
+                  <div *ngSwitchCase="!!c.rows" class="kd-rows">
+                    <div class="kd-row" *ngFor="let r of c.rows">
+                      <span class="kd-rk">{{ r.label }}</span>
+                      <ul *ngIf="listItems(r.value).length > 1; else rvOne" class="kd-list tight">
+                        <li *ngFor="let it of listItems(r.value)">{{ it }}</li>
+                      </ul>
+                      <ng-template #rvOne><span class="kd-rv">{{ r.value }}</span></ng-template>
+                    </div>
+                    <span class="kd-rv" *ngIf="!c.rows?.length">—</span>
+                  </div>
+                  <ul *ngSwitchCase="listItems(c.value).length > 1" class="kd-list">
+                    <li *ngFor="let it of listItems(c.value)">{{ it }}</li>
+                  </ul>
+                  <span *ngSwitchDefault class="kd-value">{{ c.value || '—' }}</span>
                 </ng-container>
-              </td>
-              <td class="num" [class.low]="f.confidence != null && f.confidence < 0.5">{{ f.confidence ?? '—' }}</td>
-              <td class="nowrap">
-                <a *ngIf="f.source?.type === 'pdf' && f.source.page" href="javascript:void(0)"
-                   (click)="showPdf(f.source.file, f.source.page)">p{{ f.source.page }}</a>
-                <span *ngIf="!(f.source?.type === 'pdf' && f.source.page)" class="muted">—</span>
-              </td>
-              <td class="evidence">{{ f.source?.quote }}</td>
-            </tr>
+              </div>
+            </div>
+          </div>
 
-            <!-- long fields: meta row + full-width textarea row -->
-            <ng-container *ngIf="f._long">
-              <tr class="longmeta" [class.changed-row]="edits[f.id] !== originals[f.id]">
-                <td class="nowrap"><span class="term" [tip]="tip(f.bucket)">{{ f.bucket }}</span></td>
-                <td class="nowrap"><span class="term" [tip]="tip(f.section)">{{ f.section }}</span></td>
-                <td>{{ f.fieldName }}</td>
-                <td class="muted"><i>long text — edit below</i></td>
-                <td class="num" [class.low]="f.confidence != null && f.confidence < 0.5">{{ f.confidence ?? '—' }}</td>
-                <td class="nowrap">
-                  <a *ngIf="f.source?.type === 'pdf' && f.source.page" href="javascript:void(0)"
-                     (click)="showPdf(f.source.file, f.source.page)">p{{ f.source.page }}</a>
-                  <span *ngIf="!(f.source?.type === 'pdf' && f.source.page)" class="muted">—</span>
-                </td>
-                <td class="evidence">{{ f.source?.quote }}</td>
-              </tr>
-              <tr class="longbody">
-                <td colspan="7">
-                  <textarea class="factarea" rows="4" [(ngModel)]="edits[f.id]"
-                            [class.changed]="edits[f.id] !== originals[f.id]"></textarea>
-                </td>
-              </tr>
-            </ng-container>
+          <!-- flip card: what the AI saw in the active document -->
+          <div class="aisaw" *ngIf="activeDoc()" [class.flipped]="aiFlipped"
+               (click)="aiFlipped = !aiFlipped">
+            <div class="aisaw-inner">
+              <div class="aisaw-front">
+                <span class="isq sm">👁</span>
+                <span class="aisaw-title">What the AI saw</span>
+                <span class="aisaw-file">{{ activeDoc().filename }}</span>
+                <span class="aisaw-hint">tap to reveal →</span>
+              </div>
+              <div class="aisaw-back">
+                <p class="aisaw-summary" *ngIf="activeDoc().summary">{{ activeDoc().summary }}</p>
+                <div class="aisaw-img" *ngFor="let img of images(activeDoc())">
+                  <b>{{ flagIcon(activeDoc(), img) }} {{ flagTitle(activeDoc(), img) }} — page {{ img.page }}, needs a human check.</b>
+                  {{ flagBody(activeDoc(), img) }}
+                  <div class="muted" *ngIf="img.description"><b>AI read it as:</b> {{ img.description }}</div>
+                  <div class="muted" *ngIf="img.reviewer_note"><b>Note:</b> {{ img.reviewer_note }}</div>
+                </div>
+                <span class="aisaw-hint">← tap to close</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <p class="tabhint muted" *ngIf="tabs.length">
+          Showing details from <b>{{ activeTab }}</b>.
+        </p>
+
+        <!-- 2. Patient & Reporter -->
+        <section class="gcard" *ngIf="guided.patient.length || guided.reporter.length">
+          <div class="gcard-head">
+            <h3>👤 Patient &amp; Reporter</h3>
+          </div>
+          <div class="pairs">
+            <div *ngIf="guided.patient.length">
+              <span class="k">Patient details</span>
+              <span class="v">{{ patientLine(guided.patient) }}</span>
+              <span class="sub" *ngIf="patientSub()">{{ patientSub() }}</span>
+            </div>
+            <div *ngIf="guided.reporter.length">
+              <span class="k">Reported by</span>
+              <span class="v">{{ reporterLine(guided.reporter) }}</span>
+              <span class="sub" *ngIf="from.email">{{ from.email }}</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Product & Packaging -->
+        <section class="gcard" *ngIf="guided.product.length || guided.complaint.length">
+          <div class="gcard-head">
+            <h3>💊 Product &amp; Packaging</h3>
+          </div>
+          <div class="pairs">
+            <div>
+              <span class="k">Medicine name</span>
+              <span class="v">{{ productName() || 'Not stated' }}</span>
+              <span class="sub" *ngIf="field(guided.product,'dose')">Dose: {{ field(guided.product,'dose') }}</span>
+            </div>
+            <div *ngIf="field(guided.complaint,'batch_or_lot')">
+              <span class="k">Batch / lot</span>
+              <span class="chip mono">{{ field(guided.complaint,'batch_or_lot') }}</span>
+            </div>
+          </div>
+          <div class="callout" *ngIf="field(guided.complaint,'defect_description')">
+            <b>Physical issue observed:</b>
+            {{ field(guided.complaint,'defect_description') }}
+          </div>
+        </section>
+
+        <!-- MI: questions asked -->
+        <section class="gcard" *ngIf="guided.question.length">
+          <div class="gcard-head"><h3>❓ Questions asked</h3></div>
+          <ul class="qlist">
+            <li *ngFor="let q of questionItems()">{{ q }}</li>
+          </ul>
+          <p class="sub" *ngIf="field(guided.question,'product_or_topic')">
+            About: {{ field(guided.question,'product_or_topic') }}
+          </p>
+        </section>
+
+        <!-- nothing for this tab / message -->
+        <section class="gcard muted" *ngIf="!guided.hasAny && !situationText()">
+          <ng-container *ngIf="tabs.length">Nothing was extracted from this document.</ng-container>
+          <ng-container *ngIf="!tabs.length">
+            Nothing to extract — the assistant did not find pharmacovigilance-relevant details in this message.
           </ng-container>
-        </table></div>
-      </div>
+        </section>
 
-      <p>
-        <button (click)="saveFacts()">save field overrides</button>
-        <button class="primary" (click)="complete()">mark reviewed</button>
-        <span class="muted" *ngIf="changedCount()"> &nbsp;{{ changedCount() }} field(s) changed</span>
-      </p>
-    </div>
+        <!-- technical panel -->
+        <details class="gcard tech">
+          <summary>View technical logs &amp; JSON</summary>
 
-    <div class="split" *ngIf="data">
-      <div class="main">
-        <div class="card">
-          <h3 style="margin-top:0">PDF documents</h3>
-          <details *ngFor="let p of data.pdfExtractions" class="pdfblock" [open]="data.pdfExtractions.length === 1">
-            <summary>
-              <b>{{ p.filename }}</b> — {{ p.flavor }} / {{ p.language }}
-              <span *ngIf="p.ocrConfidence != null" class="muted">·
-                <span class="term" [tip]="tip('ocr')">OCR</span> {{ p.ocrConfidence }}</span>
-              <span *ngIf="p.injectionFlagged" class="warn"> · ⚠</span>
-            </summary>
+          <h4>Classification <span class="muted">(whole message)</span></h4>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Category</th><th>Applies</th><th class="num">Conf.</th><th>Reason</th><th>Review</th></tr></thead>
+            <tr *ngFor="let c of data.classifications">
+              <td><span class="chip" [ngClass]="'cat-' + key(c.bucket)" [tip]="tip(c.bucket)">{{ c.bucket }}</span></td>
+              <td><span class="chip yn" [class.yes]="c.applies" [class.no]="!c.applies">{{ c.applies ? 'yes' : 'no' }}</span></td>
+              <td class="num" [class.low]="c.confidence != null && c.confidence < 0.5">{{ c.confidence ?? '—' }}</td>
+              <td>{{ c.reason }}</td>
+              <td class="nowrap">
+                <button class="ok" (click)="setClass(c.bucket, true)">accept</button>
+                <button class="danger" (click)="setClass(c.bucket, false)">override</button>
+                <span *ngIf="c.reviewStatus !== 'AI'" class="muted"> {{ c.reviewStatus }}</span>
+              </td>
+            </tr>
+          </table></div>
+
+          <h4>Extracted facts
+            <span class="muted" *ngIf="!tabs.length">({{ data.facts.length }} fields)</span>
+            <span class="muted" *ngIf="tabs.length">— {{ activeTab }} + cross-document</span>
+          </h4>
+          <p class="muted" style="margin-top:0">Edit a value to override it.</p>
+          <div class="factgroup" *ngFor="let g of visibleFactGroups()">
+            <h5 class="srchead">
+              <span *ngIf="g.type === 'pdf'">📄 <a href="javascript:void(0)" (click)="showPdf(g.file || '')">{{ g.file }}</a></span>
+              <span *ngIf="g.type === 'email'">✉️ Email body</span>
+              <span *ngIf="g.type === 'none'">🧩 Cross-document / no single source</span>
+              <span class="muted"> · {{ g.facts.length }} field(s)</span>
+            </h5>
+            <div class="tablewrap"><table class="facts">
+              <thead><tr>
+                <th class="nowrap">Category</th><th class="nowrap">Section</th><th>Field</th>
+                <th>Value <span class="muted">(edit to override)</span></th>
+                <th class="num" [tip]="tip('confidence')"><span class="term">Conf.</span></th>
+                <th class="nowrap">Page</th><th>Evidence</th>
+              </tr></thead>
+              <ng-container *ngFor="let f of g.facts">
+                <tr *ngIf="!f._long" [class.changed-row]="edits[f.id] !== originals[f.id]">
+                  <td class="nowrap"><span class="term" [tip]="tip(f.bucket)">{{ f.bucket }}</span></td>
+                  <td class="nowrap"><span class="term" [tip]="tip(f.section)">{{ f.section }}</span></td>
+                  <td>{{ f.fieldName }}</td>
+                  <td>
+                    <ng-container [ngSwitch]="f._editor.kind">
+                      <select *ngSwitchCase="'select'" class="factval"
+                              [class.changed]="edits[f.id] !== originals[f.id]" [(ngModel)]="edits[f.id]">
+                        <option *ngIf="!f._editor.options.includes(edits[f.id])" [value]="edits[f.id]">
+                          {{ edits[f.id] || '(empty)' }}</option>
+                        <option *ngFor="let o of f._editor.options" [value]="o">{{ o }}</option>
+                      </select>
+                      <span *ngSwitchCase="'number'" class="numwrap">
+                        <input type="number" class="factval" [min]="f._editor.min" [max]="f._editor.max"
+                               [step]="f._editor.step || 1"
+                               [class.changed]="edits[f.id] !== originals[f.id]" [(ngModel)]="edits[f.id]">
+                        <span class="muted" *ngIf="f._editor.unit">{{ f._editor.unit }}</span>
+                      </span>
+                      <input *ngSwitchDefault class="factval" [(ngModel)]="edits[f.id]"
+                             [class.changed]="edits[f.id] !== originals[f.id]">
+                    </ng-container>
+                  </td>
+                  <td class="num" [class.low]="f.confidence != null && f.confidence < 0.5">{{ f.confidence ?? '—' }}</td>
+                  <td class="nowrap">
+                    <a *ngIf="f.source?.type === 'pdf' && f.source.page" href="javascript:void(0)"
+                       (click)="showPdf(f.source.file, f.source.page)">p{{ f.source.page }}</a>
+                    <span *ngIf="!(f.source?.type === 'pdf' && f.source.page)" class="muted">—</span>
+                  </td>
+                  <td class="evidence">{{ f.source?.quote }}</td>
+                </tr>
+                <ng-container *ngIf="f._long">
+                  <tr class="longmeta" [class.changed-row]="edits[f.id] !== originals[f.id]">
+                    <td class="nowrap"><span class="term" [tip]="tip(f.bucket)">{{ f.bucket }}</span></td>
+                    <td class="nowrap"><span class="term" [tip]="tip(f.section)">{{ f.section }}</span></td>
+                    <td>{{ f.fieldName }}</td>
+                    <td class="muted"><i>long text — edit below</i></td>
+                    <td class="num" [class.low]="f.confidence != null && f.confidence < 0.5">{{ f.confidence ?? '—' }}</td>
+                    <td class="nowrap">
+                      <a *ngIf="f.source?.type === 'pdf' && f.source.page" href="javascript:void(0)"
+                         (click)="showPdf(f.source.file, f.source.page)">p{{ f.source.page }}</a>
+                      <span *ngIf="!(f.source?.type === 'pdf' && f.source.page)" class="muted">—</span>
+                    </td>
+                    <td class="evidence">{{ f.source?.quote }}</td>
+                  </tr>
+                  <tr class="longbody">
+                    <td colspan="7">
+                      <textarea class="factarea" rows="4" [(ngModel)]="edits[f.id]"
+                                [class.changed]="edits[f.id] !== originals[f.id]"></textarea>
+                    </td>
+                  </tr>
+                </ng-container>
+              </ng-container>
+            </table></div>
+          </div>
+          <p>
+            <button (click)="saveFacts()">save field overrides</button>
+            <span class="muted" *ngIf="changedCount()"> &nbsp;{{ changedCount() }} field(s) changed</span>
+          </p>
+
+          <h4>PDF document<span *ngIf="!tabs.length && data.pdfExtractions.length > 1">s</span></h4>
+          <div *ngFor="let p of visiblePdfExtractions()" class="pdfblock">
+            <b>{{ p.filename }}</b> — {{ p.flavor }} / {{ p.language }}
+            <span *ngIf="p.ocrConfidence != null" class="muted">· <span class="term" [tip]="tip('ocr')">OCR</span> {{ p.ocrConfidence }}</span>
             <p>{{ p.summary }}</p>
             <div *ngFor="let img of images(p)" class="imgflag">
               {{ flagIcon(p, img) }} <b>{{ flagTitle(p, img) }} — page {{ img.page }}, needs a human check</b>.
@@ -190,12 +301,10 @@ import { log } from './log';
               <div class="muted" *ngIf="img.description"><b>AI read it as:</b> {{ img.description }}</div>
               <div class="muted" *ngIf="img.reviewer_note"><b>Note:</b> {{ img.reviewer_note }}</div>
             </div>
-            <p *ngIf="p.originalText" class="muted"><i>original (pre-translation) text retained</i></p>
-          </details>
-        </div>
+          </div>
+          <p class="muted" *ngIf="!data.pdfExtractions.length">No PDF attachments.</p>
 
-        <details class="card">
-          <summary><b>AI calls</b> <span class="muted">({{ data.aiCalls?.length || 0 }})</span></summary>
+          <h4>AI calls <span class="muted">({{ data.aiCalls?.length || 0 }})</span></h4>
           <div class="tablewrap"><table>
             <thead><tr><th>Step</th><th>Model</th><th>Prompt</th><th class="num">ms</th><th class="num">tokens</th><th>input hash</th><th>error</th></tr></thead>
             <tr *ngFor="let c of data.aiCalls">
@@ -204,10 +313,8 @@ import { log } from './log';
               <td class="hash">{{ c.inputHash?.slice(0, 12) }}</td><td>{{ c.error }}</td>
             </tr>
           </table></div>
-        </details>
 
-        <details class="card">
-          <summary><b>Audit trail</b> <span class="muted">({{ data.audit?.length || 0 }})</span></summary>
+          <h4>Audit trail <span class="muted">({{ data.audit?.length || 0 }})</span></h4>
           <div class="tablewrap"><table>
             <thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Target</th><th>Old → New</th></tr></thead>
             <tr *ngFor="let a of data.audit">
@@ -217,25 +324,36 @@ import { log } from './log';
             </tr>
           </table></div>
         </details>
+
+        <div class="approvebar">
+          <span class="muted" *ngIf="changedCount()">{{ changedCount() }} unsaved field change(s)</span>
+          <button *ngIf="data.message.status !== 'REVIEWED'" class="approve" (click)="approve()">
+            ✓ Approve &amp; mark reviewed →
+          </button>
+          <button *ngIf="data.message.status === 'REVIEWED'" class="needreview" (click)="reopen()">
+            ↺ Need review
+          </button>
+        </div>
       </div>
 
-      <div class="side">
+      <!-- RIGHT: source viewer — email body always on top, attachment (follows the active tab) below -->
+      <aside class="reviewside">
         <div class="card">
+          <h3 style="margin-top:0">Email body</h3>
+          <pre>{{ data.message.bodyText || '(empty)' }}</pre>
+        </div>
+        <div class="card" *ngIf="pdfNames.length">
           <h3 style="margin-top:0">
             Attachment
-            <select *ngIf="pdfNames.length > 1" [(ngModel)]="selectedPdf" (ngModelChange)="showPdf($event)">
+            <span class="muted" *ngIf="tabs.length"> — {{ activeTab }}</span>
+            <select *ngIf="pdfNames.length > 1 && !tabs.length" [(ngModel)]="selectedPdf" (ngModelChange)="showPdf($event)">
               <option *ngFor="let n of pdfNames" [value]="n">{{ n }}</option>
             </select>
           </h3>
-          <p class="muted" *ngIf="pdfNames.length > 1">{{ pdfNames.length }} PDFs — pick one</p>
           <iframe *ngIf="safeUrl" [src]="safeUrl"></iframe>
-          <p class="muted" *ngIf="!pdfNames.length">No PDF attachments.</p>
         </div>
-        <details class="card">
-          <summary><b>Email body</b></summary>
-          <pre>{{ data.message.bodyText || '(empty)' }}</pre>
-        </details>
-      </div>
+        <p class="muted" *ngIf="!pdfNames.length" style="padding:0 4px">No PDF attachments.</p>
+      </aside>
     </div>
   `,
 })
@@ -243,13 +361,21 @@ export class DetailComponent implements OnInit {
   id!: string;
   data: any;
   from = { name: '', email: '' };
+  guided: Guided = buildGuided([]);
   factGroups: { key: string; type: string; file?: string; facts: any[] }[] = [];
+  tabs: { file: string }[] = [];
+  activeTab = '';
   edits: Record<string, string> = {};
   originals: Record<string, string> = {};
   reason = '';
+  aiFlipped = false;
   pdfNames: string[] = [];
   selectedPdf = '';
   safeUrl?: SafeResourceUrl;
+
+  // exposed for the template
+  patientLine = patientLine;
+  reporterLine = reporterLine;
 
   constructor(private route: ActivatedRoute, private api: ApiService, private san: DomSanitizer) {}
 
@@ -263,7 +389,6 @@ export class DetailComponent implements OnInit {
     this.api.detail(this.id).subscribe((d) => {
       this.data = d;
       this.from = parseSender(d.message?.sender);
-      // pre-fill each fact input with its current value (reviewed if any, else the AI value)
       this.edits = {};
       this.originals = {};
       for (const f of d.facts || []) {
@@ -273,14 +398,143 @@ export class DetailComponent implements OnInit {
       }
       this.factGroups = this.groupFacts(d.facts || []);
       this.pdfNames = (d.pdfExtractions || []).map((p: any) => p.filename);
-      if (this.pdfNames.length && !this.pdfNames.includes(this.selectedPdf)) {
-        this.showPdf(this.pdfNames[0]);
+
+      // tabs only when 2+ attached documents
+      this.tabs = this.pdfNames.length >= 2 ? this.pdfNames.map((file) => ({ file })) : [];
+      if (this.tabs.length && !this.tabs.some((t) => t.file === this.activeTab)) {
+        this.activeTab = this.tabs[0].file;
       }
-      log.info(`message ${this.id} loaded: ${d.facts?.length || 0} fact(s), ${this.pdfNames.length} pdf(s), status ${d.message?.status}`);
+      if (!this.tabs.length) this.activeTab = '';
+
+      this.recomputeGuided();
+      if (this.pdfNames.length) {
+        this.showPdf(this.tabs.length ? this.activeTab : this.pdfNames[0]);
+      }
+      log.info(`message ${this.id} loaded: ${d.facts?.length || 0} fact(s), ${this.pdfNames.length} pdf(s), ${this.tabs.length} tab(s), status ${d.message?.status}`);
     });
   }
 
+  // facts scoped to the active tab (all facts when there are no tabs)
+  private tabFacts(): any[] {
+    if (!this.tabs.length) return this.data?.facts || [];
+    return (this.data?.facts || []).filter((f: any) => f.source?.type === 'pdf' && f.source.file === this.activeTab);
+  }
+  private recomputeGuided() {
+    this.guided = buildGuided(this.tabFacts());
+  }
+
+  selectTab(file: string) {
+    if (file === this.activeTab) return;
+    log.info(`message ${this.id}: switched to document ${file}`);
+    this.activeTab = file;
+    this.aiFlipped = false;
+    this.recomputeGuided();
+    this.showPdf(file);
+  }
+  // the PDF extraction bound to the current view (active tab, or the sole PDF)
+  activeDoc(): any {
+    const pdfs = this.data?.pdfExtractions || [];
+    if (!pdfs.length) return null;
+    return this.tabs.length ? pdfs.find((p: any) => p.filename === this.activeTab) : pdfs[0];
+  }
+  // technical panel: on a tabbed message show the active doc's group + the cross-document group
+  visibleFactGroups() {
+    if (!this.tabs.length) return this.factGroups;
+    return this.factGroups.filter((g) => g.type === 'none' || g.file === this.activeTab);
+  }
+  visiblePdfExtractions(): any[] {
+    if (!this.tabs.length) return this.data?.pdfExtractions || [];
+    return (this.data?.pdfExtractions || []).filter((p: any) => p.filename === this.activeTab);
+  }
+
   statusLabel(s: string): string { return STATUS_LABEL[s] || s; }
+  catLabel(b: string): string { return CATEGORY_LABEL[b] || b; }
+  field(list: any[], name: string): string { return fieldValue(list, name); }
+
+  // ---- hero (at-a-glance) ----
+  appliesBuckets(): string[] {
+    return (this.data?.classifications || []).filter((c: any) => c.applies).map((c: any) => c.bucket);
+  }
+  heroStatus(): string {
+    return this.data?.message?.status === 'REVIEWED' ? 'Reviewed' : 'Needs your review';
+  }
+  // 4 fixed cards; contents adapt to what the active tab / message actually holds.
+  // a card is either {value} (one line) or {rows} (label:value list, e.g. Patient).
+  keyCards(): { icon: string; label: string; value?: string; rows?: { label: string; value: string }[] }[] {
+    const g = this.guided;
+    const p = (name: string, list: any[]) => this.field(list, name);
+    // on a tabbed message, pick the variant from THIS document's facts, not the whole-message buckets
+    const has = this.tabs.length
+      ? (b: string) => {
+          if (b === 'ICSR') return !!(g.patient.length || g.reporter.length || g.reaction.length);
+          if (b === 'PQC') return !!g.complaint.length;
+          if (b === 'MI') return !!g.question.length;
+          return false;
+        }
+      : (b: string) => this.appliesBuckets().includes(b);
+
+    if (has('PQC') && !has('ICSR')) {
+      return [
+        { icon: '💊', label: 'Product', value: this.productName() },
+        { icon: '🔖', label: 'Batch / lot', value: p('batch_or_lot', g.complaint) },
+        { icon: '⚠️', label: 'Defect', value: p('defect_description', g.complaint) },
+        { icon: '📷', label: 'Photo mentioned', value: this.ynLabel(p('photo_mentioned', g.complaint)) },
+      ];
+    }
+    if (has('MI') && !has('ICSR')) {
+      return [
+        { icon: '💊', label: 'Product / topic', value: p('product_or_topic', g.question) },
+        { icon: '❓', label: 'Questions', value: String(this.questionItems().length || '—') },
+        { icon: '👤', label: 'Reporter', value: this.from.name },
+        { icon: '📄', label: 'Source', value: this.tabs.length ? this.activeTab : (this.pdfNames[0] || 'Email') },
+      ];
+    }
+    // ICSR (and default)
+    return [
+      { icon: '👤', label: 'Patient', rows: patientRows(g.patient) },
+      { icon: '💊', label: 'Drug', value: this.field(g.product, 'product_name') },
+      { icon: '⚠️', label: 'Reaction', value: this.field(g.reaction, 'reaction') },
+      { icon: '✓', label: 'Outcome', value: this.field(g.reaction, 'outcome') },
+    ];
+  }
+  hasKeyValues(): boolean {
+    return this.keyCards().some((c) =>
+      (c.value && c.value.trim()) || (c.rows && c.rows.length));
+  }
+  // split a "a, b; c" value into trimmed items (empty array for a single value)
+  listItems(v?: string): string[] {
+    if (!v) return [];
+    const parts = v.split(/\s*[;,]\s*/).map((s) => s.trim()).filter(Boolean);
+    return parts.length > 1 ? parts : [];
+  }
+  private ynLabel(v: string): string {
+    const s = (v || '').trim().toLowerCase();
+    if (s === 'true' || s === 'yes') return 'Yes';
+    if (s === 'false' || s === 'no') return 'No';
+    return v || '';
+  }
+  productName(): string {
+    return this.field(this.guided.product, 'product_name') || this.field(this.guided.complaint, 'product_name');
+  }
+  patientSub(): string {
+    return [
+      this.field(this.guided.patient, 'weight') && `Weight: ${this.field(this.guided.patient, 'weight')}`,
+      this.field(this.guided.patient, 'medical_history') && `History: ${this.field(this.guided.patient, 'medical_history')}`,
+    ].filter(Boolean).join(' · ');
+  }
+  questionItems(): string[] {
+    return this.guided.question.filter((f) => /^question/i.test(f.name)).map((f) => f.value);
+  }
+  situationText(): string {
+    if (this.guided.narrative) return this.guided.narrative.value;
+    if (this.tabs.length) {
+      const p = this.activeDoc();
+      if (p?.summary) return p.summary;
+      const cross = (this.data?.facts || []).find((f: any) => !f.source && (f.fieldName || '').toLowerCase() === 'narrative');
+      return cross ? (cross.reviewedValue ?? cross.fieldValue ?? '') : '';
+    }
+    return (this.data?.pdfExtractions || [])[0]?.summary || '';
+  }
 
   changedCount(): number {
     return Object.keys(this.edits).filter((k) => this.edits[k] !== this.originals[k]).length;
@@ -309,12 +563,8 @@ export class DetailComponent implements OnInit {
     return { scan: '📝', form: '🗒️', photo: '📷', figure: '🖼' }[this.flagCat(p, img)];
   }
   flagTitle(p: any, img: any): string {
-    return {
-      scan: 'Scanned / handwritten page',
-      form: 'Filled-in form',
-      photo: 'Photograph',
-      figure: 'Figure / embedded image',
-    }[this.flagCat(p, img)];
+    return { scan: 'Scanned / handwritten page', form: 'Filled-in form',
+             photo: 'Photograph', figure: 'Figure / embedded image' }[this.flagCat(p, img)];
   }
   flagBody(p: any, img: any): string {
     return {
@@ -352,7 +602,6 @@ export class DetailComponent implements OnInit {
         rank(a.section) - rank(b.section) ||
         String(a.fieldName).localeCompare(String(b.fieldName)));
     }
-    // email body first, then PDFs by filename, unknown last
     arr.sort((a, b) => {
       const w = (t: string) => (t === 'email' ? 0 : t === 'pdf' ? 1 : 2);
       return w(a.type) - w(b.type) || String(a.file || '').localeCompare(String(b.file || ''));
@@ -364,6 +613,7 @@ export class DetailComponent implements OnInit {
     log.info(`message ${this.id}: reviewer marks ${bucket} as ${applies ? 'applies' : 'does not apply'}`);
     this.api.setClassification(this.id, bucket, applies, this.reason).subscribe(() => this.load());
   }
+
   saveFacts() {
     const edits = Object.keys(this.edits)
       .filter((k) => this.edits[k] !== this.originals[k])
@@ -372,8 +622,21 @@ export class DetailComponent implements OnInit {
     log.info(`message ${this.id}: saving ${edits.length} field override(s)`);
     this.api.editFacts(this.id, edits).subscribe(() => this.load());
   }
-  complete() {
-    log.info(`message ${this.id}: reviewer marks it reviewed`);
-    this.api.complete(this.id).subscribe(() => this.load());
+
+  approve() {
+    const edits = Object.keys(this.edits)
+      .filter((k) => this.edits[k] !== this.originals[k])
+      .map((factId) => ({ factId, value: this.edits[factId] }));
+    const done = () => {
+      log.info(`message ${this.id}: reviewer approves and marks it reviewed`);
+      this.api.complete(this.id).subscribe(() => this.load());
+    };
+    if (edits.length) this.api.editFacts(this.id, edits).subscribe(done);
+    else done();
+  }
+
+  reopen() {
+    log.info(`message ${this.id}: reviewer sends it back to the review queue`);
+    this.api.reopen(this.id).subscribe(() => this.load());
   }
 }

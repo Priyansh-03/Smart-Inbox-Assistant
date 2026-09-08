@@ -51,6 +51,12 @@ export class ApiService {
       .pipe(tap(() => this.invalidate(id)));
   }
 
+  reopen(id: string) {
+    return this.http
+      .post<void>(`${API_BASE}/api/messages/${id}/reopen`, {})
+      .pipe(tap(() => this.invalidate(id)));
+  }
+
   batchReport(): Observable<any> {
     return this.http.get<any>(`${API_BASE}/api/batch/report`);
   }

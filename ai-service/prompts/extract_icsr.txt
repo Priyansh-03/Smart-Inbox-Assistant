@@ -23,7 +23,9 @@ CONFIDENCE
 requires light interpretation · 0.0 not stated.
 
 FIELDS - emit exactly one fact object per row below, in this order:
-  PATIENT: age, sex, weight, height, medical_history
+  PATIENT: name, age, sex, weight, height, medical_history
+           (name = the patient's name or initials ONLY if the source states them;
+            otherwise "Not stated" - never use the reporter's name here)
   REPORTER: name, role, country
   PRODUCT: product_name, dose, route, start_date, stop_date
   REACTION: reaction, onset_date, outcome

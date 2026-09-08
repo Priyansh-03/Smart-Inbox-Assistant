@@ -107,6 +107,16 @@ public class ReviewController {
         return ResponseEntity.noContent().build();
     }
 
+    /** Send a REVIEWED message back to the review queue (undo a completion). */
+    @PostMapping("/{id}/reopen")
+    public ResponseEntity<Void> reopen(@PathVariable String id) {
+        repo.markMessage(id, Constants.STATUS_READY, null, null);
+        audit.event(id, reviewerId, "review_reopened", "message",
+                Constants.STATUS_REVIEWED, Constants.STATUS_READY, null);
+        log.info("Message id={} reopened for review by {}", id, reviewerId);
+        return ResponseEntity.noContent().build();
+    }
+
     /** Redrive a FAILED message back into the queue. */
     @PostMapping("/{id}/retry")
     public ResponseEntity<Void> retry(@PathVariable String id) {

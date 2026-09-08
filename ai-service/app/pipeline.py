@@ -70,7 +70,7 @@ def process_pdf(name: str, pdf_bytes: bytes) -> PdfResult:
     scan = gr.scan(info["full_text"] + "\n" + text)
     summ = _guarded("pdf_summary",
                     f"FILENAME: {name}\nFLAVOR: {flavor}\n\nTEXT:\n{text[:MAX_CTX_CHARS]}\n\n"
-                    f"FORM_FIELDS: {form_fields[:30]}\nTABLES: {tables[:5]}\nIMAGES: {images}", max_tokens=1500)
+                    f"FORM_FIELDS: {form_fields[:30]}\nTABLES: {tables[:5]}\nIMAGES: {images}", max_tokens=300)
 
     return PdfResult(
         filename=name, flavor=flavor, language=lang, page_count=n,
