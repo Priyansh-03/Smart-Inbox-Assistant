@@ -63,8 +63,10 @@ public class ProcessingWorker {
         try {
             repo.clearAiResults(m.id);
             List<Attachment> pdfs = repo.processableAttachments(m.id);
+            String emailDate = m.receivedAt == null ? null
+                    : m.receivedAt.atZone(java.time.ZoneOffset.UTC).toLocalDate().toString();
             AiDtos.ProcessRequest req = new AiDtos.ProcessRequest(
-                    m.id, m.sender, m.subject, m.bodyText, readPdfs(pdfs));
+                    m.id, m.sender, m.subject, m.bodyText, emailDate, readPdfs(pdfs));
             log.info("Processing message id={} with {} pdf(s)", m.id, pdfs.size());
 
             AiDtos.ProcessResponse res = ai.process(req);

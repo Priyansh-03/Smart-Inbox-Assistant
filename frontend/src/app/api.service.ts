@@ -57,6 +57,10 @@ export class ApiService {
       .pipe(tap(() => this.invalidate(id)));
   }
 
+  markSeen(id: string) {
+    return this.http.post<void>(`${API_BASE}/api/messages/${id}/seen`, {});
+  }
+
   batchReport(): Observable<any> {
     return this.http.get<any>(`${API_BASE}/api/batch/report`);
   }

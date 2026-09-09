@@ -55,6 +55,7 @@ public class ReviewController {
             row.put("processingMs", m.processingMs);
             row.put("buckets", buckets);
             row.put("minConf", minConf);
+            row.put("hasPdf", repo.hasPdf(m.id));
             row.put("injectionFlagged", m.injectionFlagged);
             row.put("injectionNotes", m.injectionNotes);
             return row;
@@ -104,6 +105,16 @@ public class ReviewController {
         repo.markMessage(id, Constants.STATUS_REVIEWED, null, null);
         audit.event(id, reviewerId, "review_completed", "message", null, null, null);
         log.info("Message id={} marked REVIEWED by {}", id, reviewerId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /** A reviewer opened this message; flip READY_FOR_REVIEW -> SEEN (no-op otherwise). */
+    @PostMapping("/{id}/seen")
+    public ResponseEntity<Void> seen(@PathVariable String id) {
+        if (repo.markSeen(id)) {
+            audit.event(id, reviewerId, "opened", "message",
+                    Constants.STATUS_READY, Constants.STATUS_SEEN, null);
+        }
         return ResponseEntity.noContent().build();
     }
 

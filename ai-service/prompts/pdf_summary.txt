@@ -15,6 +15,8 @@ RULES
 - Use only what the provided text, tables and image notes contain. Invent nothing.
 - If a key fact is absent, do not mention it - keep it short rather than noting every gap.
 - No diagnosis, no speculation about causality beyond what the document asserts.
+- Never write "today / yesterday / tomorrow / last week / day after" or any relative
+  date. Use an explicit date from the document, or omit the timing entirely.
 
 OUTPUT - JSON only:
 {"summary": "<2-3 sentences>",

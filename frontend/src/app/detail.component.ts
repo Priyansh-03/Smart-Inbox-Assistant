@@ -40,6 +40,7 @@ import { log } from './log';
         <div>
           <span class="pill"
             [class.ready]="data.message.status === 'READY_FOR_REVIEW'"
+            [class.seen]="data.message.status === 'SEEN'"
             [class.done]="data.message.status === 'REVIEWED'"
             [class.failed]="data.message.status === 'FAILED'"
             [class.other]="data.message.status === 'NEW' || data.message.status === 'PROCESSING'">
@@ -67,14 +68,6 @@ import { log } from './log';
 
         <!-- hero: at-a-glance summary (active tab on multi-doc) -->
         <section class="hero">
-          <div class="hero-block" *ngIf="situationText()">
-            <div class="hero-head">
-              <span class="isq">✉️</span>
-              <h3>What happened?</h3>
-            </div>
-            <p class="hero-summary">{{ situationText() }}</p>
-          </div>
-
           <div class="keydetails" *ngIf="hasKeyValues()">
             <div class="kd-head">
               <h4>Key details</h4>
@@ -103,8 +96,16 @@ import { log } from './log';
             </div>
           </div>
 
-          <!-- flip card: what the AI saw in the active document -->
-          <div class="aisaw" *ngIf="activeDoc()" [class.flipped]="aiFlipped"
+          <div class="hero-block" *ngIf="situationText()">
+            <div class="hero-head">
+              <span class="isq">✉️</span>
+              <h3>What happened?</h3>
+            </div>
+            <p class="hero-summary">{{ situationText() }}</p>
+          </div>
+
+          <!-- flip card: only when the active document actually has an embedded image -->
+          <div class="aisaw" *ngIf="docImages().length" [class.flipped]="aiFlipped"
                (click)="aiFlipped = !aiFlipped">
             <div class="aisaw-inner">
               <div class="aisaw-front">
@@ -114,10 +115,10 @@ import { log } from './log';
                 <span class="aisaw-hint">tap to reveal →</span>
               </div>
               <div class="aisaw-back">
-                <p class="aisaw-summary" *ngIf="activeDoc().summary">{{ activeDoc().summary }}</p>
-                <div class="aisaw-img" *ngFor="let img of images(activeDoc())">
+                <div class="aisaw-img" *ngFor="let img of docImages()">
                   <b>{{ flagIcon(activeDoc(), img) }} {{ flagTitle(activeDoc(), img) }} — page {{ img.page }}, needs a human check.</b>
-                  {{ flagBody(activeDoc(), img) }}
+                  Deep image analysis was not performed — this is a good-faith description only.
+                  Confirm it against the picture in the viewer.
                   <div class="muted" *ngIf="img.description"><b>AI read it as:</b> {{ img.description }}</div>
                   <div class="muted" *ngIf="img.reviewer_note"><b>Note:</b> {{ img.reviewer_note }}</div>
                 </div>
@@ -382,6 +383,7 @@ export class DetailComponent implements OnInit {
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id')!;
     log.info(`opening message detail ${this.id}`);
+    this.api.markSeen(this.id).subscribe({ error: () => {} });  // READY_FOR_REVIEW -> SEEN
     this.load();
   }
 
@@ -437,6 +439,11 @@ export class DetailComponent implements OnInit {
     if (!pdfs.length) return null;
     return this.tabs.length ? pdfs.find((p: any) => p.filename === this.activeTab) : pdfs[0];
   }
+  // embedded images in the active document (empty => no "What the AI saw" card)
+  docImages(): any[] {
+    const d = this.activeDoc();
+    return d ? this.images(d) : [];
+  }
   // technical panel: on a tabbed message show the active doc's group + the cross-document group
   visibleFactGroups() {
     if (!this.tabs.length) return this.factGroups;
@@ -456,7 +463,7 @@ export class DetailComponent implements OnInit {
     return (this.data?.classifications || []).filter((c: any) => c.applies).map((c: any) => c.bucket);
   }
   heroStatus(): string {
-    return this.data?.message?.status === 'REVIEWED' ? 'Reviewed' : 'Needs your review';
+    return STATUS_LABEL[this.data?.message?.status] || 'Needs your review';
   }
   // 4 fixed cards; contents adapt to what the active tab / message actually holds.
   // a card is either {value} (one line) or {rows} (label:value list, e.g. Patient).

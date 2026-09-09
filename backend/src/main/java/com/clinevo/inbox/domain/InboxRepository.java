@@ -154,6 +154,14 @@ public class InboxRepository {
                 .param("id", Long.valueOf(id)).query(Integer.class).optional().orElse(Integer.MAX_VALUE);
     }
 
+    /** Mark a not-yet-opened message as seen. Only touches READY_FOR_REVIEW rows. Returns true if flipped. */
+    public boolean markSeen(String id) {
+        int n = jdbc.sql("UPDATE message SET status = 'SEEN' WHERE id = :id AND status = 'READY_FOR_REVIEW'")
+                .param("id", Long.valueOf(id)).update();
+        if (n > 0) log.info("Message id={} -> SEEN", id);
+        return n > 0;
+    }
+
     /* ---------- AI results ---------- */
 
     public void clearAiResults(String messageId) {
@@ -258,6 +266,12 @@ public class InboxRepository {
     public List<PdfExtraction> pdfExtractions(String messageId) {
         return jdbc.sql("SELECT * FROM pdf_extraction WHERE message_id = :m ORDER BY id")
                 .param("m", Long.valueOf(messageId)).query(PDF_EXTRACTION).list();
+    }
+
+    /** true if the message has at least one processed PDF attachment. */
+    public boolean hasPdf(String messageId) {
+        return jdbc.sql("SELECT EXISTS (SELECT 1 FROM pdf_extraction WHERE message_id = :m)")
+                .param("m", Long.valueOf(messageId)).query(Boolean.class).single();
     }
 
     public List<AuditEvent> audit(String messageId) {

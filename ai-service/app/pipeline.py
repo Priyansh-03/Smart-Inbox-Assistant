@@ -168,7 +168,11 @@ def run(req: ProcessRequest) -> ProcessResponse:
 
     ts = time.time()
     active = [v.bucket for v in cls.classifications if v.applies and v.bucket != "NOT_RELEVANT"]
-    chunks = [f"[email]\n{req.email_body}"]
+    chunks = []
+    if req.email_date:
+        chunks.append(f"[email metadata]\nEmail received: {req.email_date}\n"
+                      f"Resolve any relative date in the content against this date.")
+    chunks.append(f"[email]\n{req.email_body}")
     for p in pdfs:
         chunks.append(f"[pdf {p.filename}]\n{p.full_text[:MAX_CTX_CHARS // max(len(pdfs), 1)]}")
     ext = extract_from_chunks(active, chunks)

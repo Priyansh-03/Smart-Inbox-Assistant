@@ -10,6 +10,7 @@ public final class Constants {
     public static final String STATUS_NEW = "NEW";
     public static final String STATUS_PROCESSING = "PROCESSING";
     public static final String STATUS_READY = "READY_FOR_REVIEW";
+    public static final String STATUS_SEEN = "SEEN";
     public static final String STATUS_REVIEWED = "REVIEWED";
     public static final String STATUS_FAILED = "FAILED";
 

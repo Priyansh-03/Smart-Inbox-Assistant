@@ -26,6 +26,7 @@ export const STATUS_LABEL: Record<string, string> = {
   NEW: 'Queued',
   PROCESSING: 'Processing',
   READY_FOR_REVIEW: 'Needs review',
+  SEEN: 'Seen',
   REVIEWED: 'Reviewed',
   FAILED: 'Failed',
 };

@@ -33,6 +33,7 @@ public final class AiDtos {
             @JsonProperty("email_from") String emailFrom,
             @JsonProperty("email_subject") String emailSubject,
             @JsonProperty("email_body") String emailBody,
+            @JsonProperty("email_date") String emailDate,
             List<PdfIn> pdfs) {}
 
     @JsonIgnoreProperties(ignoreUnknown = true)

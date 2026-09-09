@@ -134,6 +134,7 @@ details.card > summary { list-style-position: inside; }
   background: #e6eefc; color: #1a3a7a; margin: 0 4px 2px 0; font-size: 12px; font-weight: 600;
   white-space: nowrap;
 }
+.chip .chip-code { font-weight: 400; opacity: .7; }
 
 /* per-category colours. bucket slug is lower-cased, non-alnum -> "_" (see glossaryKey) */
 
@@ -163,6 +164,7 @@ details.card > summary { list-style-position: inside; }
 .chip.yn.no  { background: #fde7ea; color: var(--warn); }
 .pill { display: inline-block; padding: 2px 9px; border-radius: 11px; font-size: 12px; font-weight: 600; }
 .pill.ready { background: #fff3d9; color: #8a5a00; }
+.pill.seen { background: #e6efff; color: #1a3a7a; }
 .pill.done { background: #e4f5ea; color: var(--ok); }
 .pill.failed { background: #fde7ea; color: var(--warn); }
 .pill.other { background: #eef0f3; color: var(--muted); }
@@ -327,7 +329,8 @@ input, select {
 }
 .isq.sm { width: 26px; height: 26px; border-radius: 7px; font-size: 13px; }
 
-.hero-block { margin-bottom: 18px; }
+.hero-block { margin: 18px 0; }
+.keydetails { margin-bottom: 4px; }
 .hero-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .hero-head h3 {
   margin: 0; font-size: 17px; font-weight: 700; text-transform: none; letter-spacing: 0; color: var(--ink);

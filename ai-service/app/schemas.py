@@ -14,6 +14,7 @@ class ProcessRequest(BaseModel):
     email_from: str = ""
     email_subject: str = ""
     email_body: str = ""
+    email_date: Optional[str] = None      # ISO date the email was received; anchors relative dates
     pdfs: List[PdfIn] = []
 
 

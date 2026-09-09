@@ -34,6 +34,7 @@ type ConfBand = '' | 'low' | 'medium' | 'high';
         <select [(ngModel)]="f.status" (ngModelChange)="reload()">
           <option value="">All messages</option>
           <option value="READY_FOR_REVIEW">Needs review</option>
+          <option value="SEEN">Seen</option>
           <option value="REVIEWED">Reviewed</option>
           <option value="PROCESSING">Still processing</option>
           <option value="NEW">Queued</option>
@@ -89,6 +90,7 @@ type ConfBand = '' | 'low' | 'medium' | 'high';
     <div class="tablewrap"><table class="queue">
       <thead><tr>
         <th>From</th><th>Subject</th><th>Category</th>
+        <th class="nowrap" [tip]="'Whether the email has a PDF attachment.'">Document</th>
         <th class="nowrap" [tip]="tip('confidence')">Confidence</th>
         <th class="nowrap">Received</th>
         <th>Status</th><th></th>
@@ -106,8 +108,12 @@ type ConfBand = '' | 'low' | 'medium' | 'high';
           </td>
           <td>
             <span class="chip" [ngClass]="'cat-' + b.key" *ngFor="let b of m._buckets"
-                  [tip]="b.tip">{{ b.label }}</span>
+                  [tip]="b.tip">{{ b.label }} <span class="chip-code">({{ b.name }})</span></span>
             <span *ngIf="!m._buckets.length" class="muted">—</span>
+          </td>
+          <td>
+            <span class="chip yn" [class.yes]="m.hasPdf" [class.no]="!m.hasPdf">
+              {{ m.hasPdf ? 'Yes' : 'No' }}</span>
           </td>
           <td>
             <span class="conf" [ngClass]="'conf-' + m._confBand" *ngIf="m._confBand"
@@ -118,6 +124,7 @@ type ConfBand = '' | 'low' | 'medium' | 'high';
           <td>
             <span class="pill"
               [class.ready]="m.status === 'READY_FOR_REVIEW'"
+              [class.seen]="m.status === 'SEEN'"
               [class.done]="m.status === 'REVIEWED'"
               [class.failed]="m.status === 'FAILED'"
               [class.other]="m.status === 'NEW' || m.status === 'PROCESSING'">{{ statusLabel(m.status) }}</span>
