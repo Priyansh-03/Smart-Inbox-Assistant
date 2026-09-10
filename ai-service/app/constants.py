@@ -7,6 +7,14 @@ FLAVOR_SCANNED = "SCANNED"
 FLAVOR_ARTICLE = "ARTICLE"
 FLAVOR_NON_ENGLISH = "NON_ENGLISH"
 FLAVOR_MIXED = "MIXED"
+FLAVOR_IMAGE = "IMAGE"          # standalone image attachment (jpg/png/...)
+FLAVOR_OFFICE = "OFFICE"        # docx / xlsx / pptx
+FLAVOR_TEXT = "TEXT"            # txt / eml / html / csv / rtf / md
+
+# non-PDF attachment types the AI service can turn into text
+IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".tif", ".tiff", ".bmp"}
+OFFICE_EXTS = {".docx", ".xlsx", ".pptx"}
+TEXT_EXTS = {".txt", ".text", ".eml", ".html", ".htm", ".csv", ".rtf", ".md", ".log", ".json"}
 
 NOT_STATED = "Not stated"
 

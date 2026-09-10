@@ -133,6 +133,17 @@ public class InboxRepository {
         return n > 0;
     }
 
+    /** Force a fresh AI run of any message regardless of status (reviewer-triggered reprocess). */
+    public boolean resetAnyToNew(String id) {
+        int n = jdbc.sql("""
+                UPDATE message SET status = 'NEW', attempts = 0, error_detail = NULL,
+                    processing_started_at = NULL, processing_ended_at = NULL
+                WHERE id = :id AND status <> 'PROCESSING'
+                """).param("id", Long.valueOf(id)).update();
+        log.info("Reprocess requested for message id={}: {}", id, n > 0 ? "requeued" : "busy, ignored");
+        return n > 0;
+    }
+
     public List<Attachment> processableAttachments(String messageId) {
         return jdbc.sql("SELECT * FROM attachment WHERE message_id = :m AND processed = true")
                 .param("m", Long.valueOf(messageId)).query(ATTACHMENT).list();
@@ -268,9 +279,19 @@ public class InboxRepository {
                 .param("m", Long.valueOf(messageId)).query(PDF_EXTRACTION).list();
     }
 
-    /** true if the message has at least one processed PDF attachment. */
+    /** true if the message has at least one PDF-flavored extraction (not an image/office/text doc). */
     public boolean hasPdf(String messageId) {
-        return jdbc.sql("SELECT EXISTS (SELECT 1 FROM pdf_extraction WHERE message_id = :m)")
+        return jdbc.sql("""
+                SELECT EXISTS (SELECT 1 FROM pdf_extraction
+                               WHERE message_id = :m
+                                 AND (flavor IS NULL OR flavor NOT IN ('IMAGE', 'OFFICE', 'TEXT')))
+                """)
+                .param("m", Long.valueOf(messageId)).query(Boolean.class).single();
+    }
+
+    /** true if the message has any attachment on file - PDF, image, docx, etc. (processed or logged only). */
+    public boolean hasAttachment(String messageId) {
+        return jdbc.sql("SELECT EXISTS (SELECT 1 FROM attachment WHERE message_id = :m)")
                 .param("m", Long.valueOf(messageId)).query(Boolean.class).single();
     }
 

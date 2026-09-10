@@ -10,7 +10,7 @@ public final class AiDtos {
 
     private AiDtos() {}
 
-    public record PdfIn(String filename, String base64) {}
+    public record PdfIn(String filename, String base64, String mime) {}
 
     public record LiteratureIn(String filename, String base64) {}
 

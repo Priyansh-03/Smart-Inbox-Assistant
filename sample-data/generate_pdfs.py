@@ -2,7 +2,8 @@
 """Generate the synthetic PDF corpus (spec section 12). All data is fictional.
 
 Run:  python sample-data/generate_pdfs.py
-Output: sample-data/pdfs/*.pdf  (5 digital forms, 2 scanned, 5 articles, 2 non-English)
+Output: sample-data/pdfs/*.pdf  (5 digital forms, 2 scanned, 5 articles, 2 non-English,
+        2 PQC/ICSR forms with a drawn or real embedded photo)
 """
 import io
 import pathlib
@@ -11,6 +12,7 @@ import fitz  # PyMuPDF
 
 OUT = pathlib.Path(__file__).resolve().parent / "pdfs"
 OUT.mkdir(exist_ok=True)
+ASSETS = pathlib.Path(__file__).resolve().parent / "assets"  # real photos embedded into fixtures
 
 
 def _form_pdf(path: str, lines: list[str]):
@@ -245,3 +247,46 @@ _pix = _ip.get_pixmap(dpi=120); _img.close()
 _p.insert_image(fitz.Rect(60, _y + 10, 360, _y + 200), pixmap=_pix)
 _doc.save(str(OUT / "pdf_pqc_photo.pdf")); _doc.close()
 print("wrote pdf_pqc_photo.pdf")
+
+
+def _form_with_photo(path: str, title: str, lines: list[str], photo: pathlib.Path):
+    """A digital form that embeds a real JPEG/PNG photo below the text."""
+    doc = fitz.open()
+    page = doc.new_page()
+    y = 60
+    page.insert_text((60, y), title, fontsize=13)
+    y += 30
+    for line in lines:
+        page.insert_text((60, y), line, fontsize=11)
+        y += 22
+    page.insert_image(fitz.Rect(60, y + 10, 400, y + 260), filename=str(photo))
+    doc.save(str(OUT / path))
+    doc.close()
+    print("wrote", path)
+
+
+# ---- 2 forms embedding the real reference photos (meaningful-image path) ----
+_form_with_photo(
+    "pdf_pqc_photo_real.pdf", "PRODUCT QUALITY COMPLAINT FORM  (synthetic - not real)",
+    [
+        "Product name: Carditol 40 mg tablets", "Batch / lot number: CT-4471", "Expiry: 03/2027",
+        "Complaint: blister foil punctured on arrival; tablets crumbled and discoloured.",
+        "Suspected counterfeit: No", "Contamination: not observed",
+        "Photograph attached: Yes (see below)",
+        "Reporter: pharmacist K. Owens, United States", "Patient harm: none reported",
+    ],
+    ASSETS / "used-damaged-medicine.png",
+)
+_form_with_photo(
+    "pdf_icsr_rash.pdf", "ADVERSE EVENT REPORT FORM  (synthetic - not a real case)",
+    [
+        "Patient age: 29", "Patient sex: Female", "Patient weight: 55 kg",
+        "Medical history: none",
+        "Product name: Uratrol 300 mg tablets", "Dose: 300 mg once daily", "Route: oral",
+        "Start date: 20 Aug 2025", "Stop date: 02 Sep 2025",
+        "Reaction: widespread urticarial skin rash (photograph attached)",
+        "Onset date: 30 Aug 2025", "Outcome: improving on antihistamines",
+        "Serious: No", "Reporter: Dr M. Silva, dermatologist", "Reporter country: Portugal",
+    ],
+    ASSETS / "rashes.png",
+)

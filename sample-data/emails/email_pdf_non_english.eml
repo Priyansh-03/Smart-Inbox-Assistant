@@ -4,15 +4,15 @@ To: safety@example-pharma.test
 Subject: Nebenwirkungsmeldung - Kardiodol (Formular anbei)
 Date: Fri, 05 Sep 2025 10:00:00 +0000
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0961435698950105445=="
+Content-Type: multipart/mixed; boundary="===============7278058465568071901=="
 
---===============0961435698950105445==
+--===============7278058465568071901==
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
 Anbei die ausgefuellte Nebenwirkungsmeldung zu Kardiodol. Synthetische Daten.
 
---===============0961435698950105445==
+--===============7278058465568071901==
 Content-Type: application/pdf
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="pdf_case_de.pdf"
@@ -72,7 +72,7 @@ MDAwMDAwOTg2IDAwMDAwIG4gCjAwMDAwMDExNTcgMDAwMDAgbiAKMDAwMDAwMTM0MSAwMDAwMCBu
 IAowMDAwMDAxNTEyIDAwMDAwIG4gCjAwMDAwMDE2MjggMDAwMDAgbiAKMDAwMDAwMTc2MiAwMDAw
 MCBuIAowMDAwMDAxODkyIDAwMDAwIG4gCjAwMDAwMDIwODYgMDAwMDAgbiAKMDAwMDAwMjI2MCAw
 MDAwMCBuIAowMDAwMDAyNDY3IDAwMDAwIG4gCgp0cmFpbGVyCjw8L1NpemUgMTkvUm9vdCAxIDAg
-Ui9JRFs8QzM4MTQ0NTEyQjc2QzM4QkMyQUEyMEMzODAzQkMyQTY+PEEzRTc3RDU0QTM2NzRGNDFC
-QkZEODU4MzJERjJDQUVFPl0+PgpzdGFydHhyZWYKMjY1OQolJUVPRgo=
+Ui9JRFs8MEFDMjkwNzYyMkMzOTc0RUMyQTgxMEMyQkE3N0MzQkM+PDREMTIwMzJDNjVDQUFEMTAx
+NTE4M0JDQjlFNDU1ODJFPl0+PgpzdGFydHhyZWYKMjY1OQolJUVPRgo=
 
---===============0961435698950105445==--
+--===============7278058465568071901==--

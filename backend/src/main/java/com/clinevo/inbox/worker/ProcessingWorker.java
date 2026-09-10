@@ -62,15 +62,15 @@ public class ProcessingWorker {
         long started = System.currentTimeMillis();
         try {
             repo.clearAiResults(m.id);
-            List<Attachment> pdfs = repo.processableAttachments(m.id);
+            List<Attachment> docs = repo.processableAttachments(m.id);
             String emailDate = m.receivedAt == null ? null
                     : m.receivedAt.atZone(java.time.ZoneOffset.UTC).toLocalDate().toString();
             AiDtos.ProcessRequest req = new AiDtos.ProcessRequest(
-                    m.id, m.sender, m.subject, m.bodyText, emailDate, readPdfs(pdfs));
-            log.info("Processing message id={} with {} pdf(s)", m.id, pdfs.size());
+                    m.id, m.sender, m.subject, m.bodyText, emailDate, readDocs(docs));
+            log.info("Processing message id={} with {} document(s)", m.id, docs.size());
 
             AiDtos.ProcessResponse res = ai.process(req);
-            persist(m, pdfs, res);
+            persist(m, docs, res);
             repo.markInjection(m.id, res.injectionFlagged(), res.injectionNotes());
             if (res.injectionFlagged()) {
                 audit.ai(m.id, "injection_flagged", "message",
@@ -164,12 +164,12 @@ public class ProcessingWorker {
         audit.ai(m.id, "facts_extracted", "message", toJson(Map.of("count", safe(res.facts()).size())));
     }
 
-    private List<AiDtos.PdfIn> readPdfs(List<Attachment> pdfs) {
+    private List<AiDtos.PdfIn> readDocs(List<Attachment> docs) {
         List<AiDtos.PdfIn> out = new ArrayList<>();
-        for (Attachment a : pdfs) {
+        for (Attachment a : docs) {
             try {
                 byte[] bytes = Files.readAllBytes(Path.of(a.storagePath));
-                out.add(new AiDtos.PdfIn(a.filename, Base64.getEncoder().encodeToString(bytes)));
+                out.add(new AiDtos.PdfIn(a.filename, Base64.getEncoder().encodeToString(bytes), a.mimeType));
             } catch (Exception e) {
                 log.error("Cannot read attachment {} at {}: {}", a.filename, a.storagePath, e.getMessage());
                 throw new IllegalStateException("unreadable attachment: " + a.filename, e);

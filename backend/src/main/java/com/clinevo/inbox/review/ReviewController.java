@@ -56,6 +56,7 @@ public class ReviewController {
             row.put("buckets", buckets);
             row.put("minConf", minConf);
             row.put("hasPdf", repo.hasPdf(m.id));
+            row.put("hasDoc", repo.hasAttachment(m.id));
             row.put("injectionFlagged", m.injectionFlagged);
             row.put("injectionNotes", m.injectionNotes);
             return row;
@@ -134,6 +135,16 @@ public class ReviewController {
         boolean requeued = repo.resetFailedToNew(id);
         if (!requeued) return ResponseEntity.status(409).build();
         audit.event(id, reviewerId, "retry_requested", "message", Constants.STATUS_FAILED, Constants.STATUS_NEW, null);
+        return ResponseEntity.noContent().build();
+    }
+
+    /** Force a fresh AI run of any message (re-analyse with the current pipeline/prompts). */
+    @PostMapping("/{id}/reprocess")
+    public ResponseEntity<Void> reprocess(@PathVariable String id) {
+        boolean requeued = repo.resetAnyToNew(id);
+        if (!requeued) return ResponseEntity.status(409).build();
+        audit.event(id, reviewerId, "reprocess_requested", "message", null, Constants.STATUS_NEW, null);
+        log.info("Message id={} queued for reprocessing by {}", id, reviewerId);
         return ResponseEntity.noContent().build();
     }
 

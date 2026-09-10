@@ -94,7 +94,12 @@ public class IngestionService {
         try {
             filename = safeName(p.getFileName());
             String mime = p.getContentType() == null ? "" : p.getContentType().split(";")[0].trim();
-            boolean isPdf = filename.toLowerCase().endsWith(".pdf") || Constants.MIME_PDF.equalsIgnoreCase(mime);
+            String ext = filename.contains(".")
+                    ? filename.substring(filename.lastIndexOf('.') + 1).toLowerCase() : "";
+            boolean processable = Constants.PROCESSABLE_DOC_EXTS.contains(ext)
+                    || Constants.MIME_PDF.equalsIgnoreCase(mime)
+                    || mime.toLowerCase().startsWith("image/")
+                    || mime.toLowerCase().startsWith("text/");
 
             byte[] bytes = readCapped(p, maxAttachmentBytes + 1);
             if (bytes.length > maxAttachmentBytes) {
@@ -103,9 +108,9 @@ public class IngestionService {
                 log.warn("Attachment {} on message {} skipped: {} bytes over cap", filename, messageId, bytes.length);
                 return false;
             }
-            if (!isPdf) {
+            if (!processable) {
                 repo.insertAttachment(messageId, filename, mime, (long) bytes.length, null, false,
-                        "non-pdf attachment logged only");
+                        "unsupported attachment type logged only");
                 log.info("Attachment {} on message {} logged, not processed (type {})", filename, messageId, mime);
                 return false;
             }
@@ -113,8 +118,11 @@ public class IngestionService {
             Files.createDirectories(dir);
             Path target = dir.resolve(filename);
             Files.write(target, bytes);
-            repo.insertAttachment(messageId, filename, Constants.MIME_PDF, (long) bytes.length, target.toString(), true, null);
-            log.info("Attachment {} on message {} stored ({} bytes) at {}", filename, messageId, bytes.length, target);
+            String storedMime = mime.isBlank()
+                    ? (ext.equals("pdf") ? Constants.MIME_PDF : "application/octet-stream") : mime;
+            repo.insertAttachment(messageId, filename, storedMime, (long) bytes.length, target.toString(), true, null);
+            log.info("Attachment {} on message {} stored ({} bytes, {}) at {}",
+                    filename, messageId, bytes.length, storedMime, target);
             return true;
         } catch (Exception e) {
             log.error("Attachment {} on message {} failed to store: {}", filename, messageId, e.getMessage(), e);

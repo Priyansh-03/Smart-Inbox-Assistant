@@ -34,6 +34,18 @@ CASES = [
      "Forwarding a journal case report describing two paediatric anaphylaxis cases "
      "temporally associated with Broncholyt. Flagging for PV assessment.",
      "pdf_article_02.pdf"),
+    ("email_pdf_pqc_photo_real.eml", "<pdf-pqc-photo-001@example.com>",
+     "Pharmacist K. Owens <k.owens@example-pharmacy.test>", "quality@example-pharma.test",
+     "Damaged Carditol blister - photo attached",
+     "The attached quality complaint form has a photo of the damaged blister we "
+     "received (synthetic data). Two tablets were crumbled and discoloured.",
+     "pdf_pqc_photo_real.pdf"),
+    ("email_pdf_icsr_rash.eml", "<pdf-icsr-rash-001@example.com>",
+     "Dr M. Silva <m.silva@example-derm.test>", "safety@example-pharma.test",
+     "Skin reaction on Uratrol - photo attached",
+     "Reporting a widespread skin rash in a patient on Uratrol; the completed form "
+     "with a photograph of the rash is attached (synthetic data).",
+     "pdf_icsr_rash.pdf"),
 ]
 
 for fname, msgid, frm, to, subj, body, pdf in CASES:

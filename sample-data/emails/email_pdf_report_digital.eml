@@ -4,16 +4,16 @@ To: safety@example-pharma.test
 Subject: AE report form attached - Hepavex hepatitis
 Date: Fri, 05 Sep 2025 10:00:00 +0000
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6407843853466442251=="
+Content-Type: multipart/mixed; boundary="===============8438798345805773045=="
 
---===============6407843853466442251==
+--===============8438798345805773045==
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
 Please find the completed adverse event report form attached (synthetic data)=
 . Patient developed hepatitis on Hepavex; details are on the form.
 
---===============6407843853466442251==
+--===============8438798345805773045==
 Content-Type: application/pdf
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="pdf_report_01.pdf"
@@ -79,8 +79,8 @@ NDkgMDAwMDAgbiAKMDAwMDAwMTIyNSAwMDAwMCBuIAowMDAwMDAxNDA2IDAwMDAwIG4gCjAwMDAw
 MDE1NTIgMDAwMDAgbiAKMDAwMDAwMTY3MiAwMDAwMCBuIAowMDAwMDAxODMzIDAwMDAwIG4gCjAw
 MDAwMDE5NzUgMDAwMDAgbiAKMDAwMDAwMjE1NiAwMDAwMCBuIAowMDAwMDAyMzE2IDAwMDAwIG4g
 CjAwMDAwMDI0NTIgMDAwMDAgbiAKMDAwMDAwMjYyNyAwMDAwMCBuIAowMDAwMDAyODExIDAwMDAw
-IG4gCgp0cmFpbGVyCjw8L1NpemUgMjIvUm9vdCAxIDAgUi9JRFs8QzJBNEMzQjU2NTE5QzNBRkMz
-QUZDM0FDM0Y0MUMzQjg+PDVBRDVDM0JEMTBENjRDMkU2MUUyMjUwRDcxNTY3RDVGPl0+PgpzdGFy
+IG4gCgp0cmFpbGVyCjw8L1NpemUgMjIvUm9vdCAxIDAgUi9JRFs8QzNBRTQwQzI4QTExNTA3MkMz
+QTkyRTNBMzRDMzg4QzI+PDAzMDE0ODk1RDIzOUE5RkRCQUZEREE1NEUzQTkwQjlFPl0+PgpzdGFy
 dHhyZWYKMjk3NAolJUVPRgo=
 
---===============6407843853466442251==--
+--===============8438798345805773045==--

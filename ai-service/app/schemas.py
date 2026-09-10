@@ -7,6 +7,7 @@ BUCKETS = ["ICSR", "PQC", "MI", "NOT_RELEVANT"]
 class PdfIn(BaseModel):
     filename: str
     base64: str
+    mime: str = ""            # content-type hint; used to route non-PDF attachments
 
 
 class ProcessRequest(BaseModel):
@@ -88,6 +89,7 @@ class ProcessResponse(BaseModel):
 class PdfRequest(BaseModel):
     filename: str
     base64: str
+    mime: str = ""
 
 
 class ClassifyRequest(BaseModel):

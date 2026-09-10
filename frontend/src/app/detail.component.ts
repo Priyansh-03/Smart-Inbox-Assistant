@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService } from './api.service';
 import { glossaryKey, glossaryLookup } from './glossary';
@@ -15,9 +15,14 @@ import { log } from './log';
 @Component({
   selector: 'app-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, TooltipDirective],
+  imports: [CommonModule, FormsModule, TooltipDirective],
   template: `
-    <p><button class="back" routerLink="/">← Back to queue</button></p>
+    <p class="detail-topbar">
+      <button class="back" (click)="backToQueue()">← Back to queue</button>
+      <button class="btn ghost" [disabled]="reprocessing" (click)="reprocess()">
+        {{ reprocessing ? 'Reprocessing…' : '↻ Reprocess with AI' }}
+      </button>
+    </p>
 
     <div class="card head" *ngIf="data">
       <div class="hero-pills">
@@ -116,11 +121,10 @@ import { log } from './log';
               </div>
               <div class="aisaw-back">
                 <div class="aisaw-img" *ngFor="let img of docImages()">
-                  <b>{{ flagIcon(activeDoc(), img) }} {{ flagTitle(activeDoc(), img) }} — page {{ img.page }}, needs a human check.</b>
-                  Deep image analysis was not performed — this is a good-faith description only.
-                  Confirm it against the picture in the viewer.
-                  <div class="muted" *ngIf="img.description"><b>AI read it as:</b> {{ img.description }}</div>
-                  <div class="muted" *ngIf="img.reviewer_note"><b>Note:</b> {{ img.reviewer_note }}</div>
+                  <b>{{ flagIcon(activeDoc(), img) }} {{ flagTitle(activeDoc(), img) }}<span *ngIf="!flagIsWholeDoc(activeDoc(), img)"> — page {{ img.page }}</span>, needs a human check.</b>
+                  {{ flagBody(activeDoc(), img) }}
+                  <div class="muted" *ngIf="img.description || img.caption"><b>AI read it as:</b> {{ img.description || img.caption }}</div>
+                  <div class="muted" *ngIf="img.reviewer_note || img.note"><b>Note:</b> {{ img.reviewer_note || img.note }}</div>
                 </div>
                 <span class="aisaw-hint">← tap to close</span>
               </div>
@@ -291,19 +295,19 @@ import { log } from './log';
             <span class="muted" *ngIf="changedCount()"> &nbsp;{{ changedCount() }} field(s) changed</span>
           </p>
 
-          <h4>PDF document<span *ngIf="!tabs.length && data.pdfExtractions.length > 1">s</span></h4>
+          <h4>Document<span *ngIf="!tabs.length && data.pdfExtractions.length > 1">s</span></h4>
           <div *ngFor="let p of visiblePdfExtractions()" class="pdfblock">
             <b>{{ p.filename }}</b> — {{ p.flavor }} / {{ p.language }}
             <span *ngIf="p.ocrConfidence != null" class="muted">· <span class="term" [tip]="tip('ocr')">OCR</span> {{ p.ocrConfidence }}</span>
             <p>{{ p.summary }}</p>
             <div *ngFor="let img of images(p)" class="imgflag">
-              {{ flagIcon(p, img) }} <b>{{ flagTitle(p, img) }} — page {{ img.page }}, needs a human check</b>.
+              {{ flagIcon(p, img) }} <b>{{ flagTitle(p, img) }}<span *ngIf="!flagIsWholeDoc(p, img)"> — page {{ img.page }}</span>, needs a human check</b>.
               {{ flagBody(p, img) }}
-              <div class="muted" *ngIf="img.description"><b>AI read it as:</b> {{ img.description }}</div>
-              <div class="muted" *ngIf="img.reviewer_note"><b>Note:</b> {{ img.reviewer_note }}</div>
+              <div class="muted" *ngIf="img.description || img.caption"><b>AI read it as:</b> {{ img.description || img.caption }}</div>
+              <div class="muted" *ngIf="img.reviewer_note || img.note"><b>Note:</b> {{ img.reviewer_note || img.note }}</div>
             </div>
           </div>
-          <p class="muted" *ngIf="!data.pdfExtractions.length">No PDF attachments.</p>
+          <p class="muted" *ngIf="!data.pdfExtractions.length">No attachments.</p>
 
           <h4>AI calls <span class="muted">({{ data.aiCalls?.length || 0 }})</span></h4>
           <div class="tablewrap"><table>
@@ -351,9 +355,14 @@ import { log } from './log';
               <option *ngFor="let n of pdfNames" [value]="n">{{ n }}</option>
             </select>
           </h3>
-          <iframe *ngIf="safeUrl" [src]="safeUrl"></iframe>
+          <img *ngIf="safeUrl && viewerKind() === 'image'" [src]="safeUrl" class="attach-img" alt="attachment" />
+          <iframe *ngIf="safeUrl && viewerKind() === 'frame'" [src]="safeUrl"></iframe>
+          <p *ngIf="viewerKind() === 'none'" class="muted attach-none">
+            {{ selectedPdf }} can't be previewed here.
+            <a [href]="rawUrl()" target="_blank" rel="noopener">Open in a new tab</a>.
+          </p>
         </div>
-        <p class="muted" *ngIf="!pdfNames.length" style="padding:0 4px">No PDF attachments.</p>
+        <p class="muted" *ngIf="!pdfNames.length" style="padding:0 4px">No attachments.</p>
       </aside>
     </div>
   `,
@@ -378,7 +387,16 @@ export class DetailComponent implements OnInit {
   patientLine = patientLine;
   reporterLine = reporterLine;
 
-  constructor(private route: ActivatedRoute, private api: ApiService, private san: DomSanitizer) {}
+  constructor(private route: ActivatedRoute, private router: Router,
+              private api: ApiService, private san: DomSanitizer) {}
+
+  // return to the queue with the filters + page the user left it on
+  backToQueue() {
+    let qs = '';
+    try { qs = sessionStorage.getItem('queueQuery') || ''; } catch {}
+    const params = Object.fromEntries(new URLSearchParams(qs));
+    this.router.navigate(['/'], { queryParams: params });
+  }
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id')!;
@@ -552,29 +570,46 @@ export class DetailComponent implements OnInit {
     this.safeUrl = this.san.bypassSecurityTrustResourceUrl(this.api.pdfUrl(this.id, name, page));
   }
 
+  rawUrl(): string { return this.api.pdfUrl(this.id, this.selectedPdf); }
+
+  // how to render the current attachment: inline <img>, <iframe>, or a download link
+  viewerKind(): 'image' | 'frame' | 'none' {
+    const p = (this.data?.pdfExtractions || []).find((x: any) => x.filename === this.selectedPdf);
+    const flavor = (p?.flavor || '').toUpperCase();
+    if (flavor === 'IMAGE') return 'image';
+    if (flavor === 'OFFICE') return 'none';
+    if (/\.(png|jpe?g|webp|gif|bmp|tiff?)$/i.test(this.selectedPdf || '')) return 'image';
+    if (/\.(docx|xlsx|pptx)$/i.test(this.selectedPdf || '')) return 'none';
+    return 'frame';                                   // pdf, txt, html, csv render in an iframe
+  }
+
   images(p: any): any[] {
     try { return typeof p.images === 'string' ? JSON.parse(p.images) : (p.images || []); }
     catch { return []; }
   }
 
-  // pick a label that fits the flagged visual: scanned page / form / photo / figure
-  private flagCat(p: any, img: any): 'scan' | 'form' | 'photo' | 'figure' {
+  // pick a label that fits the flagged visual: attached image / scanned page / form / photo / figure
+  private flagCat(p: any, img: any): 'image' | 'scan' | 'form' | 'photo' | 'figure' {
     const flavor = (p.flavor || '').toUpperCase();
     const kind = (img.kind || '').toLowerCase();
+    if (flavor === 'IMAGE' || kind === 'attachment_image') return 'image';
     if (kind.includes('form') || kind.includes('checkbox')) return 'form';
     if (kind.includes('photo') || kind.includes('product') || kind.includes('rash')) return 'photo';
     if (flavor === 'SCANNED') return 'scan';
     return 'figure';
   }
   flagIcon(p: any, img: any): string {
-    return { scan: '📝', form: '🗒️', photo: '📷', figure: '🖼' }[this.flagCat(p, img)];
+    return { image: '📷', scan: '📝', form: '🗒️', photo: '📷', figure: '🖼' }[this.flagCat(p, img)];
   }
   flagTitle(p: any, img: any): string {
-    return { scan: 'Scanned / handwritten page', form: 'Filled-in form',
+    return { image: 'Attached image', scan: 'Scanned / handwritten page', form: 'Filled-in form',
              photo: 'Photograph', figure: 'Figure / embedded image' }[this.flagCat(p, img)];
   }
+  // true for standalone attachments (no page number to show)
+  flagIsWholeDoc(p: any, img: any): boolean { return this.flagCat(p, img) === 'image'; }
   flagBody(p: any, img: any): string {
     return {
+      image: 'This image arrived as an attachment and was read by a vision model. Deep image analysis was not performed — confirm the description against the picture in the viewer.',
       scan: 'This page was read by OCR / a vision model rather than as digital text, so the transcription can be imperfect — check the extracted fields below against the page.',
       form: 'The AI read a form or checkbox layout visually; confirm each captured field and tick-box matches the page.',
       photo: 'Deep image analysis was not performed — this is a good-faith description only. Confirm it against the picture in the viewer.',
@@ -645,5 +680,31 @@ export class DetailComponent implements OnInit {
   reopen() {
     log.info(`message ${this.id}: reviewer sends it back to the review queue`);
     this.api.reopen(this.id).subscribe(() => this.load());
+  }
+
+  reprocessing = false;
+
+  // re-run the whole AI pipeline on this message, then poll until it is done and reload
+  reprocess() {
+    if (this.reprocessing) return;
+    this.reprocessing = true;
+    log.info(`message ${this.id}: reviewer requested a fresh AI run`);
+    this.api.reprocess(this.id).subscribe({
+      next: () => this.pollUntilReady(0),
+      error: () => { this.reprocessing = false; log.error(`message ${this.id}: reprocess request failed`); },
+    });
+  }
+
+  private pollUntilReady(tries: number) {
+    if (tries > 40) { this.reprocessing = false; this.load(); return; }   // ~2 min ceiling
+    this.api.detail(this.id, true).subscribe((d) => {
+      const s = d?.message?.status;
+      if (s === 'NEW' || s === 'PROCESSING') {
+        setTimeout(() => this.pollUntilReady(tries + 1), 3000);
+      } else {
+        this.reprocessing = false;
+        this.load();
+      }
+    });
   }
 }

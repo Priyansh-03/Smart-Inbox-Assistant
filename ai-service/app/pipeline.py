@@ -5,9 +5,10 @@ import time
 
 from . import callrec
 from . import pdf_utils as pu
+from . import doc_utils as du
 from . import guardrails as gr
 from .config import config
-from .constants import MAX_CTX_CHARS
+from .constants import MAX_CTX_CHARS, FLAVOR_IMAGE, FLAVOR_OFFICE
 from .llm import ask_json, image_part, load_prompt, text_part, MODEL, PROMPT_VERSION
 from .schemas import (AiCall, BucketVerdict, ClassifyResponse, ExtractResponse,
                       Fact, PdfResult, ProcessRequest, ProcessResponse, Source)
@@ -22,6 +23,89 @@ def _guarded(prompt_name: str, untrusted_text: str, **kw) -> dict:
     """ask_json with the injection guard + fenced untrusted content, recorded as `prompt_name`."""
     return ask_json(load_prompt(prompt_name), gr.wrap_untrusted(untrusted_text),
                     step=prompt_name, untrusted_guard=True, **kw)
+
+
+def process_document(name: str, data: bytes, mime: str = "") -> PdfResult:
+    """Route an attachment to the right understanding path. PDFs go through process_pdf;
+    images / office / text files are turned into text and summarised the same way."""
+    is_pdf = name.lower().endswith(".pdf") or mime.lower() == "application/pdf" or data[:5] == b"%PDF-"
+    if is_pdf:
+        return process_pdf(name, data)
+    kind = du.kind_for(name, mime)
+    if kind is None:
+        raise ValueError(f"unsupported document type: {name} ({mime})")
+    return process_nonpdf(name, data, kind)
+
+
+def process_nonpdf(name: str, data: bytes, flavor: str) -> PdfResult:
+    """Image / office / text attachment -> plain text -> translate if needed -> summary."""
+    log.info("DOC %s: flavor=%s (%d bytes)", name, flavor, len(data))
+    lang, original, ocr_conf, images = "en", None, None, []
+
+    if flavor == FLAVOR_IMAGE:
+        png = du.image_to_png_b64(data)
+        # 1) pull any legible text off the image
+        r = ask_json(load_prompt("ocr"),
+                     [image_part(png), text_part("Transcribe every word visible in this image.")],
+                     step="ocr")
+        ocr_text = (r.get("text") or "").strip()
+        ocr_conf = float(r.get("confidence", 0.0)) or None
+        # 2) describe what the image shows (works even when there is no text)
+        cap = ask_json(load_prompt("image_caption"),
+                       [image_part(png), text_part("Describe this image attachment.")],
+                       step="image_caption")
+        desc = (cap.get("description") or "").strip()
+        images = [{"page": 1, "needs_human_review": True,
+                   "kind": cap.get("kind") or "attachment_image",
+                   "description": desc,
+                   "reviewer_note": cap.get("reviewer_note")
+                       or "standalone image attachment - reviewer should confirm"}]
+        # the classify/extract context gets the description plus any transcribed text
+        text = "\n".join(x for x in (f"[image description] {desc}" if desc else "",
+                                     f"[text in image]\n{ocr_text}" if ocr_text else "") if x)
+    elif flavor == FLAVOR_OFFICE:
+        text = du.office_text(name, data)
+        # caption any images embedded in the doc, so a photo pasted into a Word/PPT file is not lost
+        for i, raw in enumerate(du.office_images(name, data), 1):
+            try:
+                png = du.image_to_png_b64(raw)
+            except Exception:  # noqa: BLE001
+                continue
+            cap = ask_json(load_prompt("image_caption"),
+                           [image_part(png), text_part(f"Describe embedded image {i} from this document.")],
+                           step="image_caption")
+            desc = (cap.get("description") or "").strip()
+            images.append({"page": 1, "needs_human_review": True,
+                           "kind": cap.get("kind") or "embedded_image",
+                           "description": desc,
+                           "reviewer_note": cap.get("reviewer_note") or "image embedded in the document"})
+            if desc:
+                text = f"{text}\n[embedded image {i}] {desc}"
+    else:  # FLAVOR_TEXT
+        text = du.text_content(name, data)
+
+    text = (text or "").strip()
+
+    lang_guess = pu.detect_language(text) if text else "unknown"
+    if lang_guess not in ("en", "unknown"):
+        r = _guarded("translate", text[:MAX_CTX_CHARS], max_tokens=4000)
+        original = text
+        text = r.get("english_text", text)
+        lang = r.get("language", lang_guess)
+
+    scan = gr.scan(text)
+    summ = _guarded("pdf_summary",
+                    f"FILENAME: {name}\nFLAVOR: {flavor}\n\nTEXT:\n{text[:MAX_CTX_CHARS]}\n\n"
+                    f"FORM_FIELDS: []\nTABLES: []\nIMAGES: {images}", max_tokens=300)
+
+    return PdfResult(
+        filename=name, flavor=flavor, language=lang, page_count=1,
+        full_text=text, original_text=original, ocr_confidence=ocr_conf,
+        tables=[], images=images, form_fields=[],
+        summary=summ.get("summary", ""), looks_relevant=summ.get("looks_relevant"),
+        relevance_reason=summ.get("relevance_reason", ""),
+        injection_flagged=scan["flagged"], injection_notes=", ".join(scan["tags"]),
+    )
 
 
 def process_pdf(name: str, pdf_bytes: bytes) -> PdfResult:
@@ -158,8 +242,8 @@ def run(req: ProcessRequest) -> ProcessResponse:
     pdfs: list[PdfResult] = []
     for p in req.pdfs:
         ts = time.time()
-        pdfs.append(process_pdf(p.filename, base64.b64decode(p.base64)))
-        lat[f"pdf:{p.filename}"] = int((time.time() - ts) * 1000)
+        pdfs.append(process_document(p.filename, base64.b64decode(p.base64), getattr(p, "mime", "")))
+        lat[f"doc:{p.filename}"] = int((time.time() - ts) * 1000)
 
     ts = time.time()
     cls = classify_context(req.email_from, req.email_subject, req.email_body,
@@ -173,6 +257,8 @@ def run(req: ProcessRequest) -> ProcessResponse:
         chunks.append(f"[email metadata]\nEmail received: {req.email_date}\n"
                       f"Resolve any relative date in the content against this date.")
     chunks.append(f"[email]\n{req.email_body}")
+    # every attachment is labelled "[pdf FILE]" in the extract context so the model keeps
+    # emitting source.type = "pdf" (the schema's document source); flavor still tells the UI apart
     for p in pdfs:
         chunks.append(f"[pdf {p.filename}]\n{p.full_text[:MAX_CTX_CHARS // max(len(pdfs), 1)]}")
     ext = extract_from_chunks(active, chunks)

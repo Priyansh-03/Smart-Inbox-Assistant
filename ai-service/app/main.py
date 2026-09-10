@@ -4,7 +4,8 @@ import logging
 from fastapi import FastAPI, HTTPException
 
 from .llm import cache_stats, MODEL, PROMPT_VERSION
-from .pipeline import classify_context, extract_from_chunks, process_pdf, run, screen_article
+from .pipeline import (classify_context, extract_from_chunks, process_document,
+                       process_pdf, run, screen_article)
 from .schemas import (ClassifyRequest, ClassifyResponse, ExtractRequest,
                       ExtractResponse, PdfRequest, PdfResult, ProcessRequest,
                       ProcessResponse)
@@ -24,7 +25,7 @@ def health():
 @app.post("/ai/v1/pdf", response_model=PdfResult)
 def pdf_stage(req: PdfRequest):
     try:
-        return process_pdf(req.filename, base64.b64decode(req.base64))
+        return process_document(req.filename, base64.b64decode(req.base64), req.mime)
     except Exception as e:  # noqa: BLE001
         log.exception("pdf stage failed for %s", req.filename)
         raise HTTPException(status_code=502, detail=str(e))
