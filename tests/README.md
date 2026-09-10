@@ -12,6 +12,5 @@ make test
 | Backend unit | `backend/src/test/` | JDK 21 |
 | End-to-end | `tests/integration/` | full stack up (`make up`) + `OPENAI_API_KEY` |
 
-The end-to-end suite maps 1:1 to the test-case and edge-case tables in
-[`docs/TODO.md`](../docs/TODO.md). Each fixture lives under `sample-data/` and its
-expected classification under `sample-data/expected/`.
+Each fixture lives under `sample-data/` and its expected classification under
+`sample-data/expected/labels.json`.
