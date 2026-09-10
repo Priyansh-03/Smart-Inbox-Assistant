@@ -34,6 +34,3 @@ backend/target/
 .p1-backend.log
 .p2-storage/
 .p2-backend.log
-
-# Personal docs served by the frontend - not committed yet (see docs/TODO.md "Edit résumé")
-frontend/src/assets/*.pdf
