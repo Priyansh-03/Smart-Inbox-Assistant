@@ -236,8 +236,9 @@ or a self-hosted model, plus a PII-redaction pass before any external call.
   real volume needs a broker and horizontal workers.
 - Image handling is a good-faith transcription/caption + human-review flag, not
   deep analysis.
-- Office/text extraction is text-only (no layout, no embedded-image OCR); legacy
-  `.doc`/`.xls`/`.ppt` and other binaries are logged, not processed.
+- Office extraction pulls the text and captions embedded raster images, but
+  drops layout and styling; legacy `.doc`/`.xls`/`.ppt` and other binaries
+  (zip, etc.) are logged, not processed.
 - Form-field pairing is best-effort (AcroForm widgets when present, otherwise
   "Label: value" line pairing) and not persisted as structured columns.
 - The literature page's step pipeline is an indicative animation over a single
