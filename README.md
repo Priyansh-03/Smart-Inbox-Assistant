@@ -253,6 +253,32 @@ python sample-data/generate_emails_with_pdfs.py # wraps some as attachment email
 
 ---
 
+## Processing benchmark
+
+Per-document timing is always live at `GET /api/batch/report` (`./run.sh -local
+report`). It reports `processed`, `total` and `avgProcessingMs`, plus a per-message
+row with `processingMs` and the assigned buckets.
+
+A run over ~80 genuine model executions (cache hits excluded) on
+`gpt-4o-2024-11-20`, single worker, no concurrency:
+
+| Category | mean time / doc | notes |
+|---|---|---|
+| Not Relevant | ~2.4 s | classify only, no extraction |
+| MI | ~4.4 s | classify + one small extraction |
+| ICSR (single) | ~8.0 s | classify + full ICSR extraction |
+| PQC | ~9.1 s | classify + PQC extraction |
+| ICSR + MI / ICSR + PQC | ~10–13 s | two extraction passes |
+| **Overall** | **~5.8 s** | median ~4.9 s, range 1.5 s – 17.7 s |
+
+Image / office / text attachments add one or two extra vision calls (OCR +
+description per image), landing around **6–14 s** end to end. A corrupt or
+unreadable file fails in well under a second without blocking the queue. Repeated
+identical inputs are served from the in-process TTL cache (`CACHE_TTL_SECONDS`) and
+return in a few milliseconds.
+
+---
+
 ## Configuration & data handling
 
 Every key is documented in `.env.example` / `.env.local.example` and required —
@@ -295,5 +321,5 @@ self-hosted model, plus a PII-redaction pass before any external call.
 | 4 | Env var template | `.env.example`, `.env.local.example` |
 | 5 | Architecture + tech choices + prompting approach | this file (above) |
 | 6 | Sample extracted JSON | `sample-data/outputs/*.json` |
-| 7 | Processing benchmark | `GET /api/batch/report` |
+| 7 | Processing benchmark | [Processing benchmark](#processing-benchmark) section + `GET /api/batch/report` |
 | 8 | Bonus: literature screening | `/literature` page + `POST /api/literature/upload` |
