@@ -1,11 +1,16 @@
 # Smart Inbox Assistant
 
-Reads incoming healthcare emails and PDF attachments, classifies each into
+Reads incoming healthcare emails and their attachments, classifies each into
 **ICSR / PQC / MI / Not Relevant**, extracts the key facts with a link back to
 their exact source, and hands everything to a human reviewer to accept or override.
 
 This README is the single project document — architecture, tech choices, the
 prompting approach, and known limitations are all below.
+
+**Author — Priyansh Srivastava**
+· [priyansh.sriv03@gmail.com](mailto:priyansh.sriv03@gmail.com)
+· [LinkedIn](https://www.linkedin.com/in/priyansh-srivastava-aiml-developer/)
+· [GitHub](https://github.com/Priyansh-03)
 
 ---
 
@@ -24,7 +29,7 @@ Test mailbox (IMAP)  ─poll by UID─┐
                                      ▼                  │
                      ┌───────────────────────────────┐  │
                      │  Python FastAPI AI service    │  │
-                     │  PDF understand → classify →  │  │   Angular review UI
+                     │  doc understand → classify →  │  │   Angular review UI
                      │  extract  (+ guardrails, call │  │   queue + detail +
                      │  recorder)                    │  │   /literature page
                      └───────────────┬───────────────┘  │
@@ -35,54 +40,73 @@ Test mailbox (IMAP)  ─poll by UID─┐
 ```
 
 **Flow.** Mail (or an `.eml` / article-PDF upload) → `ingestion` parses the MIME
-tree, dedupes on `Message-ID` (or a content hash), stores the message + PDF
-attachments → a row lands in the DB-backed queue (`message.status = NEW`). A single
-polling worker claims the next row atomically (`… FOR UPDATE SKIP LOCKED`), calls
-the Python AI service over REST, persists the result, and sets `READY_FOR_REVIEW`
-(or `FAILED` after `WORKER_MAX_ATTEMPTS`). A second `@Scheduled` reaper requeues
-rows stuck in `PROCESSING` past `WORKER_STUCK_SECONDS`. A reviewer works the queue
-in Angular; every accept / override / edit is audited.
+tree, dedupes on `Message-ID` (or a content hash), stores the message + every
+supported attachment → a row lands in the DB-backed queue (`message.status = NEW`).
+A single polling worker claims the next row atomically (`… FOR UPDATE SKIP LOCKED`),
+calls the Python AI service over REST, persists the result, and sets
+`READY_FOR_REVIEW` (or `FAILED` after `WORKER_MAX_ATTEMPTS`). A second `@Scheduled`
+reaper requeues rows stuck in `PROCESSING` past `WORKER_STUCK_SECONDS`. A reviewer
+works the queue in Angular; every accept / override / edit is audited.
 
-Each AI stage is also its own endpoint (`/ai/v1/pdf`, `/classify`, `/extract`,
-`/process`, `/literature`) so any stage can be exercised in isolation.
+Each AI stage is also its own endpoint (`/ai/v1/pdf` — any supported document,
+`/classify`, `/extract`, `/process`, `/literature`) so any stage can be exercised
+in isolation.
 
 ---
 
 ## What it does
 
 - **Ingest** a mailbox over IMAP (UID cursor) or `.eml` upload; parse the MIME tree
-  (prefers text/plain, strips HTML), dedupe on `Message-ID`, store every supported
-  attachment, size-cap everything. Supported = PDF, image (jpg/png/webp/gif/tiff),
-  office (docx/xlsx/pptx), text-family (txt/eml/html/csv/rtf/md); anything else is
-  logged, not processed.
+  (prefers `text/plain`, converts `text/html`), dedupe on `Message-ID` (content
+  hash if absent), store every supported attachment, size-cap everything
+  (`MAX_ATTACHMENT_MB`). Supported = PDF, image (jpg/jpeg/png/webp/gif/tif/tiff/bmp),
+  office (docx/xlsx/pptx), text (txt/eml/html/csv/rtf/md/log/json); every other type
+  gets an `attachment` row with a skip reason and is not processed.
 - **Understand documents**: detect flavor and route —
-  - *PDF*: digital / scanned / article / non-English / mixed → direct text with
-    column-aware ordering + form-field pairing, vision OCR with a confidence score,
-    multi-column de-column + patient-case isolation, language detect + translate
-    keeping the original; tables → structured rows; meaningful images → caption +
-    human-review flag.
-  - *Image*: vision model transcription/description + a human-review flag.
-  - *Office / text*: server-side text extraction (python-docx / openpyxl /
-    python-pptx; HTML stripped, CSV flattened, `.eml` body pulled).
-  - Every document gets language detect + translate-if-needed and a short AI
-    summary saying whether it looks relevant and why. All of it feeds the same
-    classify + extract path as PDFs.
+  - *PDF*: `DIGITAL` / `SCANNED` / `ARTICLE` / `NON_ENGLISH` / `MIXED`. Digital →
+    column-aware text + `AcroForm` (or "Label: value") field pairing. Scanned/mixed
+    → per-page vision OCR with an averaged confidence score. Article → the model
+    isolates the identifiable patient-case passages, dropping references/discussion.
+    Non-English → detect + translate to English, keeping the original text.
+    Plus: tables (pdfplumber) → row/column JSON; each embedded image → a vision
+    description + a `needs_human_review` flag.
+  - *Image* (`IMAGE`): the image is normalised (Pillow) and sent to the vision
+    model for both an OCR transcription and a short description, with a
+    `needs_human_review` flag.
+  - *Office* (`OFFICE`, docx/xlsx/pptx): text via python-docx / openpyxl /
+    python-pptx, and any raster image embedded in the file is captioned by the
+    vision model too.
+  - *Text* (`TEXT`, txt/eml/html/csv/rtf/md): decoded — HTML tags stripped, CSV
+    flattened to `a | b | c` rows, `.eml` `text/plain` body pulled out.
+  - Every document then gets language-detect + translate-if-needed and a short AI
+    summary (relevant? why?). All flavors feed the same classify + extract path
+    and are stored in one `pdf_extraction` row.
 - **Classify** into ICSR / PQC / MI / Not Relevant, multi-label, with a confidence
   score + a one-line reason each.
-- **Extract** ICSR (patient / reporter / product / reaction / 6 seriousness
-  booleans / narrative), PQC (product, batch/lot, defect, counterfeit,
-  contamination, photo), MI (product, questions, context). Every field is
-  `{value, confidence, source{document, page, evidence}}`; absent ⇒ `"Not stated"`,
-  `null`, `null` — never guessed.
+- **Extract** the bucket-specific fields:
+  - *ICSR*: patient (name, age, sex, weight, height, medical history), reporter
+    (name, role, country), product (name, dose, route, start/stop date), reaction
+    (reaction, onset date, outcome), 6 seriousness booleans (death,
+    hospitalization, life-threatening, disability, congenital anomaly, medically
+    important), and a plain-language narrative.
+  - *PQC*: product name, batch/lot, defect description, packaging issue, suspected
+    counterfeit, contamination, photo mentioned.
+  - *MI*: product/topic, the question(s), relevant context.
+  Every field is `{value, confidence, source:{type, file, page, quote}}`; absent ⇒
+  `value:"Not stated"`, `confidence:null`, `source:null` — never guessed.
 - **Guardrails**: untrusted content is fenced, prompt-injection attempts are
   flagged for human review, model output is re-validated against the schema.
 - **Audit**: `ai_call` records model / prompt version / input hash / output / token
   usage / duration per LLM call; `audit_event` is an append-only log of every AI
   step and reviewer action.
-- **Review UI** (Angular): queue with injection badges; detail screen with the
-  email + PDF viewer, editable fields with confidence + clickable source, image
-  flags, the AI-call trace, and the audit trail. Accept / override / mark reviewed;
-  `/retry` redrives a FAILED message.
+- **Review UI** (Angular): queue with a category / confidence / sender / date /
+  document filter (filters + page are kept in the URL, so "Back to queue" restores
+  the view); detail screen with the email body, an attachment viewer (image inline,
+  PDF/text in an iframe, a download link for office files), editable fields with
+  confidence + clickable source, image flags, the AI-call trace, and the audit
+  trail. Accept / override / mark reviewed. `POST /api/messages/{id}/retry`
+  redrives a `FAILED` message; `POST /api/messages/{id}/reprocess` (the "Reprocess
+  with AI" button) re-runs the pipeline on any message.
 - **Batch**: `GET /api/batch/report` gives per-document timing.
 - **Bonus — literature screening** (`/literature` review page +
   `POST /api/literature/upload`): upload article PDFs independently of the mailbox;
@@ -102,8 +126,8 @@ Each AI stage is also its own endpoint (`/ai/v1/pdf`, `/classify`, `/extract`,
 |---|---|---|
 | Frontend | **Angular 18** (standalone components) | matches Clinevo production |
 | Backend | **Spring Boot 3.3 / Java 21**, `JdbcClient` (not JPA) | hand-written SQL keeps the one persistence seam (`InboxRepository`) explicit and swappable |
-| AI service | **Python 3.12 / FastAPI** | PyMuPDF, pdfplumber, langdetect, the OpenAI SDK; isolated from the JVM, called over REST |
-| Database | **PostgreSQL 16** — *deviation from the suggested Oracle* | The spec sanctions "Oracle preferred, PostgreSQL acceptable if explained." `JSONB` stores the heterogeneous LLM payloads (per-PDF extraction, `fact.source`, `ai_call.output`) with no schema churn, while relational tables carry the audit / evidence trail. Flyway migrations `V1`–`V6`. Isolated behind `InboxRepository` for a contained port back to Oracle. |
+| AI service | **Python 3.12 / FastAPI** | PyMuPDF, pdfplumber, langdetect, Pillow, python-docx / openpyxl / python-pptx, the OpenAI SDK; isolated from the JVM, called over REST |
+| Database | **PostgreSQL 16** — *deviation from the suggested Oracle* | The spec sanctions "Oracle preferred, PostgreSQL acceptable if explained." `JSONB` stores the heterogeneous LLM payloads (per-document extraction, `fact.source`, `ai_call.output`) with no schema churn, while relational tables carry the audit / evidence trail. Flyway migrations `V1`–`V6`. Isolated behind `InboxRepository` for a contained port back to Oracle. |
 | AI model | **OpenAI `gpt-4o`** (`OPENAI_MODEL`, any model configurable) | one vision-capable model covers OCR, image captions, translation, classification, extraction; native JSON mode for structured output |
 | Queue | `message.status` + one polling worker | in-process, spec-sanctioned; swap for SQS/Kafka at volume |
 
@@ -111,12 +135,15 @@ Each AI stage is also its own endpoint (`/ai/v1/pdf`, `/classify`, `/extract`,
 
 ## Prompting approach
 
-- One prompt file per step under `ai-service/prompts/`, version-stamped
-  (`PROMPT_VERSION=v6`) onto every stored `classification` / `fact` / `ai_call` row.
+- One prompt file per step under `ai-service/prompts/` (`ocr`, `image_caption`,
+  `translate`, `article_case`, `pdf_summary`, `classify`, `extract_icsr`,
+  `extract_pqc`, `extract_mi`). `PROMPT_VERSION=v6` is stamped onto every stored
+  `classification` and `ai_call` row for reproducibility.
 - **Structured template** per prompt: `ROLE` (a specific persona — e.g.
-  "conservative pharmacovigilance triage specialist", "meticulous ICSR data-entry
-  reviewer", "certified medical translator", "literature screening reviewer") →
-  `TASK` → `METHOD` → `RULES` → `OUTPUT` (the exact JSON shape).
+  "conservative pharmacovigilance intake-triage specialist", "meticulous ICSR
+  data-entry reviewer", "certified medical translator", "scientific-literature
+  screening reviewer") → `TASK` → `METHOD` → `RULES` → `OUTPUT` (the exact JSON
+  shape).
 - **Reasoning techniques, only where they earn their place:**
   - Classification runs a silent **devil's-advocate** pass plus a few-shot block of
     the hard cases (reaction-from-defect → both ICSR + PQC; marketing that names a
@@ -134,49 +161,59 @@ Each AI stage is also its own endpoint (`/ai/v1/pdf`, `/classify`, `/extract`,
 
 ## Run it
 
-Prereqs: Docker + Docker Compose. **No setting is hardcoded** — every host, port and
-URL is read from an env file (CLI flags override). Two files, both git-ignored once
-they hold real secrets; only the `.example` templates are tracked:
+**Prereqs:** Docker + Docker Compose, and an OpenAI API key. Nothing is hardcoded —
+every host, port and URL comes from an env file (CLI flags override). Two env files,
+both git-ignored; only the `.example` templates are committed:
 
-| File | Used by | Create it from |
-|------|---------|----------------|
-| `.env.local` | `./run.sh -local ...` | `.env.local.example` (localhost values) |
-| `.env` | `./run.sh ...` (default) | `.env.example` (production values) |
+| File | Selected by | Copy from |
+|------|-------------|-----------|
+| `.env.local` | `./run.sh -local <cmd>` | `.env.local.example` (localhost values, ready to use) |
+| `.env` | `./run.sh <cmd>` | `.env.example` (production values, edit the hosts) |
+
+### Local (Docker, the normal way)
 
 ```bash
-# local
-cp .env.local.example .env.local && $EDITOR .env.local   # add OPENAI_API_KEY
-./run.sh -local up              # postgres + ai-service + backend + frontend
-./run.sh -local seed            # push the sample emails through
-./run.sh -local report          # per-document timing
+cd smart-inbox-assistant
 
-# production
-cp .env.example .env && $EDITOR .env
+cp .env.local.example .env.local
+#   edit .env.local -> set OPENAI_API_KEY=sk-...   (only value you must fill in)
+
+./run.sh -local up          # builds + starts postgres, ai-service, backend, frontend
+./run.sh -local seed        # imports sample-data/emails/*.eml through the app
+./run.sh -local report      # prints per-document processing time
+
+./run.sh -local logs        # tail all container logs
+./run.sh -local down        # stop everything
+```
+
+`make up LOCAL=1` / `make seed LOCAL=1` / `make report LOCAL=1` wrap the same commands.
+
+Open **http://localhost:4200** — the message queue is the landing page.
+**Screen article PDFs** in the toolbar opens the literature-screening page.
+Backend API: `http://localhost:8080` · AI service: `http://localhost:8000/health`.
+
+### Production
+
+```bash
+cp .env.example .env
+#   edit .env -> real DB creds, mailbox creds, hostnames, OPENAI_API_KEY
 ./run.sh up
 ```
 
-`make up` / `make up LOCAL=1` wrap the same thing.
-
-- UI: `http://<FRONTEND_HOST>:<FRONTEND_PORT>` — the queue is the landing page;
-  **Screen article PDFs** in the toolbar opens the `/literature` page.
-- Backend: `http://<SERVER_HOST>:<SERVER_PORT>`
-- AI service: `http://<AI_HOST>:<AI_PORT>`
-
-Feed the sample batch without a live mailbox:
-
-```bash
-API_BASE_URL=http://localhost:8080 make seed
-API_BASE_URL=http://localhost:8080 make report   # per-document timing
-```
-
-### Run a service on its own (host/port from env or CLI)
+### Run one service outside Docker (host/port from the env file or CLI flags)
 
 ```bash
 # AI service
-cd ai-service && . .venv/bin/activate && python -m app --host 0.0.0.0 --port 8000
+cd ai-service && python -m venv .venv && . .venv/bin/activate
+pip install -r requirements.txt
+python -m app --host 0.0.0.0 --port 8000        # needs the AI_*/OPENAI_* vars exported
 
-# Backend
-cd backend && ./mvnw spring-boot:run           # or: java -jar target/*.jar --server.port=8080
+# Backend (needs a reachable Postgres + AI service)
+cd backend && ./mvnw spring-boot:run
+#   or:  java -jar target/*.jar --server.port=8080
+
+# Frontend
+cd frontend && npm ci && npm start              # ng serve on FRONTEND_PORT
 ```
 
 ---
@@ -195,22 +232,23 @@ make test-backend  # backend unit tests, JDK 21
 
 All data is fictional. `sample-data/` holds:
 
-- `emails/` — 14 `.eml` files (several carry a PDF attachment, including two whose
-  attached form embeds a real photo — a damaged blister and a skin rash — from
-  `sample-data/assets/`), plus `emails_extra/` and `emails_variety/` for wider
-  category coverage.
+- `emails/` — 14 `.eml` files; 6 carry a PDF attachment, 2 of those embed a real
+  photo (a damaged blister, a skin rash) inside the form. `emails_extra/` (25) and
+  `emails_variety/` (21) give wider category coverage.
 - `pdfs/` — 17 PDFs: 5 digital forms, 2 scanned, 5 articles (incl. one 2-case and
-  one no-case), DE + ES, and 3 forms with an embedded product/rash photo.
-- `assets/` — the source photos embedded into the photo fixtures.
+  one no-identifiable-case), a German and a Spanish form, and 3 forms carrying an
+  embedded product/rash image. `pdfs_extra/` has 15 more.
+- `assets/` — `rashes.png`, `used-damaged-medicine.png`; the real photos
+  `generate_pdfs.py` embeds into `pdf_icsr_rash.pdf` / `pdf_pqc_photo_real.pdf`.
 - `expected/labels.json` — expected classifications.
-- `outputs/*.json` — per-document extraction JSON (deliverable; regenerate with a
-  batch run against a live stack).
+- `outputs/*.json` — per-document extraction JSON (deliverable; regenerate by
+  running `./run.sh -local seed` against a live stack, then exporting).
 
-Regenerate the corpus:
+Regenerate the fixture corpus:
 
 ```bash
-python sample-data/generate_pdfs.py
-python sample-data/generate_emails_with_pdfs.py
+python sample-data/generate_pdfs.py            # writes pdfs/*.pdf (needs PyMuPDF)
+python sample-data/generate_emails_with_pdfs.py # wraps some as attachment emails
 ```
 
 ---
@@ -222,10 +260,11 @@ Every key is documented in `.env.example` / `.env.local.example` and required �
 missing value fails fast at startup. `.env` and `.env.local` hold real secrets and
 are git-ignored; only the `.example` templates are tracked.
 
-**Data-handling trade-off.** PDF and email text is sent to the OpenAI API for OCR,
-translation, classification and extraction. The corpus is synthetic, so this is
-acceptable for the prototype. For production: an enterprise / no-retention API tier
-or a self-hosted model, plus a PII-redaction pass before any external call.
+**Data-handling trade-off.** Email text, extracted document text and attached
+images are sent to the OpenAI API for OCR, image description, translation,
+classification and extraction. The corpus is synthetic, so this is acceptable for
+the prototype. For production: an enterprise / no-retention API tier or a
+self-hosted model, plus a PII-redaction pass before any external call.
 
 ---
 
@@ -234,11 +273,11 @@ or a self-hosted model, plus a PII-redaction pass before any external call.
 - Single-model, single-provider (OpenAI). No fallback provider.
 - The in-process queue and polling worker are fine for a batch of 10–15 docs;
   real volume needs a broker and horizontal workers.
-- Image handling is a good-faith transcription/caption + human-review flag, not
-  deep analysis.
-- Office extraction pulls the text and captions embedded raster images, but
-  drops layout and styling; legacy `.doc`/`.xls`/`.ppt` and other binaries
-  (zip, etc.) are logged, not processed.
+- Image understanding is a vision-model transcription + short description +
+  `needs_human_review` flag — not diagnosis or severity grading.
+- Office extraction pulls text and captions embedded raster images, but drops
+  layout, styling and cell formulas. Legacy `.doc`/`.xls`/`.ppt` and other
+  binaries (zip, etc.) are logged, not processed.
 - Form-field pairing is best-effort (AcroForm widgets when present, otherwise
   "Label: value" line pairing) and not persisted as structured columns.
 - The literature page's step pipeline is an indicative animation over a single

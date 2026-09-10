@@ -96,7 +96,7 @@ public class ProcessingWorker {
         }
     }
 
-    private void persist(Message m, List<Attachment> pdfs, AiDtos.ProcessResponse res) {
+    private void persist(Message m, List<Attachment> docs, AiDtos.ProcessResponse res) {
         for (AiDtos.AiCall c : safe(res.aiCalls())) {
             repo.saveAiCall(m.id, c.step(), c.model(), c.promptVersion(), c.inputHash(),
                     toJson(c.output()), toJson(c.usage()), c.durationMs() == null ? null : c.durationMs().longValue(),
@@ -105,7 +105,7 @@ public class ProcessingWorker {
         log.info("Persisted {} ai_call record(s) for message id={}", safe(res.aiCalls()).size(), m.id);
 
         for (AiDtos.PdfResult p : safe(res.pdfs())) {
-            Attachment att = pdfs.stream().filter(a -> a.filename.equals(p.filename())).findFirst().orElse(null);
+            Attachment att = docs.stream().filter(a -> a.filename.equals(p.filename())).findFirst().orElse(null);
             PdfExtraction e = new PdfExtraction();
             e.messageId = m.id;
             e.attachmentId = att == null ? null : att.id;

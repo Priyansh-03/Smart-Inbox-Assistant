@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.clinevo.inbox.domain.Documents.PdfExtraction;
 import com.clinevo.inbox.domain.InboxRepository;
 
-/** Streams the stored PDF so the reviewer UI can open it at a given page. */
+/** Streams a stored attachment (PDF, image, office, text) with its content-type for the reviewer UI. */
 @RestController
 @RequestMapping("/api/attachments")
 public class AttachmentController {

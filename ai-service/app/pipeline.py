@@ -1,4 +1,4 @@
-"""Orchestrates: PDF understanding -> classification -> fact extraction."""
+"""Orchestrates: document understanding (PDF / image / office / text) -> classification -> fact extraction."""
 import base64
 import logging
 import time
