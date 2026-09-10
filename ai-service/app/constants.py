@@ -8,7 +8,7 @@ FLAVOR_ARTICLE = "ARTICLE"
 FLAVOR_NON_ENGLISH = "NON_ENGLISH"
 FLAVOR_MIXED = "MIXED"
 FLAVOR_IMAGE = "IMAGE"          # standalone image attachment (jpg/png/...)
-FLAVOR_OFFICE = "OFFICE"        # docx / xlsx / pptx
+FLAVOR_OFFICE = "OFFICE"        # Microsoft Office: docx / xlsx / pptx
 FLAVOR_TEXT = "TEXT"            # txt / eml / html / csv / rtf / md
 
 # non-PDF attachment types the AI service can turn into text

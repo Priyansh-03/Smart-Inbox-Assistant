@@ -60,8 +60,8 @@ in isolation.
   (prefers `text/plain`, converts `text/html`), dedupe on `Message-ID` (content
   hash if absent), store every supported attachment, size-cap everything
   (`MAX_ATTACHMENT_MB`). Supported = PDF, image (jpg/jpeg/png/webp/gif/tif/tiff/bmp),
-  office (docx/xlsx/pptx), text (txt/eml/html/csv/rtf/md/log/json); every other type
-  gets an `attachment` row with a skip reason and is not processed.
+  Microsoft Office (docx/xlsx/pptx), text (txt/eml/html/csv/rtf/md/log/json); every
+  other type gets an `attachment` row with a skip reason and is not processed.
 - **Understand documents**: detect flavor and route —
   - *PDF*: `DIGITAL` / `SCANNED` / `ARTICLE` / `NON_ENGLISH` / `MIXED`. Digital →
     column-aware text + `AcroForm` (or "Label: value") field pairing. Scanned/mixed
@@ -73,9 +73,9 @@ in isolation.
   - *Image* (`IMAGE`): the image is normalised (Pillow) and sent to the vision
     model for both an OCR transcription and a short description, with a
     `needs_human_review` flag.
-  - *Office* (`OFFICE`, docx/xlsx/pptx): text via python-docx / openpyxl /
-    python-pptx, and any raster image embedded in the file is captioned by the
-    vision model too.
+  - *Microsoft Office* (`OFFICE` flavor, docx/xlsx/pptx): text via python-docx /
+    openpyxl / python-pptx, and any raster image embedded in the file is captioned
+    by the vision model too.
   - *Text* (`TEXT`, txt/eml/html/csv/rtf/md): decoded — HTML tags stripped, CSV
     flattened to `a | b | c` rows, `.eml` `text/plain` body pulled out.
   - Every document then gets language-detect + translate-if-needed and a short AI
@@ -102,7 +102,7 @@ in isolation.
 - **Review UI** (Angular): queue with a category / confidence / sender / date /
   document filter (filters + page are kept in the URL, so "Back to queue" restores
   the view); detail screen with the email body, an attachment viewer (image inline,
-  PDF/text in an iframe, a download link for office files), editable fields with
+  PDF/text in an iframe, a download link for Microsoft Office files), editable fields with
   confidence + clickable source, image flags, the AI-call trace, and the audit
   trail. Accept / override / mark reviewed. `POST /api/messages/{id}/retry`
   redrives a `FAILED` message; `POST /api/messages/{id}/reprocess` (the "Reprocess
@@ -271,8 +271,8 @@ A run over ~80 genuine model executions (cache hits excluded) on
 | ICSR + MI / ICSR + PQC | ~10–13 s | two extraction passes |
 | **Overall** | **~5.8 s** | median ~4.9 s, range 1.5 s – 17.7 s |
 
-Image / office / text attachments add one or two extra vision calls (OCR +
-description per image), landing around **6–14 s** end to end. A corrupt or
+Image, Microsoft Office and text attachments add one or two extra vision calls
+(OCR + description per image), landing around **6–14 s** end to end. A corrupt or
 unreadable file fails in well under a second without blocking the queue. Repeated
 identical inputs are served from the in-process TTL cache (`CACHE_TTL_SECONDS`) and
 return in a few milliseconds.
@@ -301,8 +301,8 @@ self-hosted model, plus a PII-redaction pass before any external call.
   real volume needs a broker and horizontal workers.
 - Image understanding is a vision-model transcription + short description +
   `needs_human_review` flag — not diagnosis or severity grading.
-- Office extraction pulls text and captions embedded raster images, but drops
-  layout, styling and cell formulas. Legacy `.doc`/`.xls`/`.ppt` and other
+- Microsoft Office extraction pulls text and captions embedded raster images, but
+  drops layout, styling and cell formulas. Legacy `.doc`/`.xls`/`.ppt` and other
   binaries (zip, etc.) are logged, not processed.
 - Form-field pairing is best-effort (AcroForm widgets when present, otherwise
   "Label: value" line pairing) and not persisted as structured columns.

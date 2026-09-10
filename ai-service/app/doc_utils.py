@@ -1,5 +1,5 @@
-"""Non-PDF attachment support: turn images / office / text files into plain text
-so the same classify + extract path can run on them."""
+"""Non-PDF attachment support: turn images / Microsoft Office / text files into
+plain text so the same classify + extract path can run on them."""
 import base64
 import csv
 import io
