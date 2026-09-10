@@ -61,8 +61,22 @@ export class ApiService {
     return this.http.post<void>(`${API_BASE}/api/messages/${id}/seen`, {});
   }
 
+  // force a fresh AI run of this message with the current pipeline/prompts
+  reprocess(id: string) {
+    return this.http
+      .post<void>(`${API_BASE}/api/messages/${id}/reprocess`, {})
+      .pipe(tap(() => this.invalidate(id)));
+  }
+
   batchReport(): Observable<any> {
     return this.http.get<any>(`${API_BASE}/api/batch/report`);
+  }
+
+  // Upload article PDFs independently of the mailbox; each is screened for patient cases.
+  screenLiterature(files: File[]): Observable<any[]> {
+    const form = new FormData();
+    for (const f of files) form.append('files', f, f.name);
+    return this.http.post<any[]>(`${API_BASE}/api/literature/upload`, form);
   }
 
   pdfUrl(messageId: string, filename: string, page?: number): string {

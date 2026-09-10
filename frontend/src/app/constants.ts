@@ -48,4 +48,16 @@ export const COMPANY = {
 export const PAGE_TITLES = {
   queue: 'Inbox',
   detail: 'Message',
+  literature: 'Literature screening',
 };
+
+// literature-screening page: how long each pipeline step stays "active" before the loader moves on
+export const LITERATURE_STEP_ADVANCE_MS = 1400;
+
+// literature-screening pipeline stages, in order (mirrors the AI service's screen_article)
+export const LITERATURE_STEPS = [
+  { key: 'read', label: 'Reading the PDF', caption: 'Text, OCR and language' },
+  { key: 'cases', label: 'Finding patient cases', caption: 'Splitting the article' },
+  { key: 'facts', label: 'Extracting ICSR facts', caption: 'One set per case' },
+  { key: 'summary', label: 'Summary & relevance', caption: 'Why it does or does not report' },
+];

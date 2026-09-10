@@ -44,28 +44,38 @@ public class LiteratureController {
         this.audit = audit;
     }
 
+    /** One screened article: its stored message id plus the full AI screening result for inline display. */
+    public record UploadResult(String messageId, AiDtos.LiteratureResult screening) {}
+
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public List<String> upload(@RequestParam("files") MultipartFile[] files) throws Exception {
-        List<String> ids = new ArrayList<>();
-        for (MultipartFile f : files) {
-            String name = f.getOriginalFilename() == null ? "article.pdf" : f.getOriginalFilename();
-            String b64 = Base64.getEncoder().encodeToString(f.getBytes());
+    public List<UploadResult> upload(@RequestParam("files") MultipartFile[] files) throws Exception {
+        log.info("Literature upload called: {} file(s)", files == null ? 0 : files.length);
+        List<UploadResult> results = new ArrayList<>();
+        try {
+            for (MultipartFile f : files) {
+                String name = f.getOriginalFilename() == null ? "article.pdf" : f.getOriginalFilename();
+                String b64 = Base64.getEncoder().encodeToString(f.getBytes());
 
-            String messageId = repo.insertMessage("lit:" + name + ":" + System.nanoTime(), null,
-                    "literature-upload", "Literature screening: " + name, Instant.now(), "");
-            // Keep the mailbox worker off it: it is not a mailbox message.
-            repo.markMessage(messageId, Constants.STATUS_PROCESSING, null, null);
-            repo.insertAttachment(messageId, name, Constants.MIME_PDF, (long) f.getSize(), null, false,
-                    "literature upload (not stored on disk)");
+                String messageId = repo.insertMessage("lit:" + name + ":" + System.nanoTime(), null,
+                        "literature-upload", "Literature screening: " + name, Instant.now(), "");
+                // Keep the mailbox worker off it: it is not a mailbox message.
+                repo.markMessage(messageId, Constants.STATUS_PROCESSING, null, null);
+                repo.insertAttachment(messageId, name, Constants.MIME_PDF, (long) f.getSize(), null, false,
+                        "literature upload (not stored on disk)");
 
-            AiDtos.LiteratureResult r = ai.screenLiterature(new AiDtos.LiteratureIn(name, b64));
-            persist(messageId, r);
-            repo.markMessage(messageId, Constants.STATUS_READY, null, null);
-            log.info("Literature {} -> message id={} ({} case(s))", name, messageId,
-                    r.cases() == null ? 0 : r.cases().size());
-            ids.add(messageId);
+                AiDtos.LiteratureResult r = ai.screenLiterature(new AiDtos.LiteratureIn(name, b64));
+                persist(messageId, r);
+                repo.markMessage(messageId, Constants.STATUS_READY, null, null);
+                log.info("Literature {} -> message id={} ({} case(s))", name, messageId,
+                        r.cases() == null ? 0 : r.cases().size());
+                results.add(new UploadResult(messageId, r));
+            }
+        } catch (Exception e) {
+            log.error("Literature upload failed after {} of {} file(s): {}", results.size(),
+                    files == null ? 0 : files.length, e.toString());
+            throw e;
         }
-        return ids;
+        return results;
     }
 
     private void persist(String messageId, AiDtos.LiteratureResult r) {

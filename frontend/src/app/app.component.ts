@@ -20,7 +20,7 @@ import { COMPANY, DEVELOPER, PAGE_TITLES } from './constants';
           <span class="sep">|</span>
           <a [href]="dev.github" target="_blank" rel="noopener">GitHub</a>
           <span class="sep">|</span>
-          <a [href]="dev.resume" target="_blank" rel="noopener">Résumé</a>
+          <a [href]="dev.resume" download rel="noopener">Résumé</a>
         </span>
       </div>
     </header>
@@ -44,7 +44,13 @@ export class AppComponent {
       map((e) => e.urlAfterRedirects),
       startWith(router.url),
     ).subscribe((url) => {
-      this.page = { title: url.startsWith('/message') ? PAGE_TITLES.detail : PAGE_TITLES.queue };
+      this.page = { title: this.titleFor(url) };
     });
+  }
+
+  private titleFor(url: string): string {
+    if (url.startsWith('/message')) return PAGE_TITLES.detail;
+    if (url.startsWith('/literature')) return PAGE_TITLES.literature;
+    return PAGE_TITLES.queue;
   }
 }
