@@ -18,12 +18,26 @@ METHOD (work field by field; think silently, output only JSON)
 6. Self-check pass: re-read every field; if the value is not directly supported by its
    quote, downgrade it to "Not stated".
 
+DATES - never output a relative expression ("today", "yesterday", "tomorrow", "day
+after", "last week", "two days ago", "next month", etc.). Always write an absolute
+calendar date.
+- If the source states an explicit date, use it (prefer YYYY-MM-DD; otherwise keep
+  its clear written form, e.g. "18 Aug 2025").
+- If the source uses a relative expression, resolve it against the "Email received"
+  date given in the "[email metadata]" chunk (e.g. "yesterday" -> the day before that
+  date) and output the resolved calendar date.
+- If it is relative and there is no "Email received" anchor, set the field to
+  "Not stated" - do not guess.
+- The NARRATIVE must also use only absolute dates.
+
 CONFIDENCE
 1.0 explicit and unambiguous · 0.7-0.9 explicit but terse/abbreviated · 0.4-0.6
 requires light interpretation · 0.0 not stated.
 
 FIELDS - emit exactly one fact object per row below, in this order:
-  PATIENT: age, sex, weight, height, medical_history
+  PATIENT: name, age, sex, weight, height, medical_history
+           (name = the patient's name or initials ONLY if the source states them;
+            otherwise "Not stated" - never use the reporter's name here)
   REPORTER: name, role, country
   PRODUCT: product_name, dose, route, start_date, stop_date
   REACTION: reaction, onset_date, outcome

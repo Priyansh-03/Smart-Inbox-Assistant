@@ -7,6 +7,7 @@ BUCKETS = ["ICSR", "PQC", "MI", "NOT_RELEVANT"]
 class PdfIn(BaseModel):
     filename: str
     base64: str
+    mime: str = ""            # content-type hint; used to route non-PDF attachments
 
 
 class ProcessRequest(BaseModel):
@@ -14,6 +15,7 @@ class ProcessRequest(BaseModel):
     email_from: str = ""
     email_subject: str = ""
     email_body: str = ""
+    email_date: Optional[str] = None      # ISO date the email was received; anchors relative dates
     pdfs: List[PdfIn] = []
 
 
@@ -87,6 +89,7 @@ class ProcessResponse(BaseModel):
 class PdfRequest(BaseModel):
     filename: str
     base64: str
+    mime: str = ""
 
 
 class ClassifyRequest(BaseModel):

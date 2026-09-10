@@ -10,6 +10,7 @@ public final class Constants {
     public static final String STATUS_NEW = "NEW";
     public static final String STATUS_PROCESSING = "PROCESSING";
     public static final String STATUS_READY = "READY_FOR_REVIEW";
+    public static final String STATUS_SEEN = "SEEN";
     public static final String STATUS_REVIEWED = "REVIEWED";
     public static final String STATUS_FAILED = "FAILED";
 
@@ -24,4 +25,11 @@ public final class Constants {
     public static final String MIME_TEXT_HTML = "text/html";
 
     public static final int PDF_PAGE_CAP = 120;
+
+    /** Non-PDF attachment extensions the AI service can turn into text and classify. */
+    public static final java.util.Set<String> PROCESSABLE_DOC_EXTS = java.util.Set.of(
+            "pdf",
+            "jpg", "jpeg", "png", "webp", "gif", "tif", "tiff", "bmp",
+            "docx", "xlsx", "pptx",
+            "txt", "text", "eml", "html", "htm", "csv", "rtf", "md", "log", "json");
 }

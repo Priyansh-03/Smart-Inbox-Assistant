@@ -55,6 +55,8 @@ public class ReviewController {
             row.put("processingMs", m.processingMs);
             row.put("buckets", buckets);
             row.put("minConf", minConf);
+            row.put("hasPdf", repo.hasPdf(m.id));
+            row.put("hasDoc", repo.hasAttachment(m.id));
             row.put("injectionFlagged", m.injectionFlagged);
             row.put("injectionNotes", m.injectionNotes);
             return row;
@@ -107,12 +109,42 @@ public class ReviewController {
         return ResponseEntity.noContent().build();
     }
 
+    /** A reviewer opened this message; flip READY_FOR_REVIEW -> SEEN (no-op otherwise). */
+    @PostMapping("/{id}/seen")
+    public ResponseEntity<Void> seen(@PathVariable String id) {
+        if (repo.markSeen(id)) {
+            audit.event(id, reviewerId, "opened", "message",
+                    Constants.STATUS_READY, Constants.STATUS_SEEN, null);
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    /** Send a REVIEWED message back to the review queue (undo a completion). */
+    @PostMapping("/{id}/reopen")
+    public ResponseEntity<Void> reopen(@PathVariable String id) {
+        repo.markMessage(id, Constants.STATUS_READY, null, null);
+        audit.event(id, reviewerId, "review_reopened", "message",
+                Constants.STATUS_REVIEWED, Constants.STATUS_READY, null);
+        log.info("Message id={} reopened for review by {}", id, reviewerId);
+        return ResponseEntity.noContent().build();
+    }
+
     /** Redrive a FAILED message back into the queue. */
     @PostMapping("/{id}/retry")
     public ResponseEntity<Void> retry(@PathVariable String id) {
         boolean requeued = repo.resetFailedToNew(id);
         if (!requeued) return ResponseEntity.status(409).build();
         audit.event(id, reviewerId, "retry_requested", "message", Constants.STATUS_FAILED, Constants.STATUS_NEW, null);
+        return ResponseEntity.noContent().build();
+    }
+
+    /** Force a fresh AI run of any message (re-analyse with the current pipeline/prompts). */
+    @PostMapping("/{id}/reprocess")
+    public ResponseEntity<Void> reprocess(@PathVariable String id) {
+        boolean requeued = repo.resetAnyToNew(id);
+        if (!requeued) return ResponseEntity.status(409).build();
+        audit.event(id, reviewerId, "reprocess_requested", "message", null, Constants.STATUS_NEW, null);
+        log.info("Message id={} queued for reprocessing by {}", id, reviewerId);
         return ResponseEntity.noContent().build();
     }
 

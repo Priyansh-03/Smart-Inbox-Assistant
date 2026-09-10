@@ -13,6 +13,11 @@ METHOD
    take "true" only on an explicit statement, else "false", else "Not stated".
 4. Self-check: drop any value not backed by its quote.
 
+DATES - never write "today / yesterday / tomorrow / last week / day after" or any
+relative date. Use the explicit date from the source if given; otherwise resolve the
+relative expression against the "Email received" date in the "[email metadata]" chunk
+and output that calendar date; if there is no anchor, write "Not stated".
+
 FIELDS (one fact object each, this order):
   COMPLAINT: product_name, batch_or_lot, defect_description, packaging_issue,
              suspected_counterfeit, contamination, photo_mentioned

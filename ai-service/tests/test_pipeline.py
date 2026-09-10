@@ -128,3 +128,70 @@ def test_screen_article_splits_into_cases_with_facts(monkeypatch):
     assert [c["case_label"] for c in out["cases"]] == ["Case 1", "Case 2"]
     assert out["cases"][0]["facts"][0]["value"] == "6"
     assert out["relevance_reason"] == "two identifiable cases"
+
+
+# ---- non-PDF documents (images / office / text) reuse the same classify+extract path ----
+
+def test_process_document_routes_text_file(monkeypatch):
+    monkeypatch.setattr(pipeline.pu, "detect_language", lambda t: "en")
+    monkeypatch.setattr(pipeline, "_guarded",
+                        lambda name, text, **k: {"summary": "a plain-text complaint",
+                                                 "looks_relevant": True, "relevance_reason": "mentions a defect"})
+    out = pipeline.process_document("note.txt", b"Blister foil was torn on arrival.", "text/plain")
+    assert out.flavor == "TEXT"
+    assert "torn" in out.full_text
+    assert out.summary == "a plain-text complaint"
+
+
+def test_process_document_routes_image_via_vision(monkeypatch):
+    monkeypatch.setattr(pipeline.du, "image_to_png_b64", lambda data: "AAAA")
+    monkeypatch.setattr(pipeline.pu, "detect_language", lambda t: "en")
+
+    def fake_ask(system, content, *, step="call", **k):
+        if step == "ocr":
+            return {"text": "", "confidence": 0.0}                 # a photo: nothing to transcribe
+        if step == "image_caption":
+            return {"description": "Reddened skin with scattered raised bumps across a forearm.",
+                    "kind": "injury_or_rash", "reviewer_note": "possible drug rash"}
+        return {}
+    monkeypatch.setattr(pipeline, "ask_json", fake_ask)
+    monkeypatch.setattr(pipeline, "_guarded",
+                        lambda name, text, **k: {"summary": "photo of a skin rash",
+                                                 "looks_relevant": True, "relevance_reason": "adverse event photo"})
+    out = pipeline.process_document("rash.jpg", b"\xff\xd8\xff", "image/jpeg")
+    assert out.flavor == "IMAGE"
+    img = out.images[0]
+    assert img["needs_human_review"] is True
+    assert "forearm" in img["description"]                          # the AI's description is captured
+    assert img["kind"] == "injury_or_rash"
+    assert "raised bumps" in out.full_text                          # description reaches classify/extract context
+
+
+def test_process_document_rejects_unknown_type(monkeypatch):
+    try:
+        pipeline.process_document("archive.zip", b"PK\x03\x04", "application/zip")
+        assert False, "expected ValueError"
+    except ValueError:
+        pass
+
+
+def test_process_document_captions_images_embedded_in_office(monkeypatch):
+    monkeypatch.setattr(pipeline.pu, "detect_language", lambda t: "en")
+    monkeypatch.setattr(pipeline.du, "office_text", lambda name, data: "AE report text")
+    monkeypatch.setattr(pipeline.du, "office_images", lambda name, data: [b"\x89PNG-fake"])
+    monkeypatch.setattr(pipeline.du, "image_to_png_b64", lambda raw: "AAAA")
+
+    def fake_ask(system, content, *, step="call", **k):
+        if step == "image_caption":
+            return {"description": "A blister pack with a torn foil and a discoloured tablet.",
+                    "kind": "product_photo", "reviewer_note": "possible damaged blister"}
+        return {}
+    monkeypatch.setattr(pipeline, "ask_json", fake_ask)
+    monkeypatch.setattr(pipeline, "_guarded",
+                        lambda name, text, **k: {"summary": "s", "looks_relevant": True, "relevance_reason": "r"})
+
+    out = pipeline.process_document("report.docx", b"PK\x03\x04",
+                                   "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+    assert out.flavor == "OFFICE"
+    assert out.images and "torn foil" in out.images[0]["description"]
+    assert "[embedded image 1]" in out.full_text

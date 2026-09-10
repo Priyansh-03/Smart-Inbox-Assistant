@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ApiService } from './api.service';
@@ -15,14 +15,18 @@ import {
 } from './constants';
 
 type ConfBand = '' | 'low' | 'medium' | 'high';
+type DocFilter = '' | 'with' | 'without';
 
 @Component({
   selector: 'app-queue',
   standalone: true,
-  imports: [CommonModule, FormsModule, TooltipDirective],
+  imports: [CommonModule, FormsModule, TooltipDirective, RouterLink],
   template: `
     <div class="queue-head">
-      <h2>Messages to review</h2>
+      <div class="queue-head-row">
+        <h2>Messages to review</h2>
+        <a class="btn" routerLink="/literature">Screen article PDFs</a>
+      </div>
       <p class="muted sub">
         Emails and their attachments, sorted by the assistant. Open one to check its work.
         <span class="dot">·</span> updates automatically
@@ -34,6 +38,7 @@ type ConfBand = '' | 'low' | 'medium' | 'high';
         <select [(ngModel)]="f.status" (ngModelChange)="reload()">
           <option value="">All messages</option>
           <option value="READY_FOR_REVIEW">Needs review</option>
+          <option value="SEEN">Seen</option>
           <option value="REVIEWED">Reviewed</option>
           <option value="PROCESSING">Still processing</option>
           <option value="NEW">Queued</option>
@@ -60,6 +65,14 @@ type ConfBand = '' | 'low' | 'medium' | 'high';
           <button type="button" [class.on]="f.conf === 'high'" (click)="setConf('high')">High</button>
         </div>
       </div>
+
+      <label class="f"><span [tip]="'Whether the email carries any attachment (PDF, image, etc.).'">Document</span>
+        <select [(ngModel)]="f.doc" (ngModelChange)="filterChanged()">
+          <option value="">Any</option>
+          <option value="with">With document</option>
+          <option value="without">Without document</option>
+        </select>
+      </label>
 
       <label class="f"><span>Received after</span>
         <input type="date" [(ngModel)]="f.dateFrom" (ngModelChange)="filterChanged()">
@@ -89,6 +102,7 @@ type ConfBand = '' | 'low' | 'medium' | 'high';
     <div class="tablewrap"><table class="queue">
       <thead><tr>
         <th>From</th><th>Subject</th><th>Category</th>
+        <th class="nowrap" [tip]="'Whether the email carries any attachment (PDF, image, etc.).'">Document</th>
         <th class="nowrap" [tip]="tip('confidence')">Confidence</th>
         <th class="nowrap">Received</th>
         <th>Status</th><th></th>
@@ -106,8 +120,12 @@ type ConfBand = '' | 'low' | 'medium' | 'high';
           </td>
           <td>
             <span class="chip" [ngClass]="'cat-' + b.key" *ngFor="let b of m._buckets"
-                  [tip]="b.tip">{{ b.label }}</span>
+                  [tip]="b.tip">{{ b.label }} <span class="chip-code">({{ b.name }})</span></span>
             <span *ngIf="!m._buckets.length" class="muted">—</span>
+          </td>
+          <td>
+            <span class="chip yn" [class.yes]="m.hasDoc" [class.no]="!m.hasDoc">
+              {{ m.hasDoc ? 'Yes' : 'No' }}</span>
           </td>
           <td>
             <span class="conf" [ngClass]="'conf-' + m._confBand" *ngIf="m._confBand"
@@ -118,6 +136,7 @@ type ConfBand = '' | 'low' | 'medium' | 'high';
           <td>
             <span class="pill"
               [class.ready]="m.status === 'READY_FOR_REVIEW'"
+              [class.seen]="m.status === 'SEEN'"
               [class.done]="m.status === 'REVIEWED'"
               [class.failed]="m.status === 'FAILED'"
               [class.other]="m.status === 'NEW' || m.status === 'PROCESSING'">{{ statusLabel(m.status) }}</span>
@@ -150,19 +169,56 @@ export class QueueComponent implements OnInit, OnDestroy {
   f = {
     status: '', category: '', q: '',
     conf: '' as ConfBand,
+    doc: '' as DocFilter,
     dateFrom: '', dateTo: '', flaggedOnly: false,
   };
 
-  constructor(private api: ApiService, private router: Router) {}
+  constructor(private api: ApiService, private router: Router, private route: ActivatedRoute) {}
 
   open(id: string) { log.info(`opening message ${id}`); this.router.navigate(['/message', id]); }
 
   ngOnInit() {
+    this.readFromUrl();
     this.debounce$.pipe(debounceTime(FILTER_DEBOUNCE_MS)).subscribe(() => this.filterChanged());
     this.reload();
     this.timer = setInterval(() => this.reload(), QUEUE_REFRESH_MS);
   }
-  ngOnDestroy() { clearInterval(this.timer); this.debounce$.complete(); }
+
+  // restore filters + page from the URL query string (set when leaving the queue)
+  private readFromUrl() {
+    const p = this.route.snapshot.queryParamMap;
+    this.f = {
+      status: p.get('status') || '',
+      category: p.get('category') || '',
+      q: p.get('q') || '',
+      conf: (p.get('conf') || '') as ConfBand,
+      doc: (p.get('doc') || '') as DocFilter,
+      dateFrom: p.get('dateFrom') || '',
+      dateTo: p.get('dateTo') || '',
+      flaggedOnly: p.get('flaggedOnly') === '1',
+    };
+    const pg = parseInt(p.get('page') || '0', 10);
+    this.page = isNaN(pg) || pg < 0 ? 0 : pg;
+  }
+
+  // mirror the current filters + page into the URL without adding history entries
+  private writeToUrl() {
+    const f = this.f;
+    const qp: any = {
+      status: f.status || null, category: f.category || null, q: f.q || null,
+      conf: f.conf || null, doc: f.doc || null,
+      dateFrom: f.dateFrom || null, dateTo: f.dateTo || null,
+      flaggedOnly: f.flaggedOnly ? '1' : null,
+      page: this.page ? String(this.page) : null,
+    };
+    this.router.navigate([], { relativeTo: this.route, queryParams: qp, replaceUrl: true });
+  }
+  ngOnDestroy() {
+    clearInterval(this.timer);
+    this.debounce$.complete();
+    // remember the current queue view so "Back to queue" from a message can restore it
+    try { sessionStorage.setItem('queueQuery', this.router.url.split('?')[1] || ''); } catch {}
+  }
 
   trackById = (_: number, m: any) => m.id;
   queued() { this.debounce$.next(); }
@@ -171,7 +227,7 @@ export class QueueComponent implements OnInit, OnDestroy {
 
   anyFilter(): boolean {
     const f = this.f;
-    return !!(f.status || f.category || f.q || f.conf || f.dateFrom || f.dateTo || f.flaggedOnly);
+    return !!(f.status || f.category || f.q || f.conf || f.doc || f.dateFrom || f.dateTo || f.flaggedOnly);
   }
 
   reload() {
@@ -202,11 +258,13 @@ export class QueueComponent implements OnInit, OnDestroy {
     const q = this.f.q.trim().toLowerCase();
     const from = this.f.dateFrom ? new Date(this.f.dateFrom + 'T00:00:00') : null;
     const to = this.f.dateTo ? new Date(this.f.dateTo + 'T23:59:59') : null;
-    const { category, conf, flaggedOnly } = this.f;
+    const { category, conf, doc, flaggedOnly } = this.f;
     this.view = this.rows.filter((m) => {
       if (category && !m._buckets.some((b: any) => b.name === category)) return false;
       if (q && !(`${m.sender} ${m.subject}`.toLowerCase().includes(q))) return false;
       if (flaggedOnly && !m.injectionFlagged) return false;
+      if (doc === 'with' && !m.hasDoc) return false;
+      if (doc === 'without' && m.hasDoc) return false;
       if (conf && m._confBand !== conf) return false;
       if (from || to) {
         if (!m.receivedAt) return false;
@@ -219,6 +277,7 @@ export class QueueComponent implements OnInit, OnDestroy {
     if (this.page > this.pageCount - 1) this.page = this.pageCount - 1;
     if (this.page < 0) this.page = 0;
     log.info(`filters applied: ${this.view.length} of ${this.rows.length} match, page ${this.page + 1}/${this.pageCount}`);
+    this.writeToUrl();
     this.slice();
   }
 
@@ -230,13 +289,14 @@ export class QueueComponent implements OnInit, OnDestroy {
   go(p: number) {
     this.page = Math.min(Math.max(0, p), this.pageCount - 1);
     log.info(`queue page -> ${this.page + 1}/${this.pageCount}`);
+    this.writeToUrl();
     this.slice();
   }
 
   resetFilters() {
     log.info('queue filters cleared');
     this.page = 0;
-    this.f = { status: '', category: '', q: '', conf: '',
+    this.f = { status: '', category: '', q: '', conf: '', doc: '',
                dateFrom: '', dateTo: '', flaggedOnly: false };
     this.reload();
   }

@@ -14,6 +14,11 @@ METHOD
 4. Each field carries source (type/file/page/quote). Nothing stated => "Not stated",
    confidence 0.0, source null. Never infer.
 
+DATES - if a date is captured (e.g. in relevant_context), never write it as
+"today / yesterday / last week" etc. Use the source's explicit date, or resolve the
+relative expression against the "Email received" date in the "[email metadata]" chunk;
+if no anchor exists, write "Not stated".
+
 FIELDS: QUESTION.product_or_topic, QUESTION.question_1 [, QUESTION.question_2 ...],
         QUESTION.relevant_context
 

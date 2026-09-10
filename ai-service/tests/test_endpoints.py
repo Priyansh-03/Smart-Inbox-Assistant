@@ -16,11 +16,19 @@ def test_health_reports_model_and_cache():
 
 
 def test_pdf_stage(monkeypatch):
-    monkeypatch.setattr(main, "process_pdf",
-                        lambda name, data: PdfResult(filename=name, flavor="DIGITAL", summary="s"))
+    monkeypatch.setattr(main, "process_document",
+                        lambda name, data, mime="": PdfResult(filename=name, flavor="DIGITAL", summary="s"))
     r = client.post("/ai/v1/pdf", json={"filename": "a.pdf", "base64": "QUJD"})
     assert r.status_code == 200
     assert r.json()["flavor"] == "DIGITAL"
+
+
+def test_pdf_stage_accepts_image(monkeypatch):
+    monkeypatch.setattr(main, "process_document",
+                        lambda name, data, mime="": PdfResult(filename=name, flavor="IMAGE", summary="a rash photo"))
+    r = client.post("/ai/v1/pdf", json={"filename": "rash.jpg", "base64": "QUJD", "mime": "image/jpeg"})
+    assert r.status_code == 200
+    assert r.json()["flavor"] == "IMAGE"
 
 
 def test_classify_stage(monkeypatch):
@@ -48,3 +56,23 @@ def test_stage_failure_is_502(monkeypatch):
     r = client.post("/ai/v1/classify", json={"email_body": "x"})
     assert r.status_code == 502
     assert "model down" in r.json()["detail"]
+
+
+def test_literature_stage(monkeypatch):
+    monkeypatch.setattr(main, "screen_article",
+                        lambda name, data: {"filename": name, "has_patient_case": True,
+                                            "cases": [{"case_label": "Case 1", "text": "t", "facts": []}],
+                                            "relevance_reason": "r"})
+    r = client.post("/ai/v1/literature", json={"filename": "art.pdf", "base64": "QUJD"})
+    assert r.status_code == 200
+    body = r.json()
+    assert body["has_patient_case"] is True and body["cases"][0]["case_label"] == "Case 1"
+
+
+def test_literature_stage_failure_is_502(monkeypatch):
+    def boom(*a, **k):
+        raise RuntimeError("pdf broken")
+    monkeypatch.setattr(main, "screen_article", boom)
+    r = client.post("/ai/v1/literature", json={"filename": "art.pdf", "base64": "QUJD"})
+    assert r.status_code == 502
+    assert "pdf broken" in r.json()["detail"]

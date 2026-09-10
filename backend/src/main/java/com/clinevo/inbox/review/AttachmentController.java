@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.clinevo.inbox.domain.Documents.PdfExtraction;
 import com.clinevo.inbox.domain.InboxRepository;
 
-/** Streams the stored PDF so the reviewer UI can open it at a given page. */
+/** Streams a stored attachment (PDF, image, office, text) with its content-type for the reviewer UI. */
 @RestController
 @RequestMapping("/api/attachments")
 public class AttachmentController {
@@ -38,10 +38,18 @@ public class AttachmentController {
             log.warn("Attachment {} not found for message {}", filename, messageId);
             return ResponseEntity.notFound().build();
         }
-        Path path = repo.processableAttachments(messageId).stream()
-                .filter(a -> filename.equals(a.filename)).map(a -> Path.of(a.storagePath)).findFirst().orElse(null);
+        var att = repo.processableAttachments(messageId).stream()
+                .filter(a -> filename.equals(a.filename)).findFirst().orElse(null);
+        Path path = att == null ? null : Path.of(att.storagePath);
         if (path == null || !Files.exists(path)) return ResponseEntity.notFound().build();
-        log.info("Serving attachment {} for message {}", filename, messageId);
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(new FileSystemResource(path));
+        MediaType ct;
+        try {
+            ct = att.mimeType == null || att.mimeType.isBlank()
+                    ? MediaType.APPLICATION_OCTET_STREAM : MediaType.parseMediaType(att.mimeType);
+        } catch (Exception e) {
+            ct = MediaType.APPLICATION_OCTET_STREAM;
+        }
+        log.info("Serving attachment {} ({}) for message {}", filename, ct, messageId);
+        return ResponseEntity.ok().contentType(ct).body(new FileSystemResource(path));
     }
 }

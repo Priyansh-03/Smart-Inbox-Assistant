@@ -162,7 +162,7 @@ class IngestionServiceTest {
     }
 
     @Test
-    void nonPdfAttachmentIsLoggedNotStored(@TempDir Path tmp) throws Exception {
+    void supportedNonPdfAttachmentIsStoredForProcessing(@TempDir Path tmp) throws Exception {
         String raw = """
                 From: a@x.test
                 Subject: docx
@@ -183,9 +183,34 @@ class IngestionServiceTest {
         InboxRepository repo = repoReturningId("3");
         service(repo, tmp, 25, 100000).ingest(eml(raw));
 
+        // docx is a supported type now: stored on disk, processed = true, no skip reason
+        verify(repo).insertAttachment(eq("3"), eq("f.docx"), any(), any(), any(String.class), eq(true), isNull());
+    }
+
+    @Test
+    void unsupportedAttachmentTypeIsLoggedOnly(@TempDir Path tmp) throws Exception {
+        String raw = """
+                From: a@x.test
+                Subject: zip
+                MIME-Version: 1.0
+                Content-Type: multipart/mixed; boundary="b"
+
+                --b
+                Content-Type: text/plain
+
+                body
+                --b
+                Content-Type: application/zip; name="bundle.zip"
+                Content-Disposition: attachment; filename="bundle.zip"
+
+                ZScdata
+                --b--
+                """;
+        InboxRepository repo = repoReturningId("3");
+        service(repo, tmp, 25, 100000).ingest(eml(raw));
+
         ArgumentCaptor<String> reason = ArgumentCaptor.forClass(String.class);
-        verify(repo).insertAttachment(eq("3"), eq("f.docx"), any(), any(), isNull(), eq(false), reason.capture());
-        assertTrue(reason.getValue().contains("non-pdf"));
-        verify(repo, never()).insertAttachment(any(), any(), any(), any(), any(String.class), anyBoolean(), any());
+        verify(repo).insertAttachment(eq("3"), eq("bundle.zip"), any(), any(), isNull(), eq(false), reason.capture());
+        assertTrue(reason.getValue().contains("unsupported"));
     }
 }

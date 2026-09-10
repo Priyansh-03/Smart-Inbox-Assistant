@@ -133,6 +133,17 @@ public class InboxRepository {
         return n > 0;
     }
 
+    /** Force a fresh AI run of any message regardless of status (reviewer-triggered reprocess). */
+    public boolean resetAnyToNew(String id) {
+        int n = jdbc.sql("""
+                UPDATE message SET status = 'NEW', attempts = 0, error_detail = NULL,
+                    processing_started_at = NULL, processing_ended_at = NULL
+                WHERE id = :id AND status <> 'PROCESSING'
+                """).param("id", Long.valueOf(id)).update();
+        log.info("Reprocess requested for message id={}: {}", id, n > 0 ? "requeued" : "busy, ignored");
+        return n > 0;
+    }
+
     public List<Attachment> processableAttachments(String messageId) {
         return jdbc.sql("SELECT * FROM attachment WHERE message_id = :m AND processed = true")
                 .param("m", Long.valueOf(messageId)).query(ATTACHMENT).list();
@@ -152,6 +163,14 @@ public class InboxRepository {
     public int attempts(String id) {
         return jdbc.sql("SELECT attempts FROM message WHERE id = :id")
                 .param("id", Long.valueOf(id)).query(Integer.class).optional().orElse(Integer.MAX_VALUE);
+    }
+
+    /** Mark a not-yet-opened message as seen. Only touches READY_FOR_REVIEW rows. Returns true if flipped. */
+    public boolean markSeen(String id) {
+        int n = jdbc.sql("UPDATE message SET status = 'SEEN' WHERE id = :id AND status = 'READY_FOR_REVIEW'")
+                .param("id", Long.valueOf(id)).update();
+        if (n > 0) log.info("Message id={} -> SEEN", id);
+        return n > 0;
     }
 
     /* ---------- AI results ---------- */
@@ -258,6 +277,22 @@ public class InboxRepository {
     public List<PdfExtraction> pdfExtractions(String messageId) {
         return jdbc.sql("SELECT * FROM pdf_extraction WHERE message_id = :m ORDER BY id")
                 .param("m", Long.valueOf(messageId)).query(PDF_EXTRACTION).list();
+    }
+
+    /** true if the message has at least one PDF-flavored extraction (not an image/office/text doc). */
+    public boolean hasPdf(String messageId) {
+        return jdbc.sql("""
+                SELECT EXISTS (SELECT 1 FROM pdf_extraction
+                               WHERE message_id = :m
+                                 AND (flavor IS NULL OR flavor NOT IN ('IMAGE', 'OFFICE', 'TEXT')))
+                """)
+                .param("m", Long.valueOf(messageId)).query(Boolean.class).single();
+    }
+
+    /** true if the message has any attachment on file - PDF, image, docx, etc. (processed or logged only). */
+    public boolean hasAttachment(String messageId) {
+        return jdbc.sql("SELECT EXISTS (SELECT 1 FROM attachment WHERE message_id = :m)")
+                .param("m", Long.valueOf(messageId)).query(Boolean.class).single();
     }
 
     public List<AuditEvent> audit(String messageId) {
